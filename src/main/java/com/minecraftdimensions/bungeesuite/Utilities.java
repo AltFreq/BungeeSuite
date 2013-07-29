@@ -254,29 +254,7 @@ public class Utilities {
 		return ProxyServer.getInstance().getServerInfo(name);
 	}
 
-	public void sendMessages(Server server) {
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(b);
-		try {
-			out.writeUTF("ReceiveMessages");
-			String output = null;
-			for (String data : plugin.messages.keySet()) {
-				output += data + "``" + plugin.messages.get(data) + "##";
-			}
-			out.writeUTF(output);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		plugin.proxy.getScheduler().runAsync(plugin,
-				new SendPluginMessage("BungeeSuiteTp", server.getInfo(), b));
-		plugin.proxy.getScheduler().runAsync(plugin,
-				new SendPluginMessage("BungeeSuiteWarps", server.getInfo(), b));
-		plugin.proxy.getScheduler().runAsync(plugin,
-				new SendPluginMessage("BungeeSuitePorts", server.getInfo(), b));
-		plugin.proxy.getScheduler().runAsync(plugin,
-				new SendPluginMessage("BungeeSuiteSpawn", server.getInfo(), b));
-
-	}
+	
 
 	public void TpAll(String player, String targetPlayer) {
 		ProxiedPlayer target = this.getClosestPlayer(targetPlayer);

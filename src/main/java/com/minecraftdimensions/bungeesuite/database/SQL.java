@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
 
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class SQL extends SQLOperations {
 
@@ -16,7 +15,6 @@ public class SQL extends SQLOperations {
 	private int threads;
 	public BungeeSuite plugin;
 	private ArrayList<ConnectionHandler> connections = new ArrayList<ConnectionHandler>();
-	ScheduledTask clearTask;
 
 	public SQL(String host, String port, String database, String username,
 			String password, int threads, BungeeSuite bungeeSuite) {
@@ -27,14 +25,14 @@ public class SQL extends SQLOperations {
 		this.port = port;
 		this.threads = threads;
 		this.plugin = bungeeSuite;
-		initialiseConnections(threads);
+		initialiseConnections();
 	}
 
 	/**
 	 * @param connections
 	 *            Number of initial connections to create for the plugin.
 	 */
-	private void initialiseConnections(int threads) {
+	private void initialiseConnections() {
 		Connection connection;
 		for (int i = 0; i < threads; i++) {
 			try {
@@ -86,27 +84,7 @@ public class SQL extends SQLOperations {
 		ch = new ConnectionHandler(connection);
 		connections.add(ch);
 		System.out.println("Created new sql connection!");
-		if (clearTask == null && connections.size()>threads) {
-			clearTask = ProxyServer.getInstance().getScheduler()
-					.schedule(plugin, new Runnable() {
-						public void run() {
-							ArrayList<ConnectionHandler> cons = connections;
-							if (connections.size() > threads) {
-								for (ConnectionHandler ch : cons) {
-									if (!ch.isUsed()) {
-										connections.remove(ch);
-										if (connections.size() == threads) {
-											break;
-										}
-									}
-								}
-								if (connections.size() == threads) {
-									clearTask.cancel();
-								}
-							}
-						}
-					}, 1, 30, TimeUnit.MINUTES);
-		}
+
 		return ch;
 
 	}

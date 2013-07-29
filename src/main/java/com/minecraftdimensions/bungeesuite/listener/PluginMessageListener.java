@@ -172,11 +172,6 @@ public class PluginMessageListener implements Listener {
 			plugin.utils.nicknamePermission(player, nickname);
 			return;
 		}
-		if (channel.equalsIgnoreCase("GetMessages")) {
-			Server server = (Server) event.getSender();
-			plugin.utils.sendMessages(server);
-			return;
-		}
 		if (channel.equalsIgnoreCase("TeleportToPlayerRequest")) {
 			String player = in.readUTF();
 			String target = in.readUTF();
