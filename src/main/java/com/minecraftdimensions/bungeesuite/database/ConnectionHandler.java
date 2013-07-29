@@ -1,6 +1,7 @@
 package com.minecraftdimensions.bungeesuite.database;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ConnectionHandler {
 	private Connection connection;
@@ -35,6 +36,11 @@ public class ConnectionHandler {
 	}
 	
 	public void closeConnection(){
-		this.closeConnection();
+		try {
+			this.connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
