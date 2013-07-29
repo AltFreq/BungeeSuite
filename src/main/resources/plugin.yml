@@ -1,0 +1,4 @@
+name: BungeeSuite
+main : com.minecraftdimensions.bungeesuite.BungeeSuite
+version: 0.31
+author: Bloodsplat
