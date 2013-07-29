@@ -1848,8 +1848,12 @@ public class Utilities {
 			String format) {
 		if (plugin.logChat) {
 			plugin.proxy.getConsole().sendMessage(format);
+			System.out.println(format);
 		}
 		// filter regex
+		if(plugin.globalChatRegex==null){
+			this.createChatConfig();
+		}
 		format = format.replaceAll(plugin.globalChatRegex, "");
 		for (ServerInfo serverinfo : plugin.proxy.getServers().values()) {
 			if (!serverinfo.equals(server)) {
