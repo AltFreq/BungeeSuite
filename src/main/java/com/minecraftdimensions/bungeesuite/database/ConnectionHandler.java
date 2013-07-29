@@ -36,6 +36,7 @@ public class ConnectionHandler {
 	}
 	
 	public void closeConnection(){
+		this.used=true;
 		try {
 			this.connection.close();
 		} catch (SQLException e) {

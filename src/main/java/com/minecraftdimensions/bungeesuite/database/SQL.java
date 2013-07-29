@@ -2,6 +2,7 @@ package com.minecraftdimensions.bungeesuite.database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 
@@ -50,11 +51,12 @@ public class SQL extends SQLOperations {
 		
 		ProxyServer.getInstance().getScheduler().schedule(plugin, new Runnable() {
 						public void run() {
-							ArrayList<ConnectionHandler> cons = connections;
-							for(ConnectionHandler con: cons){
+							Iterator<ConnectionHandler> cons = connections.iterator();
+							while(cons.hasNext()){
+								ConnectionHandler con = cons.next();
 								if(con.isOldConnection()){
 									con.closeConnection();
-									connections.remove(con);
+									cons.remove();
 								}
 							}
 						}
