@@ -181,6 +181,7 @@ public class Utilities {
 			String msg = plugin.newPlayerBroadcastMessage;
 			msg = msg.replace("{player}", name);
 			msg = this.colorize(msg);
+			plugin.getProxy().getConsole().sendMessage(msg);
 			for (ProxiedPlayer data : plugin.getProxy().getPlayers()) {
 				data.sendMessage(msg);
 			}
