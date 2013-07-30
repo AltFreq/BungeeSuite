@@ -125,21 +125,19 @@ public class Utilities {
 				.equals(playerP.getServer().getInfo().getName())) {
 			plugin.getProxy()
 					.getScheduler()
-					.schedule(
+					.runAsync(
 							plugin,
 							new SendPluginMessage("BungeeSuiteTp", targetP
-									.getServer().getInfo(), b),
-							plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+									.getServer().getInfo(), b));
 			return;
 		} else {
 			playerP.connect(targetP.getServer().getInfo());
 			plugin.getProxy()
 					.getScheduler()
-					.schedule(
+					.runAsync(
 							plugin,
 							new SendPluginMessage("BungeeSuiteTp", targetP
-									.getServer().getInfo(), b),
-							plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+									.getServer().getInfo(), b));
 			return;
 		}
 	}
@@ -712,21 +710,19 @@ public class Utilities {
 		if (server.equals(playerP.getServer().getInfo().getName())) {
 			plugin.getProxy()
 					.getScheduler()
-					.schedule(
+					.runAsync(
 							plugin,
 							new SendPluginMessage("BungeeSuiteWarps",
-									getServer(server), b), plugin.DELAY_TIME,
-							TimeUnit.MILLISECONDS);
+									getServer(server), b));
 			return;
 		} else {
 			playerP.connect(getServer(server));
 			plugin.getProxy()
 					.getScheduler()
-					.schedule(
+					.runAsync(
 							plugin,
 							new SendPluginMessage("BungeeSuiteWarps",
-									getServer(server), b), plugin.DELAY_TIME,
-							TimeUnit.MILLISECONDS);
+									getServer(server), b));
 			return;
 		}
 
@@ -871,21 +867,19 @@ public class Utilities {
 				if (server.equals(getPlayersServer(sender).getInfo().getName())) {
 					plugin.getProxy()
 							.getScheduler()
-							.schedule(
+							.runAsync(
 									plugin,
 									new SendPluginMessage("BungeeSuiteSpawn",
-											getServer(server), b),
-									plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+											getServer(server), b));
 					return;
 				} else {
 					getPlayer(sender).connect(getServer(server));
 					plugin.getProxy()
 							.getScheduler()
-							.schedule(
+							.runAsync(
 									plugin,
 									new SendPluginMessage("BungeeSuiteSpawn",
-											getServer(server), b),
-									plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+											getServer(server), b));
 					return;
 				}
 
@@ -905,21 +899,19 @@ public class Utilities {
 			if (server.equals(getPlayersServer(sender).getInfo().getName())) {
 				plugin.getProxy()
 						.getScheduler()
-						.schedule(
+						.runAsync(
 								plugin,
 								new SendPluginMessage("BungeeSuiteSpawn",
-										getServer(server), b),
-								plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+										getServer(server), b));
 				return;
 			} else {
 				getPlayer(sender).connect(getServer(server));
 				plugin.getProxy()
 						.getScheduler()
-						.schedule(
+						.runAsync(
 								plugin,
 								new SendPluginMessage("BungeeSuiteSpawn",
-										getServer(server), b),
-								plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+										getServer(server), b));
 				return;
 			}
 
@@ -2251,9 +2243,8 @@ public class Utilities {
 		}
 		plugin.getProxy()
 				.getScheduler()
-				.schedule(plugin,
-						new SendPluginMessage("BungeeSuiteTp", server, b),
-						plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+				.runAsync(plugin,
+						new SendPluginMessage("BungeeSuiteTp", server, b));
 		sendMessage(sender, "SENT_BACK");
 	}
 
@@ -2416,9 +2407,8 @@ public class Utilities {
 		}
 		plugin.getProxy()
 				.getScheduler()
-				.schedule(plugin,
-						new SendPluginMessage("BungeeSuiteHomes", s, b),
-						plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+				.runAsync(plugin,
+						new SendPluginMessage("BungeeSuiteHomes", s, b));
 	}
 
 	public void sendPlayersHome(String player, String server)
@@ -2584,9 +2574,8 @@ public class Utilities {
 		}
 		plugin.getProxy()
 				.getScheduler()
-				.schedule(plugin,
-						new SendPluginMessage("BungeeSuiteHomes", s, b),
-						plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+				.runAsync(plugin,
+						new SendPluginMessage("BungeeSuiteHomes", s, b));
 
 	}
 

@@ -27,7 +27,6 @@ public class BungeeSuite extends Plugin {
 	public Config config;
 	HashMap<String, String> messages = new HashMap<String, String>();
 	private Config messagesConfig;
-	public long DELAY_TIME;
 
 	/* Teleports */
 	public HashMap<String, String> pendingTeleportsTPA = new HashMap<String, String>();
@@ -144,8 +143,6 @@ public class BungeeSuite extends Plugin {
 		username = config.getString("Database.Username", "username");
 		password = config.getString("Database.Password", "password");
 		threads = config.getInt("Database.Threads", 5);
-
-		DELAY_TIME = Long.parseLong(config.getString("TeleportDelay", "100"));
 		motd = config.getBoolean("MOTD.Enabled", true);
 		motdMessage = config.getString("MOTD.message", "&6"
 				+ "Welcome to the server, {player}" + "&6" + "!");

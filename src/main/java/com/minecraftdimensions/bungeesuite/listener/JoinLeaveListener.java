@@ -46,8 +46,7 @@ public class JoinLeaveListener implements Listener {
 			if (plugin.newspawn) {
 				plugin.getProxy()
 						.getScheduler()
-						.schedule(plugin, new NewPlayerSpawner(name, plugin),
-								plugin.DELAY_TIME, TimeUnit.MILLISECONDS);
+						.runAsync(plugin, new NewPlayerSpawner(name, plugin));
 			}
 		}else{
 			String ip = e.getPlayer().getAddress().getAddress().toString();
