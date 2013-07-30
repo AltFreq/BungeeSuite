@@ -2963,7 +2963,9 @@ public class Utilities {
 				}else{
 					pp.setDisplayName(nick);
 				}
-				plugin.afkPlayers.add(pp.getName());
+			}
+			if(nick==null){
+				nick = pp.getName();
 			}
 			 ByteArrayOutputStream b = new ByteArrayOutputStream();
 				DataOutputStream out = new DataOutputStream(b);
@@ -2979,13 +2981,14 @@ public class Utilities {
 								plugin,
 								new SendPluginMessage("BungeeSuiteChat",
 										getPlayersServer(sender).getInfo(), b));
+				plugin.afkPlayers.add(pp.getName());
 
 		} else {
 			if(plugin.playerdata.containsKey(sender)){
 				 nick = plugin.playerdata.get(sender).nickname;
-				 if(nick==null){
-					 nick = pp.getName();
-				 }
+			}
+			if(nick==null){
+				nick = pp.getName();
 			}
 			pp.setDisplayName(nick);
 			this.sendBroadcast(plugin.getMessage("PLAYER_NOT_AFK").replace("{player}", colorize(pp.getDisplayName())));
