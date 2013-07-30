@@ -137,6 +137,9 @@ public class JoinLeaveListener implements Listener {
 		if(plugin.denyTeleport.contains(player)){
 			plugin.denyTeleport.remove(player);
 		}
+		if(plugin.afkPlayers.contains(player)){
+			plugin.afkPlayers.remove(player);
+		}
 
 	}
 }

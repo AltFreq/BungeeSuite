@@ -172,6 +172,12 @@ public class PluginMessageListener implements Listener {
 			plugin.utils.nicknamePermission(player, nickname);
 			return;
 		}
+		if (channel.equalsIgnoreCase("AFKPlayer")) {
+			String sender = in.readUTF();
+			boolean displayPermissions = in.readBoolean();
+			plugin.utils.setPlayerAFK(sender,displayPermissions);
+			return;
+		}
 		if (channel.equalsIgnoreCase("TeleportToPlayerRequest")) {
 			String player = in.readUTF();
 			String target = in.readUTF();

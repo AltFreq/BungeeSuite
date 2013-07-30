@@ -89,6 +89,7 @@ public class BungeeSuite extends Plugin {
 	public String adminColor;
 	public String cleanChatRegex;
 	public boolean logChat;
+	public ArrayList<String> afkPlayers = new ArrayList<String>();
 	// homes
 	public boolean homesLoaded;
 	public Config homeConfig;
@@ -592,6 +593,15 @@ public class BungeeSuite extends Plugin {
 		messages.put("CLEANCHAT_DISABLED",
 				utils.colorize(m.getString("CLEANCHAT_DISABLED", "&c"
 						+ "CleanChat disabled")));
+		messages.put("AFK_DISPLAY",
+				utils.colorize(m.getString("AFK_DISPLAY", "&5"
+						+ "[AFK]")));
+		messages.put("PLAYER_AFK",
+				utils.colorize(m.getString("PLAYER_AFK", "&6"
+						+ "{player} &6is now afk")));
+		messages.put("PLAYER_NOT_AFK",
+				utils.colorize(m.getString("PLAYER_NOT_AFK", "&7"
+						+ "{player} &7is no longer afk")));
 		// home messages
 		messages.put("HOME_NO_PERMISSION",
 				utils.colorize(m.getString("HOME_NO_PERMISSION", "&c"

@@ -68,19 +68,19 @@ public class Utilities {
 
 	public void addServer(String server) throws SQLException {
 		if (!serverExists(server)) {
-			
+
 			sql.standardQuery("INSERT INTO BungeeServers (servername) VALUE ('"
 					+ server + "');");
-			
+
 		}
 	}
 
 	public boolean serverExists(String name) {
-		
+
 		boolean check = sql
 				.existanceQuery("SELECT servername FROM BungeeServers WHERE servername = '"
 						+ name + "'");
-		
+
 		return check;
 	}
 
@@ -157,26 +157,26 @@ public class Utilities {
 	}
 
 	public boolean playerExists(String name) {
-		
+
 		boolean check = false;
 		check = sql
 				.existanceQuery("SELECT * FROM BungeePlayers WHERE playername = '"
 						+ name + "'");
-		
+
 		return check;
 	}
 
 	public void sendQuery(String query) throws SQLException {
-		
+
 		sql.standardQuery(query);
-		
+
 	}
 
 	public void createPlayer(String name, String ip) throws SQLException {
-		
+
 		sql.standardQuery("INSERT INTO BungeePlayers (playername, lastonline, ipaddress) VALUES ('"
 				+ name + "',CURRENT_DATE(), '" + ip + "')");
-		
+
 		if (plugin.newPlayerBroadcast) {
 			String msg = plugin.newPlayerBroadcastMessage;
 			msg = msg.replace("{player}", name);
@@ -189,14 +189,14 @@ public class Utilities {
 	}
 
 	public void updatePlayer(String name, String ip) throws SQLException {
-		
+
 		sql.standardQuery("UPDATE BungeePlayers SET lastonline=CURRENT_DATE(), ipaddress='"
 				+ ip + "' WHERE playername ='" + name + "'");
-		
+
 	}
 
 	public Date getPlayerDate(String name) {
-		
+
 		Date date = null;
 		ResultSet results = sql
 				.sqlQuery("SELECT lastonline FROM BungeePlayers Where playername='"
@@ -209,12 +209,12 @@ public class Utilities {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return date;
 	}
 
 	public String getPlayerIP(String name) {
-		
+
 		String ip = null;
 		ResultSet results = sql
 				.sqlQuery("SELECT ipaddress FROM BungeePlayers WHERE playername='"
@@ -227,7 +227,7 @@ public class Utilities {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return ip;
 	}
 
@@ -255,8 +255,6 @@ public class Utilities {
 		return ProxyServer.getInstance().getServerInfo(name);
 	}
 
-	
-
 	public void TpAll(String player, String targetPlayer) {
 		ProxiedPlayer target = this.getClosestPlayer(targetPlayer);
 		if (target == null) {
@@ -282,7 +280,7 @@ public class Utilities {
 			this.sendMessage(player, "PLAYER_NOT_ONLINE");
 			return;
 		}
-		if(plugin.denyTeleport.contains(target.getName())){
+		if (plugin.denyTeleport.contains(target.getName())) {
 			sendMessage(player, "TELEPORT_UNABLE");
 			return;
 		}
@@ -310,7 +308,7 @@ public class Utilities {
 			this.sendMessage(player, "PLAYER_NOT_ONLINE");
 			return;
 		}
-		if(plugin.denyTeleport.contains(target.getName())){
+		if (plugin.denyTeleport.contains(target.getName())) {
 			sendMessage(player, "TELEPORT_UNABLE");
 			return;
 		}
@@ -380,7 +378,7 @@ public class Utilities {
 			throws SQLException {
 		ProxiedPlayer pp = getPlayer(name);
 		if (pp != null) {
-			
+
 			String msg = ChatColor.BLUE + "Warps: ";
 			ResultSet res = sql
 					.sqlQuery("SELECT warpname FROM BungeeWarps WHERE private=FALSE");
@@ -399,7 +397,7 @@ public class Utilities {
 				res2.close();
 				pp.sendMessage(msg.substring(0, msg.length() - 2));
 			}
-			
+
 		}
 
 	}
@@ -410,28 +408,28 @@ public class Utilities {
 					plugin.getMessage("WARP_DOES_NOT_EXIST"));
 			return;
 		}
-		
+
 		sql.standardQuery("DELETE FROM BungeeWarps WHERE warpname ='" + name
 				+ "'");
-		
+
 		getPlayer(sender).sendMessage(plugin.getMessage("WARP_DELETED"));
 	}
 
 	public boolean warpExists(String name) {
-		
+
 		boolean check = sql
 				.existanceQuery("SELECT * FROM BungeeWarps WHERE warpname='"
 						+ name + "'");
-		
+
 		return check;
 	}
 
 	public boolean warpIsPrivate(String name) {
-		
+
 		boolean check = sql
 				.existanceQuery("SELECT * FROM BungeeWarps WHERE warpname='"
 						+ name + "' AND private=TRUE");
-		
+
 		return check;
 	}
 
@@ -443,11 +441,11 @@ public class Utilities {
 					plugin.getMessage("WARP_ALREADY_EXISTS"));
 			return;
 		}
-		
+
 		sql.standardQuery("INSERT INTO BungeeWarps VALUES('" + name + "','"
 				+ server + "','" + world + "'," + x + "," + y + "," + z + ","
 				+ yaw + "," + pitch + "," + hidden + ")");
-		
+
 		sendMessage(sender, "WARP_CREATED");
 	}
 
@@ -507,7 +505,7 @@ public class Utilities {
 
 	private String getWarp(String warpName) {
 		String loc = "";
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT * FROM BungeeWarps WHERE warpname = '"
 						+ warpName + "'");
@@ -529,12 +527,12 @@ public class Utilities {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return loc;
 	}
 
 	public void getPortals(String server) throws SQLException {
-		
+
 		boolean checkexist = sql
 				.existanceQuery("SELECT * FROM BungeePortals WHERE server ='"
 						+ server + "'");
@@ -581,17 +579,15 @@ public class Utilities {
 									getServer(server), b));
 		}
 
-		
-
 	}
 
 	public boolean portalExists(String name) {
-		
+
 		boolean check = false;
 		check = sql
 				.existanceQuery("SELECT * FROM BungeePortals WHERE portalname ='"
 						+ name + "'");
-		
+
 		return check;
 	}
 
@@ -622,7 +618,7 @@ public class Utilities {
 				sendMessage(sender, "SERVER_DOEST_NOT_EXIST");
 				return;
 			}
-			
+
 			sql.standardQuery("INSERT INTO BungeePortals (portalname, server, toserver,world,filltype,xmax,xmin,ymax,ymin,zmax,zmin) VALUES('"
 					+ name
 					+ "','"
@@ -651,14 +647,13 @@ public class Utilities {
 				sendMessage(sender, "WARP_DOES_NOT_EXIST");
 				return;
 			}
-			
+
 			sql.standardQuery("INSERT INTO BungeePortals VALUES('" + name
 					+ "','" + getPlayer(sender).getServer().getInfo().getName()
 					+ "',NULL,'" + dest + "','" + world + "','" + filltype
 					+ "'," + xmax + "," + xmin + "," + ymax + "," + ymin + ","
 					+ zmax + "," + zmin + ")");
 		}
-		
 
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
@@ -743,7 +738,7 @@ public class Utilities {
 			return;
 		}
 		String server = null;
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT server FROM BungeePortals WHERE portalname ='"
 						+ portal + "'");
@@ -756,7 +751,6 @@ public class Utilities {
 		}
 		sql.standardQuery("DELETE FROM BungeePortals WHERE portalname = '"
 				+ portal + "'");
-		
 
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
@@ -778,7 +772,7 @@ public class Utilities {
 	public void listPortals(String sender) {
 		ProxiedPlayer pp = getPlayer(sender);
 		if (pp != null) {
-			
+
 			String msg = ChatColor.BLUE + "Portals: ";
 			ResultSet res = sql
 					.sqlQuery("SELECT portalname FROM BungeePortals");
@@ -791,7 +785,6 @@ public class Utilities {
 				e.printStackTrace();
 			}
 			pp.sendMessage(msg.substring(0, msg.length() - 2));
-			
 
 		}
 
@@ -804,20 +797,20 @@ public class Utilities {
 			type = server + "-" + world;
 		}
 		if (spawnExists(type)) {
-			
+
 			sql.standardQuery("UPDATE BungeeSpawns SET server='" + server
 					+ "', world='" + world + "', x=" + x + ", y=" + y + ", z="
 					+ z + ", yaw=" + yaw + ", pitch= " + pitch
 					+ " WHERE spawnname='" + type + "'");
-			
+
 			sendMessage(sender, "SPAWN_SET");
 			return;
 		} else {
-			
+
 			sql.standardQuery("INSERT INTO BungeeSpawns VALUES ('" + type
 					+ "','" + server + "', '" + world + "', " + x + ", " + y
 					+ ", " + z + ", " + yaw + "," + pitch + ")");
-			
+
 			sendMessage(sender, "SPAWN_SET");
 			return;
 		}
@@ -825,18 +818,18 @@ public class Utilities {
 	}
 
 	private boolean spawnExists(String type) {
-		
+
 		boolean check = false;
 		check = sql
 				.existanceQuery("SELECT * FROM BungeeSpawns WHERE spawnname = '"
 						+ type + "'");
-		
+
 		return check;
 	}
 
 	public String getSpawn(String spawnname) throws SQLException {
 		String loc = "";
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT * FROM BungeeSpawns WHERE spawnname = '"
 						+ spawnname + "'");
@@ -851,7 +844,7 @@ public class Utilities {
 			loc += res.getFloat("pitch");
 		}
 		res.close();
-		
+
 		return loc;
 	}
 
@@ -939,10 +932,10 @@ public class Utilities {
 
 	public boolean playerIsBanned(String player) {
 		boolean check = false;
-		
+
 		check = sql.existanceQuery("SELECT * FROM BungeeBans WHERE player = '"
 				+ player + "'");
-		
+
 		return check;
 	}
 
@@ -959,7 +952,7 @@ public class Utilities {
 				sendMessage(sender, "PLAYER_ALREADY_BANNED");
 				return;
 			}
-			
+
 			sql.standardQuery("INSERT INTO BungeeBans (player,banned_by,banned_on,reason,type) VALUES ('"
 					+ player
 					+ "', '"
@@ -967,7 +960,6 @@ public class Utilities {
 					+ "', CURRENT_DATE(), '"
 					+ msg
 					+ "', 'ban')");
-			
 
 		} else {
 			if (playerIsBanned(pp.getName())) {
@@ -975,14 +967,14 @@ public class Utilities {
 				return;
 			}
 			pname = pp.getDisplayName();
-			
+
 			sql.standardQuery("INSERT INTO BungeeBans (player,banned_by,banned_on,reason,type) VALUES ('"
 					+ pp.getName()
 					+ "', '"
 					+ sender
 					+ "', CURRENT_DATE(),'"
 					+ msg + "', 'ban')");
-			
+
 			String message = null;
 			if (msg.equalsIgnoreCase("")) {
 				message = plugin.getMessage("BAN_PLAYER");
@@ -1079,7 +1071,6 @@ public class Utilities {
 				sendMessage(sender, "PLAYER_ALREADY_BANNED");
 				return;
 			}
-			
 
 			sql.standardQuery("INSERT INTO BungeeBans(player, banned_by,banned_on,reason,type, banned_until) VALUES('"
 					+ player
@@ -1093,15 +1084,13 @@ public class Utilities {
 					+ hour
 					+ " HOUR),INTERVAL " + day + " DAY))");
 
-			
-
 		} else {
 			if (playerIsBanned(pp.getName())) {
 				sendMessage(sender, "PLAYER_ALREADY_BANNED");
 				return;
 			}
 			pname = pp.getDisplayName();
-			
+
 			sql.standardQuery("INSERT INTO BungeeBans(player, banned_by,banned_on,reason,type, banned_until) VALUES('"
 					+ pp.getName()
 					+ "','"
@@ -1113,7 +1102,7 @@ public class Utilities {
 					+ " MINUTE), INTERVAL "
 					+ hour
 					+ " HOUR),INTERVAL " + day + " DAY))");
-			
+
 			String message = null;
 			if (msg.equalsIgnoreCase("")) {
 				message = plugin.getMessage("TEMP_BAN");
@@ -1161,17 +1150,17 @@ public class Utilities {
 			sendMessage(sender, "PLAYER_NOT_BANNED");
 			return;
 		}
-		
+
 		sql.standardQuery("DELETE FROM BungeeBans WHERE player = '" + player
 				+ "'");
-		
+
 		String message = plugin.getMessage("PLAYER_UNBANNED");
 		message = message.replace("{player}", player);
 		sendBroadcast(message);
 	}
 
 	public String getBanReason(String name) {
-		
+
 		String reason = null;
 		ResultSet res = sql
 				.sqlQuery("SELECT reason FROM BungeeBans WHERE player = '"
@@ -1184,23 +1173,22 @@ public class Utilities {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 
 		return reason;
 	}
 
 	public boolean playerBanIsTemp(String name) {
 		boolean check = false;
-		
+
 		check = sql
 				.existanceQuery("SELECT * FROM BungeeBans WHERE type = 'temp ban' AND player = '"
 						+ name + "'");
-		
+
 		return check;
 	}
 
 	public Calendar playerBanTempDate(String name) {
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT banned_until FROM BungeeBans WHERE player = '"
 						+ name + "'");
@@ -1215,23 +1203,22 @@ public class Utilities {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return cal;
 	}
 
 	public void removeTempBan(String name) throws SQLException {
-		
+
 		sql.standardQuery("DELETE FROM BungeeBans WHERE player = '" + name
 				+ "'");
-		
 
 	}
 
 	public boolean tableExists(String string) {
 		boolean check;
-		
+
 		check = sql.doesTableExist(string);
-		
+
 		return check;
 	}
 
@@ -1523,10 +1510,10 @@ public class Utilities {
 			mute = pp.getName();
 		}
 		if (isMuted(mute)) {
-			
+
 			sql.standardQuery("UPDATE BungeePlayers SET muted=0 WHERE playername = '"
 					+ mute + "'");
-			
+
 			if (pp != null) {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
 				DataOutputStream out = new DataOutputStream(b);
@@ -1549,7 +1536,7 @@ public class Utilities {
 			}
 			sendMessage(sender, plugin.getMessage("PLAYER_UNMUTED"));
 		} else {
-			
+
 			sql.standardQuery("UPDATE BungeePlayers SET muted=1 WHERE playername = '"
 					+ mute + "'");
 			if (pp != null) {
@@ -1570,7 +1557,7 @@ public class Utilities {
 				pp.sendMessage(plugin.getMessage("MUTED"));
 			}
 			sendMessage(sender, plugin.getMessage("PLAYER_MUTED"));
-			
+
 			if (plugin.playerdata.containsKey(mute)) {
 				plugin.playerdata.get(mute).mute = true;
 			}
@@ -1582,11 +1569,11 @@ public class Utilities {
 		if (plugin.playerdata.containsKey(mute)) {
 			check = plugin.playerdata.get(mute).mute;
 		} else {
-			
+
 			check = sql
 					.existanceQuery("SELECT * FROM BungeePlayers WHERE playername = '"
 							+ mute + "' AND muted = 1");
-			
+
 		}
 		return check;
 	}
@@ -1612,7 +1599,7 @@ public class Utilities {
 		} else {
 			player = pp.getName();
 		}
-		
+
 		if (player.equals(nickname)) {
 			sql.standardQuery("UPDATE BungeePlayers SET nickname = NULL WHERE playername = '"
 					+ player + "'");
@@ -1620,7 +1607,7 @@ public class Utilities {
 			sql.standardQuery("UPDATE BungeePlayers SET nickname = '"
 					+ nickname + "' WHERE playername = '" + player + "'");
 		}
-		
+
 		String send = plugin.getMessage("NICKNAMED_PLAYER");
 		send = send.replace("{player}", player);
 		send = send.replace("{name}", nickname);
@@ -1656,11 +1643,11 @@ public class Utilities {
 
 	private boolean nicknameExists(String sender, String nickname) {
 		boolean check;
-		
+
 		check = sql
 				.existanceQuery("SELECT nickname FROM BungeePlayers WHERE nickname = '"
 						+ nickname + "'");
-		
+
 		return check;
 	}
 
@@ -1754,10 +1741,10 @@ public class Utilities {
 
 	public void setPlayersChannel(String sender, String channel)
 			throws SQLException {
-		
+
 		sql.standardQuery("UPDATE BungeePlayers SET channel = '" + channel
 				+ "' WHERE playername='" + sender + "'");
-		
+
 		String message = plugin.getMessage("CHANNEL_TOGGLE");
 		sendMessage(sender, message.replace("{channel}", channel));
 		if (plugin.playerdata.containsKey(sender)) {
@@ -1799,10 +1786,10 @@ public class Utilities {
 			mute = pp.getName();
 		}
 		if (isMuted(mute)) {
-			
+
 			sql.standardQuery("UPDATE BungeePlayers SET muted= 0 WHERE playername = '"
 					+ mute + "'");
-			
+
 			if (pp != null) {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
 				DataOutputStream out = new DataOutputStream(b);
@@ -1852,7 +1839,7 @@ public class Utilities {
 			System.out.println(format);
 		}
 		// filter regex
-		if(plugin.globalChatRegex==null){
+		if (plugin.globalChatRegex == null) {
 			this.createChatConfig();
 		}
 		format = format.replaceAll(plugin.globalChatRegex, "");
@@ -1923,12 +1910,12 @@ public class Utilities {
 	}
 
 	public void getPlayersInfo(String player) throws SQLException {
-		if(player==null){
+		if (player == null) {
 			return;
 		}
 		String server = getPlayersServer(player).getInfo().getName();
-		if(server == null){
-			
+		if (server == null) {
+
 			return;
 		}
 		String channel = null;
@@ -1943,7 +1930,7 @@ public class Utilities {
 			nickname = pi.nickname;
 			cleanchatting = pi.cleanchatting;
 		} else {
-			
+
 			ResultSet res = sql
 					.sqlQuery("SELECT * FROM BungeePlayers WHERE playername ='"
 							+ player + "'");
@@ -1973,7 +1960,7 @@ public class Utilities {
 			if (spying) {
 				plugin.chatspies.add(player);
 			}
-			
+
 			plugin.playerdata.put(player, new PlayerInfo(player, channel, mute,
 					nickname, cleanchatting));
 		}
@@ -2034,7 +2021,7 @@ public class Utilities {
 			}
 		} else {
 			ArrayList<String> list = new ArrayList<String>();
-			
+
 			ResultSet res = sql
 					.sqlQuery("SELECT ignoring FROM BungeeChatIgnores WHERE player = '"
 							+ player + "'");
@@ -2043,7 +2030,7 @@ public class Utilities {
 				list.add(res.getString("ignoring"));
 			}
 			res.close();
-			
+
 			plugin.playersIgnores.put(player, list);
 		}
 
@@ -2104,10 +2091,10 @@ public class Utilities {
 			sendMessage(sender, message);
 			return;
 		}
-		
+
 		sql.standardQuery("DELETE FROM BungeeChatIgnores WHERE player='"
 				+ sender + "' AND ignoring='" + player + "'");
-		
+
 		plugin.playersIgnores.get(sender).remove(player);
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
@@ -2146,10 +2133,10 @@ public class Utilities {
 			sendMessage(sender, message);
 			return;
 		}
-		
+
 		sql.standardQuery("INSERT INTO BungeeChatIgnores VALUES('" + sender
 				+ "' , '" + player + "')");
-		
+
 		plugin.playersIgnores.get(sender).add(player);
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
@@ -2174,17 +2161,17 @@ public class Utilities {
 	public void chatSpy(String sender) throws SQLException {
 		if (plugin.chatspies.contains(sender)) {
 			plugin.chatspies.remove(sender);
-			
+
 			sql.standardQuery("UPDATE BungeePlayers SET chat_spying = 0 WHERE playername ='"
 					+ sender + "'");
-			
+
 			sendMessage(sender, "CHATSPY_DISABLED");
 		} else {
 			plugin.chatspies.add(sender);
-			
+
 			sql.standardQuery("UPDATE BungeePlayers SET chat_spying = 1 WHERE playername ='"
 					+ sender + "'");
-			
+
 			sendMessage(sender, "CHATSPY_ENABLED");
 		}
 
@@ -2193,18 +2180,18 @@ public class Utilities {
 	public void cleanPlayersChat(String sender) throws SQLException {
 		boolean c = plugin.playerdata.get(sender).cleanchatting;
 		if (c) {
-			
+
 			sql.standardQuery("UPDATE BungeePlayers SET clean_chat = 0 WHERE playername ='"
 					+ sender + "'");
-			
+
 			sendMessage(sender, "CLEANCHAT_DISABLED");
 			plugin.playerdata.get(sender).cleanchatting = false;
 			plugin.cleanChatters.remove(getPlayer(sender));
 		} else {
-			
+
 			sql.standardQuery("UPDATE BungeePlayers SET clean_chat = 1 WHERE playername ='"
 					+ sender + "'");
-			
+
 			sendMessage(sender, "CLEANCHAT_ENABLED");
 			plugin.playerdata.get(sender).cleanchatting = true;
 			plugin.cleanChatters.add(getPlayer(sender));
@@ -2271,7 +2258,7 @@ public class Utilities {
 	}
 
 	public void whoIsPlayer(String sender, String player) throws SQLException {
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT * FROM `BungeePlayers` WHERE nickname LIKE '%"
 						+ player + "%'");
@@ -2284,7 +2271,7 @@ public class Utilities {
 			sendMessage(sender, start);
 		}
 		res.close();
-		
+
 	}
 
 	public void createHomeConfig() {
@@ -2381,7 +2368,7 @@ public class Utilities {
 		double z = Double.parseDouble(locs[3]);
 		float yaw = Float.parseFloat(locs[4]);
 		float pitch = Float.parseFloat(locs[5]);
-		
+
 		if (homeExists(player, server, home)) {
 			sql.standardQuery("UPDATE BungeeHomes SET world ='" + world
 					+ "', x=" + x + ", y=" + y + ", z=" + z + ", yaw =" + yaw
@@ -2410,7 +2397,7 @@ public class Utilities {
 					+ pitch + ")");// insert
 			sendMessage(player, "HOME_SET");
 		}
-		
+
 		if (home.equalsIgnoreCase("home")) {
 			sendPlayersHome(player, location, server);
 		}
@@ -2437,9 +2424,9 @@ public class Utilities {
 	public void sendPlayersHome(String player, String server)
 			throws SQLException {
 		ServerInfo s = getServer(server);
-		
+
 		if (!homeExists(player, server, "home")) {
-			
+
 			return;
 		}
 		String loc = "";
@@ -2456,7 +2443,7 @@ public class Utilities {
 			loc += res.getFloat("pitch");
 		}
 		res.close();
-		
+
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
 		try {
@@ -2482,7 +2469,7 @@ public class Utilities {
 
 	public int playersHomeCount(String player, String server)
 			throws SQLException {
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT * FROM BungeeHomes WHERE player  = '"
 						+ player + "' AND server='" + server + "'");
@@ -2491,24 +2478,24 @@ public class Utilities {
 			count++;
 		}
 		res.close();
-		
+
 		return count;
 	}
 
 	public void deletePlayersHome(String player, String home, String server)
 			throws SQLException {
-		
+
 		if (!homeExists(player, server, home)) {
 			if (getServer(server) == null) {
 				sendMessage(player, "HOME_DOES_NOT_EXIST");
-				
+
 				return;
 			} else {
 				server = home;
 				home = "home";
 				if (!homeExists(player, server, home)) {
 					sendMessage(player, "HOME_DOES_NOT_EXIST");
-					
+
 					return;
 				}
 			}
@@ -2516,12 +2503,12 @@ public class Utilities {
 		sql.standardQuery("DELETE FROM BungeeHomes WHERE player ='" + player
 				+ "' AND home_name ='" + home + "' AND server ='" + server
 				+ "'");
-		
+
 		sendMessage(player, "HOME_DELETED");
 	}
 
 	public void listPlayersHomes(String player) throws SQLException {
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT * FROM BungeeHomes WHERE player = '" + player
 						+ "'");
@@ -2535,7 +2522,7 @@ public class Utilities {
 			homesList.get(servername).add(homename);
 		}
 		res.close();
-		
+
 		sendMessage(player, ChatColor.AQUA + "Your homes:");
 		for (String data : homesList.keySet()) {
 			ArrayList<String> homes = homesList.get(data);
@@ -2550,18 +2537,18 @@ public class Utilities {
 
 	public void sendPlayerToHome(String player, String homename, String server)
 			throws SQLException {
-		
+
 		if (!homeExists(player, server, homename)) {
 			if (getServer(server) == null) {
 				sendMessage(player, "HOME_DOES_NOT_EXIST");
-				
+
 				return;
 			} else {
 				server = homename;
 				homename = "home";
 				if (!homeExists(player, server, homename)) {
 					sendMessage(player, "HOME_DOES_NOT_EXIST");
-					
+
 					return;
 				}
 			}
@@ -2582,7 +2569,7 @@ public class Utilities {
 			loc += res.getFloat("pitch");
 		}
 		res.close();
-		
+
 		if (!p.getServer().getInfo().getName().equalsIgnoreCase(s.getName())) {
 			p.connect(s);
 		}
@@ -2615,9 +2602,9 @@ public class Utilities {
 		double z = Double.parseDouble(locs[3]);
 		float yaw = Float.parseFloat(locs[4]);
 		float pitch = Float.parseFloat(locs[5]);
-		
+
 		if (homeExists(player, server, home)) {
-			
+
 			return;
 		}
 		if (homeExists(player, server, home)) {
@@ -2646,7 +2633,7 @@ public class Utilities {
 					+ ", "
 					+ pitch + ")");// insert
 		}
-		
+
 	}
 
 	public void reloadHomes(String player) {
@@ -2690,7 +2677,7 @@ public class Utilities {
 	public void getSimilarIps(String player, String ip) throws SQLException {
 		String players = "";
 		boolean banonly = false;
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT playername from BungeePlayers WHERE ipaddress = '"
 						+ ip + "'");
@@ -2707,7 +2694,7 @@ public class Utilities {
 			}
 		}
 		res.close();
-		
+
 		if (!players.equals("")) {
 			if (!plugin.showAltAccountsIfBanned || banonly) {
 				players = players.substring(0, players.length() - 1);
@@ -2755,28 +2742,28 @@ public class Utilities {
 	}
 
 	public boolean IPExists(String ip) {
-		
+
 		boolean check = false;
 		check = sql
 				.existanceQuery("SELECT * FROM BungeePlayers WHERE ipaddress = '"
 						+ ip + "'");
-		
+
 		return check;
 	}
 
 	public boolean ipIsBanned(String ip) {
-		
+
 		boolean check = false;
 		check = sql
 				.existanceQuery("SELECT * FROM `BungeeBans` b INNER JOIN BungeePlayers p WHERE b.player = p.playername AND ipaddress ='"
 						+ ip + "' AND type ='ipban'");
-		
+
 		return check;
 	}
 
 	public ArrayList<String> getIpsPlayers(String ip) throws SQLException {
 		ArrayList<String> players = new ArrayList<String>();
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT playername from BungeePlayers WHERE ipaddress ='"
 						+ ip + "'");
@@ -2784,7 +2771,7 @@ public class Utilities {
 			players.add(res.getString("playername"));
 		}
 		res.close();
-		
+
 		return players;
 	}
 
@@ -2812,11 +2799,11 @@ public class Utilities {
 		ArrayList<String> players = getIpsPlayers(ip);
 		for (String p2 : players) {
 			if (this.playerIsBanned(p2)) {
-				
+
 				sql.standardQuery("UPDATE BungeeBans SET type='ipban' WHERE player = '"
 						+ p2 + "'");
 			} else {
-				
+
 				ProxiedPlayer pp = plugin.proxy.getPlayer(p2);
 				if (pp != null) {
 					if (msg.equalsIgnoreCase("")) {
@@ -2841,7 +2828,7 @@ public class Utilities {
 						+ "','ipban',CURRENT_DATE(),NULL)");
 			}
 		}
-		
+
 	}
 
 	public void unIpBanPlayer(String sender, String player, String msg)
@@ -2859,10 +2846,10 @@ public class Utilities {
 			sendMessage(sender, "PLAYER_NOT_BANNED");
 			return;
 		} else {
-			
+
 			sql.standardQuery("DELETE FROM BungeeBans B INNER JOIN BungeePlayers P ON B.player = P.playername WHERE ipadress ='"
 					+ ip + "'");
-			
+
 			this.sendBroadcast(plugin.getMessage("PLAYER_UNBANNED").replace(
 					"{player}", ip));
 		}
@@ -2870,7 +2857,7 @@ public class Utilities {
 
 	public void sendWorldSpawns(ServerInfo serverInfo) throws SQLException {
 		String loc = "";
-		
+
 		ResultSet res = sql
 				.sqlQuery("SELECT * FROM BungeeSpawns WHERE spawnname LIKE '"
 						+ serverInfo.getName() + "%' AND server = '"
@@ -2900,7 +2887,6 @@ public class Utilities {
 			loc = "";
 		}
 		res.close();
-		
 
 	}
 
@@ -2951,14 +2937,77 @@ public class Utilities {
 	}
 
 	public void toggleTeleports(String player) {
-		if(plugin.denyTeleport.contains(player)){
+		if (plugin.denyTeleport.contains(player)) {
 			plugin.denyTeleport.remove(player);
-			sendMessage(player,"TELEPORT_TOGGLE_OFF");
-		}else{
+			sendMessage(player, "TELEPORT_TOGGLE_OFF");
+		} else {
 			plugin.denyTeleport.add(player);
-			sendMessage(player,"TELEPORT_TOGGLE_ON");
+			sendMessage(player, "TELEPORT_TOGGLE_ON");
 		}
-		
+
+	}
+
+	public void setPlayerAFK(String sender, boolean displayPermissions) {
+		ProxiedPlayer pp = getPlayer(sender);
+		String nick = null;
+		if (pp == null) {
+			return;
+		}
+		if (!plugin.afkPlayers.contains(sender)) {
+			this.sendBroadcast(plugin.getMessage("PLAYER_AFK").replace("{player}", pp.getDisplayName()));
+			if (displayPermissions) {
+				nick = plugin.getMessage("AFK_DISPLAY")
+						+ pp.getDisplayName();
+				if(nick.length()>16){
+					pp.setDisplayName(nick.substring(0,16));
+				}else{
+					pp.setDisplayName(nick);
+				}
+				plugin.afkPlayers.add(pp.getName());
+			}
+			 ByteArrayOutputStream b = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(b);
+				try {
+					out.writeUTF("SetPlayerAFK");
+					out.writeUTF(sender);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				plugin.getProxy()
+						.getScheduler()
+						.runAsync(
+								plugin,
+								new SendPluginMessage("BungeeSuiteChat",
+										getPlayersServer(sender).getInfo(), b));
+
+		} else {
+			if(plugin.playerdata.containsKey(sender)){
+				 nick = plugin.playerdata.get(sender).nickname;
+				 if(nick==null){
+					 nick = pp.getName();
+				 }
+			}
+			pp.setDisplayName(nick);
+			this.sendBroadcast(plugin.getMessage("PLAYER_NOT_AFK").replace("{player}", colorize(pp.getDisplayName())));
+			plugin.afkPlayers.remove(pp.getName());
+		}
+		 ByteArrayOutputStream b = new ByteArrayOutputStream();
+			DataOutputStream out = new DataOutputStream(b);
+			try {
+				out.writeUTF("NicknamedPlayer");
+				out.writeUTF(sender);
+				out.writeUTF(nick);
+				out.writeBoolean(plugin.prefaceNicks);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			plugin.getProxy()
+					.getScheduler()
+					.runAsync(
+							plugin,
+							new SendPluginMessage("BungeeSuiteChat",
+									getPlayersServer(sender).getInfo(), b));
+
 	}
 
 }
