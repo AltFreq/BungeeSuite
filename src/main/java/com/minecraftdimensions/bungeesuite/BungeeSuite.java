@@ -5,21 +5,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.minecraftdimensions.bungeesuite.configs.MainConfig;
+import com.minecraftdimensions.bungeesuite.listeners.PlayerListener;
 import com.minecraftdimensions.bungeesuite.managers.AnnouncementManager;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.DatabaseTableManager;
-import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PrefixSuffixManager;
 import com.minecraftdimensions.bungeesuite.managers.SQLManager;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class BungeeSuite extends Plugin {
 	public static BungeeSuite instance;
+	public static ProxyServer proxy;
 
 	public void onEnable() {
 		instance = this;
+		proxy = ProxyServer.getInstance();
 		initialiseManagers();
 		registerListeners();
 	}
@@ -37,7 +40,7 @@ public class BungeeSuite extends Plugin {
 	}
 	
 	void registerListeners() {
-		
+		proxy.getPluginManager().registerListener(this, new PlayerListener());
 	}
 	
 	private void setupSQL() {

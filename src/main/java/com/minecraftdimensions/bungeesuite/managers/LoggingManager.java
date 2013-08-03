@@ -14,6 +14,7 @@ public class LoggingManager {
 	public static void log(String message) {
 		if(ChatConfig.stripChat){
 			message = ChatColor.stripColor(message);
+			message=message.replaceAll("&[0-9 a-f k-o r]", "");
 		}
 		log.info(message);
 	}

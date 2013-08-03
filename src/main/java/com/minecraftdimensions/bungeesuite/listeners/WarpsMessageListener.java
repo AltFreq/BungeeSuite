@@ -1,4 +1,4 @@
-package com.minecraftdimensions.bungeesuite.listener;
+package com.minecraftdimensions.bungeesuite.listeners;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -11,7 +11,7 @@ import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class ChatMessageListener implements Listener {
+public class WarpsMessageListener implements Listener {
 	
 	@EventHandler
 	public void receivePluginMessage(PluginMessageEvent event)

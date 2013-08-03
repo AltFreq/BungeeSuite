@@ -1,4 +1,4 @@
-package com.minecraftdimensions.bungeesuite.listener;
+package com.minecraftdimensions.bungeesuite.listeners;
 import java.sql.SQLException;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
