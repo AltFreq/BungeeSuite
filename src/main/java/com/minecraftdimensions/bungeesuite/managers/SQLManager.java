@@ -30,7 +30,6 @@ public class SQLManager{
 						+ ":" + MainConfig.port + "/" + MainConfig.database, MainConfig.username, MainConfig.password);
 			} catch (SQLException | ClassNotFoundException ex) {
 				System.out.println(ChatColor.DARK_RED+"SQL is unable to conect");
-				ProxyServer.getInstance().stop();
 				return false;
 			}
 			connections.add(new ConnectionHandler(connection));

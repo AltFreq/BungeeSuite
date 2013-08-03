@@ -7,7 +7,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
-import com.minecraftdimensions.bungeesuite.managers.ChannelManager;
+import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 
 
@@ -136,13 +136,13 @@ public class BSPlayer {
 		return this.channels.contains(channel);	
 	}
 	public void joinChannel(String channel){
-		this.channels.add(ChannelManager.getChannel(channel));
+		this.channels.add(ChatManager.getChannel(channel));
 	}
 	public void leaveChannel(String channel){
-		this.channels.remove(ChannelManager.getChannel(channel));
+		this.channels.remove(ChatManager.getChannel(channel));
 	}
 	public boolean isInChannel(String channel){
-		return this.channels.contains(this.channels.add(ChannelManager.getChannel(channel)));	
+		return this.channels.contains(this.channels.add(ChatManager.getChannel(channel)));	
 	}
 	public boolean homeExists(String home){
 		return this.homes.containsKey(home);

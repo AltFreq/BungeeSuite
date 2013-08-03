@@ -10,7 +10,7 @@ import com.minecraftdimensions.bungeesuite.configs.Channels;
 import com.minecraftdimensions.bungeesuite.objects.Channel;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
 
-public class ChannelManager {
+public class ChatManager {
 	public static ArrayList<Channel> channels = new ArrayList<Channel>();
 	
 	public static void loadChannels(){
