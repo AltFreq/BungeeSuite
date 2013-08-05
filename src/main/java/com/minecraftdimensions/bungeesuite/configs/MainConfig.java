@@ -17,7 +17,5 @@ public class MainConfig {
 	public static String password = config.getString("Database.Password", "password");
 	public static int threads = config.getInt("Database.Threads", 5);
 	public static boolean motd = config.getBoolean("MOTD.Enabled", true);
-	public static String motdMessage = config.getString("MOTD.message", "&6"
-			+ "Welcome to the server, {player}" + "&6" + "!");
 	public static boolean newPlayerBroadcast = config.getBoolean("NewPlayerBroadcast", true);
 }

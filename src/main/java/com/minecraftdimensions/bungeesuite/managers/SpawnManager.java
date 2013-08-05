@@ -3,10 +3,10 @@ package com.minecraftdimensions.bungeesuite.managers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Location;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
 import com.minecraftdimensions.bungeesuite.objects.Spawn;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
 public class SpawnManager {
 		static HashMap<String,Spawn> spawns;
@@ -17,6 +17,7 @@ public class SpawnManager {
 		while (res.next()){
 			createSpawn(res.getString("spawnname"), new Location(res.getString("server"), res.getString("world"), res.getDouble("x"), res.getDouble("y"), res.getDouble("z"), res.getFloat("yaw"), res.getFloat("pitch")));
 		}
+		res.close();
 	}
 	
 	public static void createSpawn(String name, Location loc){

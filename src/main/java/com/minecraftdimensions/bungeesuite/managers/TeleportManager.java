@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.api.ProxyServer;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
-import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Location;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
 public class TeleportManager {
 	public static HashMap<BSPlayer, BSPlayer> pendingTeleportsTPA; // Player ----teleported---> player
@@ -46,11 +46,11 @@ public class TeleportManager {
 					@Override
 					public void run() {
 						if (pendingTeleportsTPA.containsKey(bt)) {
-							if(bp.isOnline()){
+							if(bp!=null){
 							bp.sendMessage(Messages.TPA_REQUEST_TIMED_OUT.replace("{player}", bt.getDisplayingName()));
 							}
 							pendingTeleportsTPA.remove(bt);
-							if(bt.isOnline()){
+							if(bt!=null){
 								bt.sendMessage(Messages.TP_REQUEST_OTHER_TIMED_OUT.replace("{player}", bp.getDisplayingName()));
 							}
 						}
@@ -84,11 +84,11 @@ public class TeleportManager {
 					@Override
 					public void run() {
 						if (pendingTeleportsTPAHere.containsKey(bt)) {
-							if(bp.isOnline()){
+							if(bp!=null){
 							bp.sendMessage(Messages.TPAHERE_REQUEST_TIMED_OUT.replace("{player}", bt.getDisplayingName()));
 							}
 							pendingTeleportsTPAHere.remove(bt);
-							if(bt.isOnline()){
+							if(bt!=null){
 								bt.sendMessage(Messages.TP_REQUEST_OTHER_TIMED_OUT.replace("{player}", bp.getDisplayingName()));
 							}
 						}

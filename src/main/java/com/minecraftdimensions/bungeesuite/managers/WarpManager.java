@@ -3,10 +3,10 @@ package com.minecraftdimensions.bungeesuite.managers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Location;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
 import com.minecraftdimensions.bungeesuite.objects.Warp;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
 public class WarpManager {
 		static HashMap<String,Warp> warps;
@@ -17,6 +17,7 @@ public class WarpManager {
 		while (res.next()){
 			createWarp(res.getString("warpname"), new Location(res.getString("server"), res.getString("world"), res.getDouble("x"), res.getDouble("y"), res.getDouble("z"), res.getFloat("yaw"), res.getFloat("pitch")),res.getBoolean("private"));
 		}
+		res.close();
 	}
 	
 	public static void createWarp(String name, Location loc, boolean hidden){

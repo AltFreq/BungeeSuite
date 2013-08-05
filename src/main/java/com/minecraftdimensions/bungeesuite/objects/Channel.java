@@ -10,22 +10,25 @@ public class Channel {
 	private String format;
 	private String owner;
 	private boolean muted;
+	private boolean isDefault;
 	private ArrayList<BSPlayer> members;
 	
-	public Channel(String name, String format, String owner, boolean muted){
+	public Channel(String name, String format, String owner, boolean muted, boolean isDefault){
 		this.name = name;
 		this.format = format;
 		this.owner = owner;
 		this.muted = muted;
+		this.isDefault=isDefault;
 		members = new ArrayList<BSPlayer>();
 	}
 	
 	public Channel(String serialised){
-		String data[] = serialised.split("~|~");
+		String data[] = serialised.split("~");
 		name = data[0];
 		format = data[1];
 		owner = data[2];
 		muted = Boolean.parseBoolean(data[3]);
+		isDefault = Boolean.parseBoolean(data[4]);
 		members = new ArrayList<BSPlayer>();
 	}
 	
@@ -60,6 +63,9 @@ public class Channel {
 	public boolean isMember(BSPlayer player){
 		return members.contains(player);
 	}
+	public boolean isDefault(){
+		return isDefault;
+	}
 	public boolean hasMemberLike(String player){
 		for(BSPlayer bsplayer: members){
 			if(bsplayer.getName().contains(player)){
@@ -85,7 +91,9 @@ public class Channel {
 		return null;
 	}
 	public void addMember(String player){
-		members.add(PlayerManager.getPlayer(player));
+		BSPlayer p = PlayerManager.getPlayer(player);
+		members.add(p);
+		p.joinChannel(this);
 	}
 	public void removeMember(String player){
 		members.remove(PlayerManager.getPlayer(player));
@@ -95,7 +103,13 @@ public class Channel {
 	}
 	
 	public String serialise(){
-		return name+"~|~"+format+"~|~"+owner+"~|~"+muted;
+		return name+"~"+format+"~"+owner+"~"+muted+"~"+isDefault;
+	}
+
+	public void addMember(BSPlayer p) {
+		this.members.add(p);
+		p.joinChannel(this);
+		
 	}
 
 }

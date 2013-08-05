@@ -4,9 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import com.minecraftdimensions.bungeesuite.managers.ChatManager;
+import com.minecraftdimensions.bungeesuite.managers.IgnoresManager;
+import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
+import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
+import com.minecraftdimensions.bungeesuite.managers.PrefixSuffixManager;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
-import com.minecraftdimensions.bungeesuite.BungeeSuite;
-
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -19,11 +25,86 @@ public class ChatMessageListener implements Listener {
 		if (!event.getTag().equalsIgnoreCase("BSChat")) {
 			return;
 		}
-
+		Server s = (Server)event.getSender();
 		DataInputStream in = new DataInputStream(new ByteArrayInputStream(
 				event.getData()));
 		String task = in.readUTF();
-		
+		if(task.equals("LogChat")){
+			String message = in.readUTF();
+			LoggingManager.log(message);
+			PlayerManager.sendMessageToSpies((Server)event.getSender(),message);
+			
+			return;
+		}
+		if(task.equals("GetServerChannels")){
+			ChatManager.sendServerData(s);
+			ChatManager.clearServersChannels(s);
+			ChatManager.sendDefaultChannelsToServer(s);
+			for(ProxiedPlayer p: s.getInfo().getPlayers()){
+				ChatManager.loadPlayersChannels(p, s);
+			}
+			PrefixSuffixManager.sendPrefixAndSuffixToServer(s);
+			return;
+		}
+		if(task.equals("GetPlayer")){
+			ChatManager.sendPlayer(in.readUTF(), s);
+			return;
+		}
+		if(task.equals("AFKPlayer")){
+			ChatManager.setPlayerAFK(in.readUTF(), in.readBoolean(),in.readBoolean(),in.readBoolean());
+			return;
+		}
+		if(task.equals("ReplyToPlayer")){
+			ChatManager.replyToPlayer(in.readUTF(),in.readUTF());
+			return;
+		}
+		if(task.equals("PrivateMessage")){
+			BSPlayer p = PlayerManager.getPlayer(in.readUTF());
+			PlayerManager.sendPrivateMessageToPlayer(p, in.readUTF(), in.readUTF());
+			return;
+		}
+		if(task.equals("SetChatSpy")){
+			ChatManager.setChatSpy(in.readUTF());
+			return;
+		}
+		if(task.equals("IgnorePlayer")){
+			BSPlayer p = PlayerManager.getPlayer(in.readUTF());
+			IgnoresManager.addIgnore(p, in.readUTF());
+			return;
+		}
+		if(task.equals("UnIgnorePlayer")){
+			BSPlayer p = PlayerManager.getPlayer(in.readUTF());
+			IgnoresManager.removeIgnore(p, in.readUTF());
+			return;
+		}
+		if(task.equals("MuteAll")){
+			ChatManager.muteAll(in.readUTF());
+			return;
+		}
+		if(task.equals("MutePlayer")){
+			ChatManager.MutePlayer(in.readUTF(),in.readUTF(), in.readBoolean());
+			return;
+		}
+		if(task.equals("NickNamePlayer")){
+			ChatManager.nickNamePlayer(in.readUTF(),in.readUTF(),in.readUTF(),in.readBoolean());
+			return;
+		}
+		if(task.equals("TempMutePlayer")){
+			ChatManager.tempMutePlayer(in.readUTF(),in.readUTF(),in.readInt());
+			return;
+		}
+		if(task.equals("ReloadChat")){
+			ChatManager.reloadChat(in.readUTF());
+			return;
+		}
+		if(task.equals("TogglePlayersChannel")){
+			ChatManager.togglePlayersChannel(in.readUTF(),in.readBoolean());
+			return;
+		}
+		if(task.equals("TogglePlayerToChannel")){
+			ChatManager.togglePlayerToChannel(in.readUTF(),in.readUTF(),in.readBoolean());
+			return;
+		}
 	}
 
 }

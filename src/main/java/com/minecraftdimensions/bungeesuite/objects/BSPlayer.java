@@ -5,10 +5,13 @@ import java.util.HashMap;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 
-import com.minecraftdimensions.bungeesuite.BungeeSuite;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
-import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
+import com.minecraftdimensions.bungeesuite.objects.Channel;
+import com.minecraftdimensions.bungeesuite.objects.Home;
+import com.minecraftdimensions.bungeesuite.objects.Location;
+import com.minecraftdimensions.bungeesuite.objects.Messages;
 
 
 public class BSPlayer {
@@ -16,10 +19,10 @@ public class BSPlayer {
 	private String channel;
 	private boolean muted;
 	private String nickname = null;
-	private boolean displayingNickname;
+	private String storename;
 	private boolean chatspying;
-	private boolean cleanchatting;
 	private boolean dnd;
+	private boolean afk;
 	private boolean acceptingTeleports;
 	private ArrayList<String> ignores = new ArrayList<String>();
 	private ArrayList<Channel> channels = new ArrayList<Channel>();
@@ -27,35 +30,33 @@ public class BSPlayer {
 	private Location deathBackLocation;
 	private Location teleportBackLocation;
 	private boolean lastBack; //true = death false = teleport
-	private BSPlayer replyPlayer;
+	private String replyPlayer;
 	
-	public BSPlayer(String name, String nickname, String channel, boolean muted, boolean chatspying, boolean cleanchat, boolean dnd, boolean tps){
+	public BSPlayer(String name, String nickname, String channel, boolean muted, boolean chatspying, boolean dnd, boolean tps){
 		this.playername = name;
 		this.nickname = nickname;
 		this.channel = channel;
 		this.muted=muted;
 		this.chatspying = chatspying;
-		this.cleanchatting = cleanchat;
 		this.dnd = dnd;
 		this.acceptingTeleports = tps;
 	}
 	
 	public BSPlayer(String serialised){
-		String data[] =serialised.split("~|~");
+		String data[] =serialised.split("~");
 		playername = data[0];
 		channel = data[1];
 		muted = Boolean.parseBoolean(data[2]);
 		nickname = data[3];
-		displayingNickname = Boolean.parseBoolean(data[4]);
 		chatspying = Boolean.parseBoolean(data[5]);
-		cleanchatting = Boolean.parseBoolean(data[6]);
 		dnd = Boolean.parseBoolean(data[7]);
-		acceptingTeleports = Boolean.parseBoolean(data[8]);
-		lastBack =  Boolean.parseBoolean(data[9]);
+		afk = Boolean.parseBoolean(data[8]);
+		acceptingTeleports = Boolean.parseBoolean(data[9]);
+		lastBack =  Boolean.parseBoolean(data[10]);
 	}
 
 	public String serialise(){
-		return playername+"~|~"+channel+"~|~"+muted+"~|~"+nickname+"~|~"+displayingNickname+"~|~"+chatspying+"~|~"+cleanchatting+"~|~"+dnd+"~|~"+acceptingTeleports+"~|~"+lastBack;
+		return playername+"~"+channel+"~"+muted+"~"+nickname+"~"+chatspying+"~"+dnd+"~"+afk+"~"+acceptingTeleports+"~"+lastBack;
 	}
 	
 	public String getName(){
@@ -83,6 +84,7 @@ public class BSPlayer {
 	}
 	public void setMute(boolean mute){
 		this.muted = mute;
+		updatePlayer();
 	}
 	public boolean hasNickname(){
 		return nickname!=null;
@@ -98,12 +100,7 @@ public class BSPlayer {
 	}
 	public void setChatSpying(boolean spy){
 		this.chatspying= spy;
-	}
-	public boolean isCleanChatting(){
-		return cleanchatting;
-	}
-	public void setCleanChatting(boolean clean){
-		this.cleanchatting = clean;
+		updatePlayer();
 	}
 	public boolean isDND(){
 		return dnd;
@@ -171,17 +168,16 @@ public class BSPlayer {
 		return null;
 	}
 	
-	public void sendPlayerHome(String home){
-		
-	}
-	
-	public Channel getPlayersChannel(String channel){
+	public Channel getPlayersChannel(){
 		for(Channel chan:channels){
 			if(chan.getName().equals(channel)){
 				return chan;
 			}
 		}
 		return null;
+	}
+	public ArrayList<Channel> getPlayersChannels(){
+		return channels;
 	}
 	public Channel getPlayersSimilarChannel(String channel){
 		for(Channel chan:channels){
@@ -224,6 +220,10 @@ public class BSPlayer {
 		}
 	}
 	
+	public ServerData getServerData(){
+		return ChatManager.getServerData(getServer());
+	}
+	
 	public boolean hasTeleportBackLocation(){
 		return teleportBackLocation!=null;
 	}
@@ -235,29 +235,59 @@ public class BSPlayer {
 		return teleportBackLocation;
 	}
 	
-	public boolean isOnline(){
-		return PlayerManager.isPlayerOnline(getName());
-	}
-	
 	public boolean hasReply(){
 		return replyPlayer!=null;
 	}
 	
-	public BSPlayer getReplyPlayer(){
+	public String getReplyPlayer(){
 		return replyPlayer;
 	}
+	public boolean isAFK(){
+		return afk;
+	}
+	public void setAFK(boolean afk){
+		this.afk = afk;
+	}
 	
-	public void replyToPlayer(String message){
-		sendMessageToPlayer(getReplyPlayer(), message);
+	public void updateDisplayName() {
+		String name = getDisplayingName();
+		if(name.length()>16){
+		name =getDisplayingName().substring(0,16);	
+		}
+		getProxiedPlayer().setDisplayName(name);
 	}
 	
 	public String getDisplayingName(){
-		if(displayingNickname && getNickname()!=null){
+		if(getNickname()!=null){
 			return getNickname();
 		}else{
 			return getName();
 		}
 	}
+	public void setDisplayingName(String name){
+		storename= getDisplayingName();
+		if(getNickname()!=null){
+			nickname = name;
+		}else{
+			playername =name;
+		}
+		updatePlayer();
+		updateDisplayName();
+	}
+	
+	public void revertName(){
+		if(getNickname()!=null){
+			nickname = storename;
+		}else{
+			playername =storename;
+		}
+		storename = null;
+	}
+
+	public void updatePlayer() {
+		ChatManager.sendPlayer(playername, getServer());
+	}
+
 	public void sendMessageToPlayer(BSPlayer target, String message){
 		target.sendMessage(Messages.PRIVATE_MESSAGE_RECEIVE.replace("{player}", getDisplayingName()).replace("{message}", message));
 	}
@@ -278,5 +308,25 @@ public class BSPlayer {
 
 	public void sendToServer(String targetName) {
 		getProxiedPlayer().connect(ProxyServer.getInstance().getServerInfo(targetName));
+	}
+
+	public Server getServer() {
+		return getProxiedPlayer().getServer();
+	}
+
+	public boolean isIgnoring(String ignore) {
+		return ignores.contains(ignore);
+	}
+
+	public ArrayList<String> getIgnores() {
+		return ignores;
+	}
+
+	public boolean hasIgnores() {
+		return !ignores.isEmpty();
+	}
+
+	public void setReplyPlayer(String name) {
+		replyPlayer = name;
 	}
 }

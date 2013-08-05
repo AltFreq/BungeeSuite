@@ -7,9 +7,9 @@ import java.util.HashMap;
 
 import net.md_5.bungee.api.ChatColor;
 
-import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Home;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
 public class HomesManager {
 	public static ArrayList<String> homeGroupsList = new ArrayList<String>();
@@ -86,6 +86,7 @@ public class HomesManager {
 			h.setPitch(res.getFloat("pitch"));
 			addHome(player, h);
 		}
+		res.close();
 	}
 	
 	public static void sendPlayerToHome(String player,String home){

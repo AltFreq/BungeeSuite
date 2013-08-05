@@ -113,6 +113,7 @@ public class BansManager {
 		while (res.next()){
 			b = new Ban(res.getString("player"), res.getString("bannedBy"), res.getString("reason"), res.getString("type"), res.getDate("banned_on"), res.getDate("banned_until"));
 		}
+		res.close();
 		return b;
 	}
 

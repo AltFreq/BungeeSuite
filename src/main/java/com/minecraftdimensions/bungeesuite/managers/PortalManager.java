@@ -3,11 +3,11 @@
 	import java.sql.ResultSet;
 	import java.sql.SQLException;
 	import java.util.HashMap;
-	import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 	import com.minecraftdimensions.bungeesuite.objects.Location;
 	import com.minecraftdimensions.bungeesuite.objects.Messages;
 import com.minecraftdimensions.bungeesuite.objects.Portal;
 import com.minecraftdimensions.bungeesuite.objects.Region;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
 	public class PortalManager {
 			static HashMap<String,Portal> portals;
@@ -26,6 +26,7 @@ import com.minecraftdimensions.bungeesuite.objects.Region;
 				String world = res.getString("world");
 				createPortal(res.getString("portalname"), server,res.getString("filltype"),target,dest,new Region(new Location(server,world,res.getDouble("minx"),res.getDouble("miny"), res.getDouble("minz")), new Location(server,world,res.getDouble("xmax"),res.getDouble("ymax"),res.getDouble("zmax"))));
 			}
+			res.close();
 		}
 		
 		public static void createPortal(String name, String server, String fillType, boolean target, String targetName, Region region){

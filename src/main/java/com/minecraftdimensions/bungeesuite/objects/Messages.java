@@ -175,7 +175,7 @@ public class Messages {
 	public static String CHECK_PLAYER_BAN = colorize(m.getString("CHECK_PLAYER_BAN", "&c"
 					+ "{name} &4was banned for reason: &c{message} &4time left for ban &c{time} !"));
 	// chat
-	public static String NEW_PLAYER_BROADCAST = m.getString("NEW_PLAYER_BROADCAST","&d Welcome {player} the newest member of the server!");
+	public static String NEW_PLAYER_BROADCAST = colorize(m.getString("NEW_PLAYER_BROADCAST","&d Welcome {player} the newest member of the server!"));
 	public static String CHANNEL_DEFAULT_GLOBAL = m.getString("CHANNEL_DEFAULT_GLOBAL",
 							"&c[{channel}]&e[{server}]{prefix}&f{player}&f{suffix}&f: &f{message}");
 	public static String CHANNEL_DEFAULT_SERVER = m.getString(
@@ -201,10 +201,10 @@ public class Messages {
 	public static String PRIVATE_MESSAGE_SPY = colorize(m.getString("PRIVATE_MESSAGE_SPY", "&7" + "["
 					+ "&b" + "{sender}" + "&7" + "->" + "&6" + "{player}"
 					+ "&7" + "] {message}"));
-	public static String MUTE_ALL_ENABLED = colorize(m.getString("MUTE_ALL_ENABLED", "&2"
-					+ "Server mute enabled"));
-	public static String MUTE_ALL_DISABLED = colorize(m.getString("MUTE_ALL_DISABLED", "&c"
-					+ "Server mute disabled"));
+	public static String MUTE_ALL_ENABLED = colorize(m.getString("MUTE_ALL_ENABLED", "&c"
+					+ "All players have been muted by {sender}"));
+	public static String MUTE_ALL_DISABLED = colorize(m.getString("MUTE_ALL_DISABLED", "&2"
+					+ "All players have been unmuted by {sender}"));
 	public static String PLAYER_MUTED = colorize(m.getString("PLAYER_MUTED",
 			"&2" + "Player has been muted"));
 	public static String PLAYER_UNMUTED = colorize(m.getString("PLAYER_UNMUTED", "&c"
@@ -222,7 +222,7 @@ public class Messages {
 	public static String CHANNEL_NOT_A_MEMBER = colorize(m.getString("CHANNEL_NOT_A_MEMBER", "&c"
 					+ "You are not allowed to join this channel"));
 	public static String CHANNEL_TOGGLE = colorize(m.getString("CHANNEL_TOGGLE", "&2"
-					+ "You are now talking in the {channel} channel"));
+					+ "You are now talking in the channel {channel}"));
 	public static String FACTION_TOGGLE = colorize(m.getString("FACTION_TOGGLE", "&e"
 					+ "Faction only chat mode"));
 	public static String FACTION_ALLY_TOGGLE = colorize(m.getString("FACTION_ALLY_TOGGLE", "&e"
@@ -239,6 +239,10 @@ public class Messages {
 					+ "That nickname is too long!"));
 	public static String NICKNAME_TAKEN = colorize(m.getString("NICKNAME_TAKEN", "&c"
 					+ "That nickname is already taken by a player!"));
+	public static String NICKNAME_REMOVED_PLAYER = colorize(m.getString("NICKNAME_TAKEN", "&c"
+			+ "You have removed {player}'s nickname!"));
+	public static String NICKNAME_REMOVED = colorize(m.getString("NICKNAME_TAKEN", "&c"
+			+ "Your nickname has been removed!"));
 	public static String PLAYER_IGNORED = colorize(m.getString("PLAYER_IGNORED", "&2"
 					+ "{player} has been ignored"));
 	public static String PLAYER_UNIGNORED = colorize(m.getString("PLAYER_UNIGNORED", "&2"
@@ -258,7 +262,7 @@ public class Messages {
 	public static String CLEANCHAT_DISABLED = colorize(m.getString("CLEANCHAT_DISABLED", "&c"
 					+ "CleanChat disabled"));
 	public static String AFK_DISPLAY = colorize(m.getString("AFK_DISPLAY", "&5"
-					+ "[AFK]"));
+					+ "[AFK]&f"));
 	public static String PLAYER_AFK = colorize(m.getString("PLAYER_AFK", "&6"
 					+ "{player} &6is now afk"));
 	public static String PLAYER_NOT_AFK = colorize(m.getString("PLAYER_NOT_AFK", "&7"

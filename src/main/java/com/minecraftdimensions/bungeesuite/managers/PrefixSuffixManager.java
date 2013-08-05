@@ -1,14 +1,17 @@
 package com.minecraftdimensions.bungeesuite.managers;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+
+import net.md_5.bungee.api.connection.Server;
 
 import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 
 public class PrefixSuffixManager {
-	public static boolean usingPrefix = ChatConfig.usingPrefix;
-	public static boolean usingSuffix = ChatConfig.usingSuffix;
 	public static HashMap<String, String> prefixes;
 	public static HashMap<String, String> suffixes;
 	
@@ -48,5 +51,21 @@ public class PrefixSuffixManager {
 		return suffixes.get(group);
 	}
 	
+	public static void sendPrefixAndSuffixToServer(Server server) throws IOException{
+		String prefix ="";
+		String suffix = "";
+		for(String s: prefixes.keySet()){
+			prefix+=s+"%"+prefixes.get(s);
+		}
+		for(String s: suffixes.keySet()){
+			suffix+=s+"%"+suffixes.get(s);
+		}
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		out.writeUTF("PrefixesAndSuffixes");
+		out.writeUTF(prefix);
+		out.writeUTF(suffix);
+		ChatManager.sendPluginMessageTaskChat(server.getInfo(), b);
+	}
 	
 }

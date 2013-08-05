@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.minecraftdimensions.bungeesuite.commands.WhoIsCommand;
 import com.minecraftdimensions.bungeesuite.configs.MainConfig;
+import com.minecraftdimensions.bungeesuite.listeners.ChatListener;
+import com.minecraftdimensions.bungeesuite.listeners.ChatMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.PlayerListener;
 import com.minecraftdimensions.bungeesuite.managers.AnnouncementManager;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
@@ -25,6 +28,12 @@ public class BungeeSuite extends Plugin {
 		proxy = ProxyServer.getInstance();
 		initialiseManagers();
 		registerListeners();
+		registerCommands();
+	}
+
+	private void registerCommands() {
+		proxy.getPluginManager().registerCommand(this, new WhoIsCommand());
+		
 	}
 
 	private void initialiseManagers() {
@@ -40,7 +49,11 @@ public class BungeeSuite extends Plugin {
 	}
 	
 	void registerListeners() {
+		this.getProxy().registerChannel("BSChat");
+		this.getProxy().registerChannel("BungeeSuiteChat");
 		proxy.getPluginManager().registerListener(this, new PlayerListener());
+		proxy.getPluginManager().registerListener(this, new ChatListener());
+		proxy.getPluginManager().registerListener(this, new ChatMessageListener());
 	}
 	
 	private void setupSQL() {
