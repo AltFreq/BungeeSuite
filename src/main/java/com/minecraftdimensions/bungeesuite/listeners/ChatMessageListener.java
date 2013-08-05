@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+
+import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.IgnoresManager;
 import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
@@ -31,9 +33,17 @@ public class ChatMessageListener implements Listener {
 		String task = in.readUTF();
 		if(task.equals("LogChat")){
 			String message = in.readUTF();
-			LoggingManager.log(message);
+			if(ChatConfig.logChat){
+				LoggingManager.log(message);
+			}
 			PlayerManager.sendMessageToSpies((Server)event.getSender(),message);
 			
+			return;
+		}
+		if(task.equals("GlobalChat")){
+			String sender = in.readUTF();
+			String message = in.readUTF();
+			ChatManager.sendGlobalChat(sender,message, (Server)event.getSender());	
 			return;
 		}
 		if(task.equals("GetServerChannels")){
@@ -44,6 +54,11 @@ public class ChatMessageListener implements Listener {
 				ChatManager.loadPlayersChannels(p, s);
 			}
 			PrefixSuffixManager.sendPrefixAndSuffixToServer(s);
+			return;
+		}
+		if(task.equals("AdminChat")){
+			String message = in.readUTF();
+			ChatManager.sendAdminChat(message, (Server)event.getSender());	
 			return;
 		}
 		if(task.equals("GetPlayer")){
@@ -99,6 +114,10 @@ public class ChatMessageListener implements Listener {
 		}
 		if(task.equals("TogglePlayersChannel")){
 			ChatManager.togglePlayersChannel(in.readUTF(),in.readBoolean());
+			return;
+		}
+		if(task.equals("TogglePlayersFactionsChannel")){
+			ChatManager.togglePlayersFactionsChannel(in.readUTF());
 			return;
 		}
 		if(task.equals("TogglePlayerToChannel")){

@@ -3,6 +3,7 @@ package com.minecraftdimensions.bungeesuite.managers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +13,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
+import com.minecraftdimensions.bungeesuite.Utilities;
 import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.configs.MainConfig;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
@@ -44,6 +46,9 @@ public class PlayerManager {
 						+ player + "'");
 		while (res.next()) {
 			nickname = res.getString("nickname");
+			if(nickname!=null){
+				nickname = Utilities.colorize(nickname);
+			}
 			channel = res.getString("channel");
 			muted = res.getBoolean("muted");
 			chatspying = res.getBoolean("chat_spying");
@@ -99,7 +104,7 @@ public class PlayerManager {
 	}
 	
 	public static void sendPrivateMessageToPlayer(BSPlayer from, String receiver, String message){
-		BSPlayer rec = getPlayer(receiver);
+		BSPlayer rec = getSimilarPlayer(receiver);
 		if(rec==null){
 			from.sendMessage(Messages.PLAYER_NOT_ONLINE);
 			return;
@@ -182,12 +187,12 @@ public class PlayerManager {
 				sendServerMessage(p.getServer(),Messages.PLAYER_AFK.replace("{player}", p.getDisplayingName()));
 			}
 			if(hasDisplayPerm){
-				p.setDisplayingName(Messages.AFK_DISPLAY+p.getDisplayingName());
+				p.setTempName(Messages.AFK_DISPLAY+p.getDisplayingName());
 			}
 		}else{
 			p.setAFK(false);
 			if(hasDisplayPerm){
-				p.setDisplayingName(p.getDisplayingName().substring(Messages.AFK_DISPLAY.length(),p.getDisplayingName().length()));
+				p.revertName();
 			}
 			if(sendGlobal){
 				sendBroadcast(Messages.PLAYER_NOT_AFK.replace("{player}", p.getDisplayingName()));
@@ -219,7 +224,7 @@ public class PlayerManager {
 	public static void sendPrivateMessageToSpies(BSPlayer sender,BSPlayer receiver, String message) {
 		for(BSPlayer p: getChatSpies()){
 			if(!(p.equals(sender)||p.equals(receiver))){
-				p.sendMessage(Messages.PRIVATE_MESSAGE_SPY.replace("{sender}", sender.getName()).replace("{player}", receiver.getName()));
+				p.sendMessage(Messages.PRIVATE_MESSAGE_SPY.replace("{sender}", sender.getName()).replace("{player}", receiver.getName()).replace("{message}", message));
 			}
 		}
 	}
@@ -232,7 +237,7 @@ public class PlayerManager {
 		}
 	}
 
-	public static void setPlayerChatSpy(BSPlayer p) {
+	public static void setPlayerChatSpy(BSPlayer p) throws SQLException {
 		if(p.isChatSpying()){
 			p.setChatSpying(false);
 			p.sendMessage(Messages.CHATSPY_DISABLED);
@@ -240,6 +245,7 @@ public class PlayerManager {
 			p.setChatSpying(true);
 			p.sendMessage(Messages.CHATSPY_ENABLED);
 		}
+		SQLManager.standardQuery("UPDATE BungeePlayers SET chat_spying ="+p.isChatSpying()+" WHERE playername = '"+p.getName()+"'");
 		
 	}
 
@@ -251,16 +257,17 @@ public class PlayerManager {
 		if(isPlayerOnline(p)){
 			getPlayer(p).setNickname(nick);
 			getPlayer(p).updateDisplayName();
+			getPlayer(p).updatePlayer();
 		}
 		if(nick==null){
-		SQLManager.standardQuery("UPDATE BungeePlayers nickname =NULL WHERE playername ='"+p+"'");
+		SQLManager.standardQuery("UPDATE BungeePlayers SET nickname =NULL WHERE playername ='"+p+"'");
 		}else{
-			SQLManager.standardQuery("UPDATE BungeePlayers nickname ='"+nick+"' WHERE playername ='"+p+"'");
+			SQLManager.standardQuery("UPDATE BungeePlayers SET nickname ='"+nick+"' WHERE playername ='"+p+"'");
 		}
 	}
 
 	public static boolean isPlayerMuted(String target) {
-	if(getPlayer(target)!=null){
+	if(getSimilarPlayer(target)!=null){
 		return getPlayer(target).isMuted();
 	}else{
 		return SQLManager.existanceQuery("SELECT muted FROM BungeePlayers WHERE playername ='"+target+"' AND muted = 1");
@@ -280,7 +287,7 @@ public class PlayerManager {
 			}
 		}
 		boolean isMuted = isPlayerMuted(target);
-		SQLManager.standardQuery("UPDATE BungeePlayers muted = "+isMuted+" WHERE playername ='"+target+"'");
+		SQLManager.standardQuery("UPDATE BungeePlayers SET muted = "+!isMuted+" WHERE playername ='"+target+"'");
 		
 	}
 
@@ -293,7 +300,6 @@ public class PlayerManager {
 					try {
 						mutePlayer(t.getName());
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -308,5 +314,13 @@ public class PlayerManager {
 
 	public static boolean playerUsingNickname(String string) {
 		return SQLManager.existanceQuery("SELECT playername FROM BungeePlayers WHERE nickname LIKE '%"+string+"%'");
+	}
+
+	public static void removeNickname(String target) throws SQLException {	
+	setPlayersNickname(target, null);
+	}
+
+	public static Collection<BSPlayer> getPlayers() {
+		return onlinePlayers.values();
 	}
 }

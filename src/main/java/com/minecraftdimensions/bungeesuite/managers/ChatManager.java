@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -171,7 +170,7 @@ public class ChatManager {
 	}
 	public static Channel getSimilarChannel(String name){
 		for(Channel chan: channels){
-			if(chan.getName().contains(name)){
+			if(chan.getName().toLowerCase().contains(name.toLowerCase())){
 				return chan;
 			}
 		}
@@ -211,24 +210,12 @@ public class ChatManager {
 	public static void clearServersChannels(Server server) {
 		channelsSentToServers.remove(server.getInfo().getName());
 	}
-	
-	public static void sendServerData(Server s) {
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(b);
-		try {
-			out.writeUTF("SendServerData");
-			out.writeUTF(serverData.get(s.getInfo().getName()).serialise());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		sendPluginMessageTaskChat(s.getInfo(),b);
-		
-	}
+
 	public static void setPlayerAFK(String player, boolean isAFK,
 			boolean sendGlobal, boolean hasDisplayPerm) {
 		PlayerManager.setPlayerAFK(player,isAFK,sendGlobal, hasDisplayPerm);
 	}
-	public static void setChatSpy(String player) {
+	public static void setChatSpy(String player) throws SQLException {
 		BSPlayer p =PlayerManager.getPlayer(player);
 		PlayerManager.setPlayerChatSpy(p);
 		
@@ -247,48 +234,57 @@ public class ChatManager {
 			String nickname, boolean on) throws SQLException {
 		BSPlayer s = PlayerManager.getPlayer(sender);
 		BSPlayer t;
+		nickname = Utilities.colorize(nickname);
+		System.out.println(sender+"+ "+target+" + "+ nickname+" + "+ on);
 		if(nickname.length()>ChatConfig.nickNameLimit){
 			s.sendMessage(Messages.NICKNAME_TOO_LONG);
 			return;
 		}
 		if(!sender.equals(target)){
-			if(PlayerManager.playerExists(target)){
+			if(!PlayerManager.playerExists(target)){
 				s.sendMessage(Messages.PLAYER_DOES_NOT_EXIST);
 				return;
 			}
 			t = PlayerManager.getSimilarPlayer(target);
+			if(t!=null){
+				target = t.getName();
+			}
 		}else{
 			t = s;
+		}
+		if(on==false){
+			System.out.println("Removing nick");
+			PlayerManager.removeNickname(target);
+			if(s.getName().equals(target)){
+				s.sendMessage(Messages.NICKNAME_REMOVED);
+			}else{
+				s.sendMessage(Messages.NICKNAME_REMOVED_PLAYER.replace("{player}", target));
+				if(t!=null){
+					t.sendMessage(Messages.NICKNAME_REMOVED);
+				}
+			}
+			return;
 		}
 		if(PlayerManager.nickNameExists(nickname)){
 			s.sendMessage(Messages.NICKNAME_TAKEN);
 			return;
 		}
-		PlayerManager.setPlayersNickname(t.getName(), nickname);
-		if (!t.equals(s)) {
-			if (!on) {
-				s.sendMessage(Messages.NICKNAME_REMOVED_PLAYER.replace(
-						"{player}", target));
-				if (t != null) {
-					t.sendMessage(Messages.NICKNAME_REMOVED);
-				}
-				return;
-			} else {
+		PlayerManager.setPlayersNickname(target, nickname);
+		if (t!=null && !t.equals(s)) {
 				s.sendMessage(Messages.NICKNAMED_PLAYER.replace("{player}",
-						target).replace("{name}", Utilities.colorize(nickname)));
+						target).replace("{name}", nickname));
 				if (t != null) {
 					t.sendMessage(Messages.NICKNAME_CHANGED.replace("{name}",
-							Utilities.colorize(nickname)));
-				}
+							nickname));
 			}
 		} else {
-			if (!on) {
-					s.sendMessage(Messages.NICKNAME_REMOVED);
-				return;
-			} else {
+				if(target.equals(s.getName())){
 				s.sendMessage(Messages.NICKNAME_CHANGED.replace("{name}",
 						Utilities.colorize(nickname)));
-			}
+				}else{
+					s.sendMessage(Messages.NICKNAMED_PLAYER.replace("{name}",
+							Utilities.colorize(nickname)).replace("{player}", target));
+				}
 		}
 	}
 	public static void replyToPlayer(String sender, String message) {
@@ -420,7 +416,8 @@ public class ChatManager {
 	
 	public static void setPlayersChannel(BSPlayer p, Channel channel) throws SQLException{
 		p.setChannel(channel.getName());
-		SQLManager.standardQuery("UPDATE BungeePlayers channel ='"+channel.getName()+"' WHERE playername = '"+p.getName()+"'");
+		p.updatePlayer();
+		SQLManager.standardQuery("UPDATE BungeePlayers SET channel ='"+channel.getName()+"' WHERE playername = '"+p.getName()+"'");
 		p.sendMessage(Messages.CHANNEL_TOGGLE.replace("{channel}", channel.getName()));
 	}
 	
@@ -448,9 +445,109 @@ public class ChatManager {
 		BSPlayer p = PlayerManager.getPlayer(player);
 		setPlayersChannel(p, getPlayersNextChannel(p,bypass));
 	}
+	
 	public static void togglePlayerToChannel(String sender, String channel,
-			boolean bypass) {
-		// TODO Auto-generated method stub
+			boolean bypass) throws SQLException {
+		BSPlayer p = PlayerManager.getPlayer(sender);
+		if(channel.equals("local")){
+			channel = p.getServer().getInfo().getName()+" Local";
+		}else if(channel.equals("server")){
+			channel = p.getServer().getInfo().getName();
+		}
+		Channel c = getSimilarChannel(channel);
+		if(c==null){
+			p.sendMessage(Messages.CHANNEL_DOES_NOT_EXIST);
+			return;
+		}
+		if(!bypass){
+			if(isPlayerChannelMember(p,c)){
+				if(canPlayerToggleToDefault(p,c)){
+					setPlayersChannel(p,c);
+					return;
+				}else{
+					p.sendMessage(Messages.CHANNEL_UNTOGGLABLE.replace("{channel}", c.getName()));
+					return;
+				}
+			}else{
+				p.sendMessage(Messages.CHANNEL_NOT_A_MEMBER);
+				return;
+			}
+		}else{
+			setPlayersChannel(p,c);
+		}
 		
+	}
+	
+	public static void sendServerData(Server s) {
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		try {
+			out.writeUTF("SendServerData");
+			out.writeUTF(serverData.get(s.getInfo().getName()).serialise());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		sendPluginMessageTaskChat(s.getInfo(),b);
+	}
+	
+	public static void sendGlobalChat(String player, String message, Server server) {
+		if(ChatConfig.logChat){
+			LoggingManager.log(message);
+		}
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		try {
+			out.writeUTF("SendGlobalChat");
+			out.writeUTF(player);
+			out.writeUTF(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for(ServerInfo s:BungeeSuite.proxy.getServers().values()){
+			if(!s.getName().equals(server.getInfo().getName())){
+				sendPluginMessageTaskChat(s,b);
+			}
+		}
+	}
+	public static void sendAdminChat(String message, Server server) {
+		if(ChatConfig.logChat){
+			LoggingManager.log(message);
+		}
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		try {
+			out.writeUTF("SendAdminChat");
+			out.writeUTF(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for(ServerInfo s:BungeeSuite.proxy.getServers().values()){
+			if(!s.getName().equals(server.getInfo().getName())){
+				sendPluginMessageTaskChat(s,b);
+			}
+		}
+		
+	}
+	public static void togglePlayersFactionsChannel(String player) throws SQLException {
+		BSPlayer p = PlayerManager.getPlayer(player);
+		String channel = p.getChannel();
+		String newchannel;
+		if(channel.equals("Faction")){
+			newchannel = "FactionAlly";
+			p.sendMessage(Messages.FACTION_ALLY_TOGGLE);	
+		}else if(channel.equals("FactionAlly")){
+			if(p.getServerData().forcingChannel()){
+				newchannel = p.getServerData().getForcedChannel();
+			}else{
+				newchannel = "Global";
+			}
+			p.sendMessage(Messages.CHANNEL_TOGGLE.replace("{channel}", newchannel));
+		}else{
+			newchannel = "Faction";
+			p.sendMessage(Messages.FACTION_TOGGLE);	
+		}
+		p.setChannel(newchannel);
+		p.updatePlayer();
+		SQLManager.standardQuery("UPDATE BungeePlayers SET channel ='"+newchannel+"' WHERE playername = '"+p.getName()+"'");
 	}
 }

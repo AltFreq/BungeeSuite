@@ -223,6 +223,8 @@ public class Messages {
 					+ "You are not allowed to join this channel"));
 	public static String CHANNEL_TOGGLE = colorize(m.getString("CHANNEL_TOGGLE", "&2"
 					+ "You are now talking in the channel {channel}"));
+	public static String CHANNEL_UNTOGGLABLE = colorize(m.getString("CHANNEL_UNTOGGLABLE", "&c"
+			+ "You are unable to toggle to the channel {channel}"));
 	public static String FACTION_TOGGLE = colorize(m.getString("FACTION_TOGGLE", "&e"
 					+ "Faction only chat mode"));
 	public static String FACTION_ALLY_TOGGLE = colorize(m.getString("FACTION_ALLY_TOGGLE", "&e"
@@ -232,16 +234,16 @@ public class Messages {
 	public static String GLOBAL_MUTE = colorize(m.getString("GLOBAL_MUTE",
 			"&c" + "All players are currently muted"));
 	public static String NICKNAMED_PLAYER = colorize(m.getString("NICKNAMED_PLAYER", "&2"
-					+ "You have set {player} ''s name to {name}"));
+					+ "You have set {player}'s name to {name}"));
 	public static String NICKNAME_CHANGED = colorize(m.getString("NICKNAME_CHANGED", "&2"
 					+ "Your nickname has been change to {name}"));
 	public static String NICKNAME_TOO_LONG = colorize(m.getString("NICKNAME_TOO_LONG", "&c"
 					+ "That nickname is too long!"));
 	public static String NICKNAME_TAKEN = colorize(m.getString("NICKNAME_TAKEN", "&c"
 					+ "That nickname is already taken by a player!"));
-	public static String NICKNAME_REMOVED_PLAYER = colorize(m.getString("NICKNAME_TAKEN", "&c"
+	public static String NICKNAME_REMOVED_PLAYER = colorize(m.getString("NICKNAME_REMOVED_PLAYER", "&c"
 			+ "You have removed {player}'s nickname!"));
-	public static String NICKNAME_REMOVED = colorize(m.getString("NICKNAME_TAKEN", "&c"
+	public static String NICKNAME_REMOVED = colorize(m.getString("NICKNAME_REMOVED", "&c"
 			+ "Your nickname has been removed!"));
 	public static String PLAYER_IGNORED = colorize(m.getString("PLAYER_IGNORED", "&2"
 					+ "{player} has been ignored"));

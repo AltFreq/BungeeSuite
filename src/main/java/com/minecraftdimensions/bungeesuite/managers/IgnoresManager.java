@@ -5,9 +5,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import net.md_5.bungee.api.connection.Server;
-
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
 
@@ -22,11 +22,14 @@ public class IgnoresManager {
 	}
 	
 	public static void addIgnore(BSPlayer p, String ignore) throws SQLException{
+		if(PlayerManager.getSimilarPlayer(ignore)!=null){
+			ignore = PlayerManager.getSimilarPlayer(ignore).getName();
+		}
 		if(PlayerManager.playerExists(ignore)){
 			if(!p.isIgnoring(ignore)){
 		p.addIgnore(ignore);
 		SQLManager.standardQuery("INSERT INTO BungeeChatIgnores VALUES ('"+p.getName()+"', '"+ignore+"')");
-		p.sendMessage(Messages.PLAYER_IGNORED);
+		p.sendMessage(Messages.PLAYER_IGNORED.replace("{player}", ignore));
 			}else{
 				removeIgnore(p, ignore);
 			}
@@ -38,6 +41,9 @@ public class IgnoresManager {
 	}
 	
 	public static void removeIgnore(BSPlayer p, String ignore) throws SQLException{
+		if(PlayerManager.getSimilarPlayer(ignore)!=null){
+			ignore = PlayerManager.getSimilarPlayer(ignore).getName();
+		}
 		if(p.isIgnoring(ignore)){
 			p.removeIgnore(ignore);
 			SQLManager.standardQuery("DELETE FROM BungeeChatIgnores WHERE player='"+p.getName()+"' AND ignoring ='"+ignore+"'");
@@ -67,6 +73,18 @@ public class IgnoresManager {
 	
 	public static boolean playerHasIgnores(BSPlayer p){
 		return p.hasIgnores();
+	}
+
+	public static Collection<BSPlayer> getPlayersIgnorers(String player) {
+		Collection<BSPlayer> players = new ArrayList<BSPlayer>();
+		for(BSPlayer p: PlayerManager.getPlayers()){
+			if(p.hasIgnores()){
+				if(p.isIgnoring(player)){
+					players.add(p);
+				}
+			}
+		}
+		return players;
 	}
 	
 }

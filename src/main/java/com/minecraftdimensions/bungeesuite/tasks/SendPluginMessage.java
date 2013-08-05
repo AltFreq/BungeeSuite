@@ -17,7 +17,7 @@ public class SendPluginMessage implements Runnable {
 	    }
 
 	    public void run() {
-	       server.sendData(channel, bytes.toByteArray());
+	    	server.sendData(channel, bytes.toByteArray());
 	    }
 
 

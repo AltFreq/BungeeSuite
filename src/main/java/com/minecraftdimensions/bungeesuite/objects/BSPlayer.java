@@ -19,7 +19,7 @@ public class BSPlayer {
 	private String channel;
 	private boolean muted;
 	private String nickname = null;
-	private String storename;
+	private String tempname;
 	private boolean chatspying;
 	private boolean dnd;
 	private boolean afk;
@@ -48,15 +48,22 @@ public class BSPlayer {
 		channel = data[1];
 		muted = Boolean.parseBoolean(data[2]);
 		nickname = data[3];
+		tempname = data[4];
 		chatspying = Boolean.parseBoolean(data[5]);
 		dnd = Boolean.parseBoolean(data[7]);
 		afk = Boolean.parseBoolean(data[8]);
 		acceptingTeleports = Boolean.parseBoolean(data[9]);
 		lastBack =  Boolean.parseBoolean(data[10]);
+		if(nickname.equals("null")){
+			nickname = null;
+		}
+		if(tempname.endsWith("null")){
+			tempname = null;
+		}
 	}
 
 	public String serialise(){
-		return playername+"~"+channel+"~"+muted+"~"+nickname+"~"+chatspying+"~"+dnd+"~"+afk+"~"+acceptingTeleports+"~"+lastBack;
+		return playername+"~"+channel+"~"+muted+"~"+nickname+"~"+tempname+"~"+chatspying+"~"+dnd+"~"+afk+"~"+acceptingTeleports+"~"+lastBack;
 	}
 	
 	public String getName(){
@@ -169,12 +176,7 @@ public class BSPlayer {
 	}
 	
 	public Channel getPlayersChannel(){
-		for(Channel chan:channels){
-			if(chan.getName().equals(channel)){
-				return chan;
-			}
-		}
-		return null;
+		return ChatManager.getChannel(channel);
 	}
 	public ArrayList<Channel> getPlayersChannels(){
 		return channels;
@@ -254,34 +256,29 @@ public class BSPlayer {
 		if(name.length()>16){
 		name =getDisplayingName().substring(0,16);	
 		}
-		getProxiedPlayer().setDisplayName(name);
+		ProxyServer.getInstance().getPlayer(playername).setDisplayName(name);
 	}
 	
 	public String getDisplayingName(){
+		if(tempname!=null){
+			return tempname;
+		}else
 		if(getNickname()!=null){
 			return getNickname();
 		}else{
 			return getName();
 		}
 	}
-	public void setDisplayingName(String name){
-		storename= getDisplayingName();
-		if(getNickname()!=null){
-			nickname = name;
-		}else{
-			playername =name;
-		}
+	public void setTempName(String name){
+		tempname = name;
 		updatePlayer();
 		updateDisplayName();
 	}
 	
 	public void revertName(){
-		if(getNickname()!=null){
-			nickname = storename;
-		}else{
-			playername =storename;
-		}
-		storename = null;
+		tempname = null;
+		updatePlayer();
+		updateDisplayName();
 	}
 
 	public void updatePlayer() {
@@ -311,7 +308,7 @@ public class BSPlayer {
 	}
 
 	public Server getServer() {
-		return getProxiedPlayer().getServer();
+		return ProxyServer.getInstance().getPlayer(playername).getServer();
 	}
 
 	public boolean isIgnoring(String ignore) {
