@@ -109,6 +109,10 @@ public class PlayerManager {
 			from.sendMessage(Messages.PLAYER_NOT_ONLINE);
 			return;
 		}
+		if(rec.isIgnoring(from.getName())){
+			from.sendMessage(Messages.PLAYER_IGNORING.replace("{player}", rec.getName()));
+			return;
+		}
 		from.sendMessage(Messages.PRIVATE_MESSAGE_OTHER_PLAYER.replace("{player}", rec.getName()).replace("{message}", message));
 		rec.sendMessage(Messages.PRIVATE_MESSAGE_RECEIVE.replace("{player}", from.getName()).replace("{message}", message));
 		rec.setReplyPlayer(from.getName());

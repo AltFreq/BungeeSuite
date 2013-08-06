@@ -120,6 +120,10 @@ public class ChatMessageListener implements Listener {
 			ChatManager.togglePlayersFactionsChannel(in.readUTF());
 			return;
 		}
+		if(task.equals("ToggleToPlayersFactionChannel")){
+			ChatManager.toggleToPlayersFactionChannel(in.readUTF(),in.readUTF(),in.readBoolean());
+			return;
+		}
 		if(task.equals("TogglePlayerToChannel")){
 			ChatManager.togglePlayerToChannel(in.readUTF(),in.readUTF(),in.readBoolean());
 			return;

@@ -47,14 +47,15 @@ public class IgnoresManager {
 		if(p.isIgnoring(ignore)){
 			p.removeIgnore(ignore);
 			SQLManager.standardQuery("DELETE FROM BungeeChatIgnores WHERE player='"+p.getName()+"' AND ignoring ='"+ignore+"'");
-			p.sendMessage(Messages.PLAYER_UNIGNORED);
+			p.sendMessage(Messages.PLAYER_UNIGNORED.replace("{player}", ignore));
 		}else{
-			p.sendMessage(Messages.PLAYER_NOT_IGNORED);
+			p.sendMessage(Messages.PLAYER_NOT_IGNORED.replace("{player}", ignore));
 		}
 		sendPlayersIgnores(p, p.getServer());
 	}
 	
 	public static void sendPlayersIgnores(BSPlayer p, Server s){
+		if(p.hasIgnores()){
 		String ignores = "";
 		for(String str:p.getIgnores()){
 			ignores+=str+"%";
@@ -69,6 +70,7 @@ public class IgnoresManager {
 			e.printStackTrace();
 		}
 		ChatManager.sendPluginMessageTaskChat(s.getInfo(), b);
+		}
 	}
 	
 	public static boolean playerHasIgnores(BSPlayer p){

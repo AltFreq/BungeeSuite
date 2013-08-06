@@ -509,6 +509,7 @@ public class ChatManager {
 			}
 		}
 	}
+	
 	public static void sendAdminChat(String message, Server server) {
 		if(ChatConfig.logChat){
 			LoggingManager.log(message);
@@ -526,8 +527,16 @@ public class ChatManager {
 				sendPluginMessageTaskChat(s,b);
 			}
 		}
-		
 	}
+	
+	public static Channel getServersDefaultChannel(ServerData server){
+		if(server.forcingChannel()){
+			return getChannel(server.getForcedChannel());
+		}else{
+			return getChannel(ChatConfig.defaultChannel);
+		}
+	}
+	
 	public static void togglePlayersFactionsChannel(String player) throws SQLException {
 		BSPlayer p = PlayerManager.getPlayer(player);
 		String channel = p.getChannel();
@@ -536,11 +545,7 @@ public class ChatManager {
 			newchannel = "FactionAlly";
 			p.sendMessage(Messages.FACTION_ALLY_TOGGLE);	
 		}else if(channel.equals("FactionAlly")){
-			if(p.getServerData().forcingChannel()){
-				newchannel = p.getServerData().getForcedChannel();
-			}else{
-				newchannel = "Global";
-			}
+			newchannel = getServersDefaultChannel(p.getServerData()).getName();
 			p.sendMessage(Messages.CHANNEL_TOGGLE.replace("{channel}", newchannel));
 		}else{
 			newchannel = "Faction";
@@ -549,5 +554,24 @@ public class ChatManager {
 		p.setChannel(newchannel);
 		p.updatePlayer();
 		SQLManager.standardQuery("UPDATE BungeePlayers SET channel ='"+newchannel+"' WHERE playername = '"+p.getName()+"'");
+	}
+	public static void toggleToPlayersFactionChannel(String sender,
+			String channel, boolean hasFaction) throws SQLException {
+		BSPlayer p = PlayerManager.getPlayer(sender);
+		if(!hasFaction){
+			p.sendMessage(Messages.FACTION_NONE);
+			return;
+		}
+		if(p.getChannel().equals(channel)){
+			channel =getServersDefaultChannel(p.getServerData()).getName();
+			p.sendMessage(Messages.FACTION_OFF_TOGGLE);
+		}else if(channel.equals("Faction")){
+			p.sendMessage(Messages.FACTION_TOGGLE);
+		}else{
+			p.sendMessage(Messages.FACTION_ALLY_TOGGLE);
+		}
+		p.setChannel(channel);
+		p.updatePlayer();
+		SQLManager.standardQuery("UPDATE BungeePlayers SET channel ='"+channel+"' WHERE playername = '"+p.getName()+"'");
 	}
 }

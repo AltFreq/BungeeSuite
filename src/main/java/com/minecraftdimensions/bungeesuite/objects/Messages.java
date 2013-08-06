@@ -231,6 +231,8 @@ public class Messages {
 					+ "Ally only chat mode"));
 	public static String FACTION_OFF_TOGGLE = colorize(m.getString("FACTION_OFF_TOGGLE", "&e"
 					+ "Public chat mode"));
+	public static String FACTION_NONE = colorize(m.getString("FACTION_NONE", "&c"
+			+ "You do not have a faction"));
 	public static String GLOBAL_MUTE = colorize(m.getString("GLOBAL_MUTE",
 			"&c" + "All players are currently muted"));
 	public static String NICKNAMED_PLAYER = colorize(m.getString("NICKNAMED_PLAYER", "&2"
@@ -251,8 +253,6 @@ public class Messages {
 					+ "{player} has been unignored"));
 	public static String PLAYER_IGNORING = colorize(m.getString("PLAYER_IGNORING", "&c"
 					+ "{player} is ignoring you"));
-	public static String PLAYER_ALREADY_IGNORED = colorize(m.getString("PLAYER_ALREADY_IGNORED", "&c"
-					+ "{player} is already ignored"));
 	public static String PLAYER_NOT_IGNORED = colorize(m.getString("PLAYER_NOT_IGNORED", "&c"
 					+ "{player} is not ignored"));
 	public static String CHATSPY_ENABLED = colorize(m.getString("CHATSPY_ENABLED", "&2"
