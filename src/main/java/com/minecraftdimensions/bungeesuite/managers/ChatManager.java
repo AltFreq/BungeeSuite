@@ -235,7 +235,6 @@ public class ChatManager {
 		BSPlayer s = PlayerManager.getPlayer(sender);
 		BSPlayer t;
 		nickname = Utilities.colorize(nickname);
-		System.out.println(sender+"+ "+target+" + "+ nickname+" + "+ on);
 		if(nickname.length()>ChatConfig.nickNameLimit){
 			s.sendMessage(Messages.NICKNAME_TOO_LONG);
 			return;
@@ -253,7 +252,6 @@ public class ChatManager {
 			t = s;
 		}
 		if(on==false){
-			System.out.println("Removing nick");
 			PlayerManager.removeNickname(target);
 			if(s.getName().equals(target)){
 				s.sendMessage(Messages.NICKNAME_REMOVED);
