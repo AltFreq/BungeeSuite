@@ -30,6 +30,7 @@ public class Channel {
 		owner = data[2];
 		muted = Boolean.parseBoolean(data[3]);
 		isDefault = Boolean.parseBoolean(data[4]);
+		open = Boolean.parseBoolean(data[5]);
 		members = new ArrayList<BSPlayer>();
 	}
 	
@@ -104,7 +105,7 @@ public class Channel {
 	}
 	
 	public String serialise(){
-		return name+"~"+format+"~"+owner+"~"+muted+"~"+isDefault;
+		return name+"~"+format+"~"+owner+"~"+muted+"~"+isDefault+"~"+open;
 	}
 
 	public void addMember(BSPlayer p) {
