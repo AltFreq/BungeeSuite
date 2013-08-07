@@ -129,7 +129,7 @@ public class ChatMessageListener implements Listener {
 			return;
 		}
 		if(task.equals("GetChannelInfo")){
-			ChatManager.sendPlayerChannelInformation(in.readUTF(),in.readUTF());
+			ChatManager.sendPlayerChannelInformation(in.readUTF(),in.readUTF(),in.readBoolean());
 			return;
 		}
 	}

@@ -615,7 +615,7 @@ public class ChatManager {
 	}
 	
 	public static void sendPlayerChannelInformation(String sender,
-			String channel) {
+			String channel, boolean perm) {
 		Channel c = getSimilarChannel(channel);
 		BSPlayer p = PlayerManager.getPlayer(sender);
 		if (c == null) {
@@ -644,13 +644,17 @@ public class ChatManager {
 				players += "...";
 			}
 			p.sendMessage(players);
-			if (p.getName().equals(c.getOwner())) {
+			if (p.getName().equals(c.getOwner())|| perm) {
 				p.sendMessage(ChatColor.GOLD + "Format: " + ChatColor.AQUA
 						+ c.format());
 			}
 		} else {
 			p.sendMessage(ChatColor.GOLD + "Channel type: " + ChatColor.AQUA
 					+ "Server");
+			if(perm){
+				p.sendMessage(ChatColor.GOLD + "Format: " + ChatColor.AQUA
+						+ c.format());
+			}
 		}
 	}
 }
