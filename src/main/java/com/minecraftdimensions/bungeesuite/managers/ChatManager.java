@@ -196,11 +196,13 @@ public class ChatManager {
 	
 	public static void sendPlayer(String player, Server server) {
 		BSPlayer p = PlayerManager.getPlayer(player);
-		if(p.getChannel().equals("Faction") || p.getChannel().equals("FactionAlly")){
-			if(!serverData.get(server.getInfo().getName()).usingFactions()){
-				p.setChannel(ChatConfig.defaultChannel);
-			}
+		ServerData sd = serverData.get(server.getInfo().getName());
+		if(sd.forcingChannel()){
+			p.setChannel(sd.getForcedChannel());
+		}else if((p.getChannel().equals("Faction") || p.getChannel().equals("FactionAlly"))&& sd.usingFactions()){
+				p.setChannel(getServersDefaultChannel(sd).getName());
 		}
+		
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
 		try {
@@ -515,7 +517,7 @@ public class ChatManager {
 			e.printStackTrace();
 		}
 		for(ServerInfo s:BungeeSuite.proxy.getServers().values()){
-			if(!s.getName().equals(server.getInfo().getName())){
+			if(!s.getName().equals(server.getInfo().getName()) && s.getPlayers().size()>0){
 				sendPluginMessageTaskChat(s,b);
 			}
 		}
@@ -534,7 +536,7 @@ public class ChatManager {
 			e.printStackTrace();
 		}
 		for(ServerInfo s:BungeeSuite.proxy.getServers().values()){
-			if(!s.getName().equals(server.getInfo().getName())){
+			if(!s.getName().equals(server.getInfo().getName()) && s.getPlayers().size()>0){
 				sendPluginMessageTaskChat(s,b);
 			}
 		}
