@@ -16,8 +16,8 @@
 
 	<repositories>
 		<repository>
-			<id>snapshot-repo</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>sonatype-oss-public</id>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -41,15 +41,14 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<defaultGoal>clean install</defaultGoal>
+		<finalName>${project.name}</finalName>
 		<resources>
 			<resource>
-				<targetPath>.</targetPath>
-				<filtering>true</filtering>
-				<directory>${basedir}/src/main/resources</directory>
+				<directory>${project.basedir}/src/main/resources</directory>
 				<includes>
-					<include>*.yml</include>
+					<include>**</include>
 				</includes>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<plugins>
@@ -60,10 +59,6 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
-					<compilerArguments>
-						<O>-Xlint:all</O>
-						<O>-Xlint:-path</O>
-					</compilerArguments>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 				</configuration>
