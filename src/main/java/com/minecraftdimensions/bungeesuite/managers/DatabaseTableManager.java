@@ -33,6 +33,8 @@ public class DatabaseTableManager {
 		runTableQuery("BungeeChatIgnores", "CREATE TABLE BungeeChatIgnores (player VARCHAR(100), ignoring VARCHAR(100), CONSTRAINT pk_ignored PRIMARY KEY (player,ignoring), CONSTRAINT fk_player FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT fk_ignored FOREIGN KEY (ignoring) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)");
 		//BungeeChannelMembers
 		runTableQuery("BungeeChannelMembers","CREATE TABLE BungeeChannelMembers (player VARCHAR(100), channel VARCHAR(100), CONSTRAINT pk_channelmember PRIMARY KEY (player,channel), CONSTRAINT fk_playermember FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)");
+		//BungeeCustomChannels
+		runTableQuery("BungeeCustomChannels","CREATE TABLE BungeeCustomChannels (channelname VARCHAR(100), owner VARCHAR(100), format VARCHAR(300)), open TINYINT(1), CONSTRAINT pk_channelname PRIMARY KEY (channelname))");
 		//BungeeHomes
 		runTableQuery("BungeeHomes","CREATE TABLE BungeeHomes (player VARCHAR(100), home_name VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, CONSTRAINT pk_home PRIMARY KEY (player,home_name), CONSTRAINT fk_playerhome FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)");
 		//BungeePortals
