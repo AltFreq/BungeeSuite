@@ -3,6 +3,7 @@ package com.minecraftdimensions.bungeesuite.listeners;
 
 import java.sql.SQLException;
 
+import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.IgnoresManager;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
@@ -10,6 +11,7 @@ import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
 
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -21,6 +23,9 @@ public class ChatListener implements Listener {
 		IgnoresManager.sendPlayersIgnores(PlayerManager.getPlayer(e.getPlayer()), e.getServer());
 		BSPlayer p = PlayerManager.getPlayer(e.getPlayer());
 		p.updateDisplayName();
+		if(ChatConfig.broadcastProxyConnectionMessages){
+			PlayerManager.sendBroadcast(Messages.PLAYER_CONNECT_PROXY.replace("{player}", p.getDisplayingName()));
+		}
 	}
 	
 	@EventHandler
@@ -36,6 +41,14 @@ public class ChatListener implements Listener {
 		if(p.isMuted()){
 			p.sendMessage(Messages.MUTED);
 			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void playerLogout(PlayerDisconnectEvent e) throws SQLException {
+		BSPlayer p = PlayerManager.getPlayer(e.getPlayer());
+		if(ChatConfig.broadcastProxyConnectionMessages){
+			PlayerManager.sendBroadcast(Messages.PLAYER_DISCONNECT_PROXY.replace("{player}", p.getDisplayingName()));
 		}
 	}
 	

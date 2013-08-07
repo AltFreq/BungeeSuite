@@ -8,9 +8,10 @@ public class ServerData {
 	boolean usingFactionChannels;
 	int localDistance;
 	String adminColor;
+	boolean connectionMessages;
 	
 	
-	public ServerData(String name, String shortName, boolean force, String channel, boolean facs,int localDistance, String adminColor){
+	public ServerData(String name, String shortName, boolean force, String channel, boolean facs,int localDistance, String adminColor, boolean connectionMessages){
 		this.serverName = name;
 		this.shortName = shortName;
 		this.forceChannel = force;
@@ -18,6 +19,7 @@ public class ServerData {
 		this.usingFactionChannels = facs;
 		this.localDistance = localDistance;
 		this.adminColor = adminColor;
+		this.connectionMessages=connectionMessages;
 	}
 	
 	public ServerData(String deserialise){
@@ -29,6 +31,7 @@ public class ServerData {
 		usingFactionChannels = Boolean.parseBoolean(data[4]);
 		localDistance = Integer.parseInt(data[5]);
 		adminColor = data[6];
+		connectionMessages = Boolean.parseBoolean(data[7]);
 	}
 	
 	public String getServerName(){
@@ -52,6 +55,6 @@ public class ServerData {
 	}
 
 	public String serialise() {
-		return serverName+"~"+shortName+"~"+forceChannel+"~"+forcedChannel+"~"+usingFactionChannels+"~"+localDistance+"~"+adminColor;
+		return serverName+"~"+shortName+"~"+forceChannel+"~"+forcedChannel+"~"+usingFactionChannels+"~"+localDistance+"~"+adminColor+"~"+connectionMessages;
 	}
 }

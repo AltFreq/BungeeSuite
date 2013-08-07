@@ -7,8 +7,9 @@ import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 public class Messages {
 	static String configpath = "/plugins/BungeeSuite/Messages.yml";
 	static Config m = new Config(configpath);
+	public static String PLAYER_CONNECT_PROXY = colorize(m.getString("PLAYER_CONNECT_PROXY", "{player}&e has joined the server!"));
+	public static String PLAYER_DISCONNECT_PROXY = colorize(m.getString("PLAYER_DISCONNECT_PROXY", "{player}&e has left the server!"));
 	public static String PLAYER_DOES_NOT_EXIST=colorize(m.getString("PLAYER_DOES_NOT_EXIST", "&c"+ "That player does not exist"));
-
 	public static String PLAYER_LOAD = colorize(m.getString("PLAYER_LOAD", "Loadded player &9{player}"));
 	public static String PLAYER_UNLOAD = colorize(m.getString("PLAYER_UNLOAD", "Unloaded player &c{player}"));
 	public static String PLAYER_NOT_ONLINE=colorize(m.getString("PLAYER_NOT_ONLINE", "&c"
