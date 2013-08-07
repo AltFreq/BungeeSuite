@@ -37,22 +37,27 @@ public class ChatManager {
 		Config chan=Channels.channelsConfig;
 		String server =ProxyServer.getInstance().getConsole().getName();
 		//Load Global
-		loadChannel(server, "Global", chan.getString("Channels.Global", Messages.CHANNEL_DEFAULT_GLOBAL),true);
+		loadChannel(server, "Global", chan.getString("Channels.Global", Messages.CHANNEL_DEFAULT_GLOBAL),true,true);
 		//Load Admin Channel
-		loadChannel(server, "Admin", chan.getString("Channels.Admin",Messages.CHANNEL_DEFAULT_ADMIN),true);
+		loadChannel(server, "Admin", chan.getString("Channels.Admin",Messages.CHANNEL_DEFAULT_ADMIN),true,true);
 		//Load Faction Channel
-		loadChannel(server, "Faction", chan.getString("Channels.Faction",Messages.CHANNEL_DEFAULT_FACTION),true);
+		loadChannel(server, "Faction", chan.getString("Channels.Faction",Messages.CHANNEL_DEFAULT_FACTION),true,true);
 		//Load Faction Ally Channel
-		loadChannel(server, "FactionAlly", chan.getString("Channels.FactionAlly",Messages.CHANNEL_DEFAULT_FACTION_ALLY),true);
+		loadChannel(server, "FactionAlly", chan.getString("Channels.FactionAlly",Messages.CHANNEL_DEFAULT_FACTION_ALLY),true,true);
 		//Load Server Channels
 		for(String servername: ProxyServer.getInstance().getServers().keySet())	{	
-			loadChannel(server, servername, chan.getString("Channels.Servers."+servername+".Server",Messages.CHANNEL_DEFAULT_SERVER),true);
-			loadChannel(server, servername+" Local", chan.getString("Channels.Servers."+servername+".Local",Messages.CHANNEL_DEFAULT_LOCAL),true);
+			loadChannel(server, servername, chan.getString("Channels.Servers."+servername+".Server",Messages.CHANNEL_DEFAULT_SERVER),true,true);
+			loadChannel(server, servername+" Local", chan.getString("Channels.Servers."+servername+".Local",Messages.CHANNEL_DEFAULT_LOCAL),true,true);
 			loadServerData(servername, chan.getString("Channels.Servers."+servername+".Shortname", servername.substring(0,1)), chan.getBoolean("Channels.Servers."+servername+".ForceChannel", false), chan.getString("Channels.Servers."+servername+".ForcedChannel", "Server"), chan.getBoolean("Channels.Servers."+servername+".UsingFactionChannels", false),chan.getInt("Channels.Servers."+servername+".LocalRange", 50),chan.getString("Channels.Servers."+servername+".AdminColor", "&f"), chan.getBoolean("Channels.Server."+servername+".DisableConnectionMessages", true));
 		}
-		//Load Custom Channels
-		for(String custom:chan.getSubNodes("Channels.Custom Channels")){
-			loadChannel(custom, chan.getString("Channels.Custom Channels."+custom+".Owner", null), chan.getString("Channels.Custom Channels."+custom+".Format", null),false);
+		//Load custom channels from db
+		ResultSet res = SQLManager.sqlQuery("SELECT * FROM BungeeCustomChannels");
+		try {
+			while(res.next()){
+			loadChannel(res.getString("owner"), res.getString("channelname"), res.getString("format"),false,res.getBoolean("open"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		LoggingManager.log(ChatColor.GOLD+"Channels loaded - "+ChatColor.DARK_GREEN+channels.size());
 	}
@@ -62,8 +67,8 @@ public class ChatManager {
 			serverData.put(name,d);
 		}	
 	}
-	public static void loadChannel(String owner, String name, String format, boolean isDefault){
-		Channel c = new Channel(name,format,owner,false,isDefault);
+	public static void loadChannel(String owner, String name, String format, boolean isDefault, boolean open){
+		Channel c = new Channel(name,format,owner,false,isDefault, open);
 		channels.add(c);
 	}
 	
@@ -115,16 +120,24 @@ public class ChatManager {
 			return chans;
 	}
 	
-	public void createNewCustomChannel(String owner, String name, String format){
-		Config chan=Channels.channelsConfig;
-		Channel c = new Channel(name,chan.getString("Channels.Custom Channels."+name+".Format", format),chan.getString("Channels.Custom Channels."+name+".Owner", owner),false,false);
+	public void createNewCustomChannel(String owner, String name, String format, boolean open) throws SQLException{
+		SQLManager.standardQuery("INSERT INTO BungeeCustomChannels VALUES('"+name+"','"+owner+"','"+format+"',"+open+",)");
+		Channel c = new Channel(owner,name,format,false,false,false);
 		channels.add(c);
-		LoggingManager.log("Created "+name+" channel");
 	}
 	
 	public static boolean channelExists(String name){
 		for(Channel c: channels){
 			if(c.getName().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean channelSimilarExists(String name){
+		for(Channel c: channels){
+			if(c.getName().toLowerCase().contains(name.toLowerCase())){
 				return true;
 			}
 		}
@@ -553,6 +566,7 @@ public class ChatManager {
 		p.updatePlayer();
 		SQLManager.standardQuery("UPDATE BungeePlayers SET channel ='"+newchannel+"' WHERE playername = '"+p.getName()+"'");
 	}
+	
 	public static void toggleToPlayersFactionChannel(String sender,
 			String channel, boolean hasFaction) throws SQLException {
 		BSPlayer p = PlayerManager.getPlayer(sender);
@@ -571,5 +585,39 @@ public class ChatManager {
 		p.setChannel(channel);
 		p.updatePlayer();
 		SQLManager.standardQuery("UPDATE BungeePlayers SET channel ='"+channel+"' WHERE playername = '"+p.getName()+"'");
+	}
+	
+	public static void sendPlayerChannelInformation(String sender,
+			String channel) {
+		Channel c = getSimilarChannel(channel);
+		BSPlayer p = PlayerManager.getPlayer(sender);
+		if(c==null){
+			p.sendMessage(Messages.CHANNEL_DOES_NOT_EXIST);
+			return;
+		}
+		p.sendMessage(ChatColor.DARK_AQUA+"---------"+ChatColor.GOLD+"Channel Info"+ChatColor.DARK_AQUA+"---------");
+		p.sendMessage(" ");
+		p.sendMessage(ChatColor.GOLD+"Channel name: "+ ChatColor.AQUA+c.getName());
+		if(!c.isDefault()){
+		p.sendMessage(ChatColor.GOLD+"Channel status: "+ChatColor.AQUA+c.getStatus());
+		}
+		if(!c.isDefault()){
+		p.sendMessage(ChatColor.GOLD+"Channel owner: "+ChatColor.AQUA+c.getOwner());
+		}else{
+			p.sendMessage(ChatColor.GOLD+"Channel type: "+ChatColor.AQUA+"Server");
+		}
+		ArrayList<BSPlayer>members = c.getMembers();
+		String players=ChatColor.GOLD+"Members: "+ChatColor.AQUA+"";
+		for(int i = 0; i<members.size()&&i<10;i++){
+			players+=members.get(i)+", ";
+		}
+		players =players.substring(0, players.length()-2);
+		if(members.size()>=10){
+			players+="...";
+		}
+		p.sendMessage(players);
+		if(p.getName().equals(c.getOwner())){
+			p.sendMessage(ChatColor.GOLD+"Format: "+ChatColor.AQUA+c.format());
+		}
 	}
 }

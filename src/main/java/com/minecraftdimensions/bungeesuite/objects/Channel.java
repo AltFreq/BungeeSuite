@@ -11,9 +11,10 @@ public class Channel {
 	private String owner;
 	private boolean muted;
 	private boolean isDefault;
+	private boolean open;
 	private ArrayList<BSPlayer> members;
 	
-	public Channel(String name, String format, String owner, boolean muted, boolean isDefault){
+	public Channel(String name, String format, String owner, boolean muted, boolean isDefault,boolean open){
 		this.name = name;
 		this.format = format;
 		this.owner = owner;
@@ -110,6 +111,14 @@ public class Channel {
 		this.members.add(p);
 		p.joinChannel(this);
 		
+	}
+
+	public String getStatus() {
+		if(open){
+			return "open";
+		}else{
+		return "close";
+		}
 	}
 
 }

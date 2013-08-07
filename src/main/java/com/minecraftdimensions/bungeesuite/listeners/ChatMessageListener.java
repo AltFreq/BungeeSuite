@@ -128,6 +128,10 @@ public class ChatMessageListener implements Listener {
 			ChatManager.togglePlayerToChannel(in.readUTF(),in.readUTF(),in.readBoolean());
 			return;
 		}
+		if(task.equals("GetChannelInfo")){
+			ChatManager.sendPlayerChannelInformation(in.readUTF(),in.readUTF());
+			return;
+		}
 	}
 
 }
