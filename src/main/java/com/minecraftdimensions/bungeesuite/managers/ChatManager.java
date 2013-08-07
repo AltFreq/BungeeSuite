@@ -618,33 +618,39 @@ public class ChatManager {
 			String channel) {
 		Channel c = getSimilarChannel(channel);
 		BSPlayer p = PlayerManager.getPlayer(sender);
-		if(c==null){
+		if (c == null) {
 			p.sendMessage(Messages.CHANNEL_DOES_NOT_EXIST);
 			return;
 		}
-		p.sendMessage(ChatColor.DARK_AQUA+"---------"+ChatColor.GOLD+"Channel Info"+ChatColor.DARK_AQUA+"---------");
+		p.sendMessage(ChatColor.DARK_AQUA + "---------" + ChatColor.GOLD
+				+ "Channel Info" + ChatColor.DARK_AQUA + "---------");
 		p.sendMessage(" ");
-		p.sendMessage(ChatColor.GOLD+"Channel name: "+ ChatColor.AQUA+c.getName());
-		if(!c.isDefault()){
-		p.sendMessage(ChatColor.GOLD+"Channel status: "+ChatColor.AQUA+c.getStatus());
+		p.sendMessage(ChatColor.GOLD + "Channel name: " + ChatColor.AQUA
+				+ c.getName());
+		if (!c.isDefault()) {
+			p.sendMessage(ChatColor.GOLD + "Channel status: " + ChatColor.AQUA
+					+ c.getStatus());
 		}
-		if(!c.isDefault()){
-		p.sendMessage(ChatColor.GOLD+"Channel owner: "+ChatColor.AQUA+c.getOwner());
-		}else{
-			p.sendMessage(ChatColor.GOLD+"Channel type: "+ChatColor.AQUA+"Server");
-		ArrayList<BSPlayer>members = c.getMembers();
-		String players=ChatColor.GOLD+"Members: "+ChatColor.AQUA+"";
-		for(int i = 0; i<members.size()&&i<10;i++){
-			players+=members.get(i)+", ";
-		}
-		players =players.substring(0, players.length()-2);
-		if(members.size()>=10){
-			players+="...";
-		}
-		p.sendMessage(players);
-		if(p.getName().equals(c.getOwner())){
-			p.sendMessage(ChatColor.GOLD+"Format: "+ChatColor.AQUA+c.format());
-		}
+		if (!c.isDefault()) {
+			p.sendMessage(ChatColor.GOLD + "Channel owner: " + ChatColor.AQUA
+					+ c.getOwner());
+			ArrayList<BSPlayer> members = c.getMembers();
+			String players = ChatColor.GOLD + "Members: " + ChatColor.AQUA + "";
+			for (int i = 0; i < members.size() && i < 10; i++) {
+				players += members.get(i) + ", ";
+			}
+			players = players.substring(0, players.length() - 2);
+			if (members.size() >= 10) {
+				players += "...";
+			}
+			p.sendMessage(players);
+			if (p.getName().equals(c.getOwner())) {
+				p.sendMessage(ChatColor.GOLD + "Format: " + ChatColor.AQUA
+						+ c.format());
+			}
+		} else {
+			p.sendMessage(ChatColor.GOLD + "Channel type: " + ChatColor.AQUA
+					+ "Server");
 		}
 	}
 }
