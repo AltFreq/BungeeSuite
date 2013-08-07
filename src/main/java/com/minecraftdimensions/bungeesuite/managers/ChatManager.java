@@ -48,7 +48,7 @@ public class ChatManager {
 		for(String servername: ProxyServer.getInstance().getServers().keySet())	{	
 			loadChannel(server, servername, chan.getString("Channels.Servers."+servername+".Server",Messages.CHANNEL_DEFAULT_SERVER),true,true);
 			loadChannel(server, servername+" Local", chan.getString("Channels.Servers."+servername+".Local",Messages.CHANNEL_DEFAULT_LOCAL),true,true);
-			loadServerData(servername, chan.getString("Channels.Servers."+servername+".Shortname", servername.substring(0,1)), chan.getBoolean("Channels.Servers."+servername+".ForceChannel", false), chan.getString("Channels.Servers."+servername+".ForcedChannel", "Server"), chan.getBoolean("Channels.Servers."+servername+".UsingFactionChannels", false),chan.getInt("Channels.Servers."+servername+".LocalRange", 50),chan.getString("Channels.Servers."+servername+".AdminColor", "&f"), chan.getBoolean("Channels.Server."+servername+".DisableConnectionMessages", true));
+			loadServerData(servername, chan.getString("Channels.Servers."+servername+".Shortname", servername.substring(0,1)), chan.getBoolean("Channels.Servers."+servername+".ForceChannel", false), chan.getString("Channels.Servers."+servername+".ForcedChannel", "Server"), chan.getBoolean("Channels.Servers."+servername+".UsingFactionChannels", false),chan.getInt("Channels.Servers."+servername+".LocalRange", 50),chan.getString("Channels.Servers."+servername+".AdminColor", "&f"), chan.getBoolean("Channels.Servers."+servername+".DisableConnectionMessages", true));
 		}
 		//Load custom channels from db
 		ResultSet res = SQLManager.sqlQuery("SELECT * FROM BungeeCustomChannels");
@@ -194,15 +194,11 @@ public class ChatManager {
 		BungeeSuite.proxy.getScheduler().runAsync(BungeeSuite.instance, new SendPluginMessage("BungeeSuiteChat", server, b));
 	}
 	
-	public static void sendPlayer(String player, Server server) {
+	public static void sendPlayer(String player, Server server, boolean serverConnect) {
 		BSPlayer p = PlayerManager.getPlayer(player);
-		ServerData sd = serverData.get(server.getInfo().getName());
-		if(sd.forcingChannel()){
-			p.setChannel(sd.getForcedChannel());
-		}else if((p.getChannel().equals("Faction") || p.getChannel().equals("FactionAlly"))&& sd.usingFactions()){
-				p.setChannel(getServersDefaultChannel(sd).getName());
+		if(serverConnect){
+			setPlayerToForcedChannel(p,server);
 		}
-		
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
 		try {
@@ -213,6 +209,35 @@ public class ChatManager {
 		}
 		sendPluginMessageTaskChat(server.getInfo(),b);
 
+	}
+	
+	private static void setPlayerToForcedChannel(BSPlayer p, Server server) {
+		Channel c = getChannel(p.getChannel());
+		ServerData sd = ChatManager.serverData.get(server.getInfo().getName());
+		if(!c.isDefault()){
+			return;
+		}
+		if(isFactionChannel(c) && sd.usingFactions()){
+			return;
+		}
+		if(sd.forcingChannel()){
+			String channel = sd.getForcedChannel();
+			if(channel.equalsIgnoreCase("server")){
+				channel=sd.getServerName();
+			}else if(channel.equalsIgnoreCase("local")){
+				channel = sd.getServerName()+" Local";
+			}else if(channel.equalsIgnoreCase("global")){
+				channel = "Global";
+			}
+			p.setChannel(channel);
+		}else if((p.getChannel().equals("Faction") || p.getChannel().equals("FactionAlly"))&& sd.usingFactions()){
+				p.setChannel(ChatManager.getServersDefaultChannel(sd).getName());
+		}
+		
+	}
+	
+	public static boolean isFactionChannel(Channel c) {
+		return c.getName().equals("Faction")||c.getName().equals("FactionAlly");
 	}
 	
 	public static void checkServerEmpty(String server) {
@@ -373,7 +398,7 @@ public class ChatManager {
 	loadChannels();
 		for(ProxiedPlayer p: BungeeSuite.proxy.getPlayers()){
 			ChatManager.loadPlayersChannels(p, p.getServer());
-			ChatManager.sendPlayer(p.getName(),p.getServer());
+			ChatManager.sendPlayer(p.getName(),p.getServer(),true);
 			IgnoresManager.sendPlayersIgnores(PlayerManager.getPlayer(p), p.getServer());
 		}
 	}

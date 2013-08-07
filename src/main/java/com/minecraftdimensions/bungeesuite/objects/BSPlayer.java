@@ -282,7 +282,7 @@ public class BSPlayer {
 	}
 
 	public void updatePlayer() {
-		ChatManager.sendPlayer(playername, getServer());
+		ChatManager.sendPlayer(playername, getServer(),false);
 	}
 
 	public void sendMessageToPlayer(BSPlayer target, String message){

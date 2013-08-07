@@ -12,22 +12,28 @@ import com.minecraftdimensions.bungeesuite.objects.Messages;
 
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 public class ChatListener implements Listener {
+	
 	@EventHandler
 	public void playerLogin(ServerConnectedEvent e) throws SQLException {
 		ChatManager.loadPlayersChannels(e.getPlayer(), e.getServer());
-		ChatManager.sendPlayer(e.getPlayer().getName(),e.getServer());
+		ChatManager.sendPlayer(e.getPlayer().getName(),e.getServer(),true);
 		IgnoresManager.sendPlayersIgnores(PlayerManager.getPlayer(e.getPlayer()), e.getServer());
 		BSPlayer p = PlayerManager.getPlayer(e.getPlayer());
 		p.updateDisplayName();
+		
+	}
+
+	@EventHandler
+	public void playerLogin(LoginEvent e) throws SQLException {
 		if(ChatConfig.broadcastProxyConnectionMessages){
-			PlayerManager.sendBroadcast(Messages.PLAYER_CONNECT_PROXY.replace("{player}", p.getDisplayingName()));
+			PlayerManager.sendBroadcast(Messages.PLAYER_CONNECT_PROXY.replace("{player}", e.getConnection().getName()));
 		}
 	}
-	
 	@EventHandler
 	public void playerLogin(ChatEvent e) throws SQLException {
 		if(e.isCommand()){
