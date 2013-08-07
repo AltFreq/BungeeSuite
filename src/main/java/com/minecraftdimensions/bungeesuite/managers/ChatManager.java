@@ -605,7 +605,6 @@ public class ChatManager {
 		p.sendMessage(ChatColor.GOLD+"Channel owner: "+ChatColor.AQUA+c.getOwner());
 		}else{
 			p.sendMessage(ChatColor.GOLD+"Channel type: "+ChatColor.AQUA+"Server");
-		}
 		ArrayList<BSPlayer>members = c.getMembers();
 		String players=ChatColor.GOLD+"Members: "+ChatColor.AQUA+"";
 		for(int i = 0; i<members.size()&&i<10;i++){
@@ -618,6 +617,7 @@ public class ChatManager {
 		p.sendMessage(players);
 		if(p.getName().equals(c.getOwner())){
 			p.sendMessage(ChatColor.GOLD+"Format: "+ChatColor.AQUA+c.format());
+		}
 		}
 	}
 }
