@@ -49,8 +49,9 @@ public class BungeeSuite extends Plugin {
 	}
 	
 	void registerListeners() {
-		this.getProxy().registerChannel("BSChat");
-		this.getProxy().registerChannel("BungeeSuiteChat");
+		this.getProxy().registerChannel("BSChat");//in
+		this.getProxy().registerChannel("BungeeSuiteChat");//out
+		this.getProxy().registerChannel("BSBans");//in
 		proxy.getPluginManager().registerListener(this, new PlayerListener());
 		proxy.getPluginManager().registerListener(this, new ChatListener());
 		proxy.getPluginManager().registerListener(this, new ChatMessageListener());

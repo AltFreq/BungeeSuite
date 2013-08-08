@@ -24,9 +24,13 @@ public class ChatMessageListener implements Listener {
 	@EventHandler
 	public void receivePluginMessage(PluginMessageEvent event)
 			throws IOException, SQLException {
+		if(event.isCancelled()){
+			return;
+		}
 		if (!event.getTag().equalsIgnoreCase("BSChat")) {
 			return;
 		}
+		event.setCancelled(true);
 		Server s = (Server)event.getSender();
 		DataInputStream in = new DataInputStream(new ByteArrayInputStream(
 				event.getData()));
@@ -130,6 +134,10 @@ public class ChatMessageListener implements Listener {
 		}
 		if(task.equals("GetChannelInfo")){
 			ChatManager.sendPlayerChannelInformation(in.readUTF(),in.readUTF(),in.readBoolean());
+			return;
+		}
+		if(task.equals("SetChannelFormat")){
+			ChatManager.setChannelsFormat(in.readUTF(),in.readUTF(),in.readBoolean());
 			return;
 		}
 	}

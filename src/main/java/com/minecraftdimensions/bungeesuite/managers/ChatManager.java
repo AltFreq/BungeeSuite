@@ -657,4 +657,12 @@ public class ChatManager {
 			}
 		}
 	}
+	public static void setChannelsFormat(String readUTF, String readUTF2,
+			boolean readBoolean) {
+		// TODO Auto-generated method stub
+		//update channel
+		//sql update
+		//resend to servers
+		
+	}
 }

@@ -3,7 +3,9 @@ package com.minecraftdimensions.bungeesuite.managers;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.SimpleTimeZone;
 
 import com.minecraftdimensions.bungeesuite.Utilities;
 import com.minecraftdimensions.bungeesuite.configs.BansConfig;
@@ -24,7 +26,7 @@ public class BansManager {
 	}
 
 	public static void banPlayer(String player, String bannedBy, String reason) throws SQLException{
-		if(reason==null){
+		if(reason.equals("")){
 			reason = Messages.DEFAULT_BAN_REASON;
 		}
 		SQLManager.standardQuery("INSERT INTO BungeeBans (player,banned_by,reason,type,banned_on) VALUES ('"+player+"','"+bannedBy+"','"+reason+"','ban',NOW())");
@@ -47,7 +49,7 @@ public class BansManager {
 		return PlayerManager.getPlayersIP(player);
 	}
 
-	public static void unbanPlayer(String player,String sender) throws SQLException {
+	public static void unbanPlayer(String sender,String player) throws SQLException {
 		SQLManager.standardQuery("DELETE FROM BungeeBans WHERE player ='"+player+"'");
 		if(BansConfig.broadcastBans){
 			PlayerManager.sendBroadcast(Messages.PLAYER_UNBANNED.replace("{player}", player).replace("{sender}", sender));
@@ -56,7 +58,7 @@ public class BansManager {
 		}
 	}
 
-	public static void banIP(String player, String bannedBy, String reason) throws SQLException {
+	public static void banIP(String bannedBy, String player, String reason) throws SQLException {
 		if(reason==null){
 			reason = Messages.DEFAULT_BAN_REASON;
 		}
@@ -101,10 +103,14 @@ public class BansManager {
 	}
 
 	public static void kickAll(String sender, String message) {
-		for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-			disconnectPlayer(p, "S");
+		if(message.equals("")){
+			message = Messages.DEFAULT_KICK_MESSAGE;
+		}else{
+			message = Messages.KICK_PLAYER_MESSAGE.replace("{message}", message).replace("{sender}", sender);
 		}
-
+		for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+			disconnectPlayer(p, message);
+		}
 	}
 
 	public static Ban getBanInfo(String player) throws SQLException {
@@ -116,15 +122,42 @@ public class BansManager {
 		res.close();
 		return b;
 	}
+	
+	public static void checkPlayersBan(String sender, String player) throws SQLException{
+		BSPlayer p = PlayerManager.getPlayer(sender);
+		Ban b = getBanInfo(player);
+		if(b==null){
+			p.sendMessage(Messages.PLAYER_NOT_BANNED);
+			return;
+		}else{
+			SimpleDateFormat sdf = new SimpleDateFormat();
+			sdf.setTimeZone(new SimpleTimeZone(0, "GMT"));
+			sdf.applyPattern("dd MMM yyyy HH:mm:ss z");
+			p.sendMessage(ChatColor.DARK_AQUA+"--------"+ChatColor.DARK_RED+"Ban Info"+ChatColor.DARK_AQUA+"--------");
+			p.sendMessage(ChatColor.RED+"Player: "+ChatColor.AQUA+b.getPlayer());
+			p.sendMessage(ChatColor.RED+"Ban type: "+ChatColor.AQUA+b.getType());
+			p.sendMessage(ChatColor.RED+"Banned by: "+ChatColor.AQUA+b.getBannedBy());
+			p.sendMessage(ChatColor.RED+"Ban reason: "+ChatColor.AQUA+b.getReasaon());
+			p.sendMessage(ChatColor.RED+"Bannned on: "+ChatColor.AQUA+sdf.format(b.getBannedOn()));
+			if(b.getBannedUntil()==null){
+				p.sendMessage(ChatColor.RED+"Bannned until: "+ChatColor.AQUA+"-Forever-");
+			}else{
+				p.sendMessage(ChatColor.RED+"Bannned until: "+ChatColor.AQUA+sdf.format(b.getBannedUntil()));
+			}
+		}
+		
+	}
 
 	public static void kickPlayer(String player, String sender, String reason) {
-		if(reason==null){
-			reason = Messages.DEFAULT_BAN_REASON;
+		if(reason.equals("")){
+			reason = Messages.DEFAULT_KICK_MESSAGE;
 		}
 		player = PlayerManager.getSimilarPlayer(player).getName();
 		if(PlayerManager.isPlayerOnline(player)){
 			disconnectPlayer(player,Messages.KICK_PLAYER_MESSAGE.replace("{message}", reason).replace("{sender}", sender));
-			PlayerManager.sendBroadcast(Messages.KICK_PLAYER_BROADCAST.replace("{message}", reason).replace("{player}", player).replace("{sender}", sender));
+			if(BansConfig.broadcastKicks){
+				PlayerManager.sendBroadcast(Messages.KICK_PLAYER_BROADCAST.replace("{message}", reason).replace("{player}", player).replace("{sender}", sender));
+			}
 		}
 	}
 
@@ -143,8 +176,6 @@ public class BansManager {
 		return PlayerManager.getPlayersAltAccounts(player);
 	}
 	
-	
-	
 	public ArrayList<String> getBannedAltAccounts(String player) throws SQLException {
 		ArrayList<String> accounts = getAltAccounts(player);
 		boolean check = false;
@@ -160,5 +191,10 @@ public class BansManager {
 		}else{
 			return null;
 		}
+	}
+
+	public static void reloadBans(String sender) {
+		PlayerManager.getPlayer(sender).sendMessage("Bans Reloaded");
+		BansConfig.reloadBans();
 	}
 }

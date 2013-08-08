@@ -138,6 +138,8 @@ public class Messages {
 					+ "{player} has been ip banned for: {message}, by {sender}"));
 	public static String DEFAULT_BAN_REASON = colorize(m
 			.getString("DEFAULT_BAN_REASON","Breaking server rules"));
+	public static String DEFAULT_KICK_MESSAGE = colorize(m
+			.getString("DEFAULT_KICK_MESSAGE","&cYou have been kicked by {sender}"));
 	public static String BAN_PLAYER_MESSAGE = colorize(m.getString("BAN_PLAYER_MESSAGE", "&c"
 					+ "You have been banned for: {message}, by {sender}"));
 	public static String BAN_PLAYER_BROADCAST = colorize(m
