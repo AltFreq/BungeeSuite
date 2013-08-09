@@ -1,6 +1,6 @@
 package com.minecraftdimensions.bungeesuite.objects;
-
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class Ban {
 	private String player;
@@ -10,13 +10,13 @@ public class Ban {
 	private Date bannedOn;
 	private Date bannedUntil;
 	
-	public Ban (String player, String bannedBy, String reason, String type, Date bannedOn, Date bannedUntil){
+	public Ban (String player, String bannedBy, String reason, String type, Timestamp timestamp, Timestamp timestamp2){
 		this.player=player;
 		this.bannedBy = bannedBy;
 		this.reason = reason;
 		this.type = type;
-		this.bannedOn = bannedOn;
-		this.bannedUntil = bannedUntil;
+		this.bannedOn = timestamp;
+		this.bannedUntil = timestamp2;
 	}
 
 	public String getPlayer(){

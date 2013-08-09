@@ -24,14 +24,18 @@ public class ChatListener implements Listener {
 		ChatManager.sendPlayer(e.getPlayer().getName(),e.getServer(),true);
 		IgnoresManager.sendPlayersIgnores(PlayerManager.getPlayer(e.getPlayer()), e.getServer());
 		BSPlayer p = PlayerManager.getPlayer(e.getPlayer());
+		if(p!=null){
 		p.updateDisplayName();
+		}
 		
 	}
 
 	@EventHandler
 	public void playerLogin(LoginEvent e) throws SQLException {
-		if(ChatConfig.broadcastProxyConnectionMessages){
-			PlayerManager.sendBroadcast(Messages.PLAYER_CONNECT_PROXY.replace("{player}", e.getConnection().getName()));
+		if(!e.isCancelled()){
+			if(ChatConfig.broadcastProxyConnectionMessages){
+				PlayerManager.sendBroadcast(Messages.PLAYER_CONNECT_PROXY.replace("{player}", e.getConnection().getName()));
+			}
 		}
 	}
 	@EventHandler

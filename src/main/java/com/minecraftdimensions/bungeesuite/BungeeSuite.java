@@ -5,13 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.minecraftdimensions.bungeesuite.commands.WhoIsCommand;
+import com.minecraftdimensions.bungeesuite.configs.BansConfig;
 import com.minecraftdimensions.bungeesuite.configs.MainConfig;
+import com.minecraftdimensions.bungeesuite.listeners.BansListener;
+import com.minecraftdimensions.bungeesuite.listeners.BansMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.ChatListener;
 import com.minecraftdimensions.bungeesuite.listeners.ChatMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.PlayerListener;
 import com.minecraftdimensions.bungeesuite.managers.AnnouncementManager;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.DatabaseTableManager;
+import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PrefixSuffixManager;
 import com.minecraftdimensions.bungeesuite.managers.SQLManager;
 
@@ -41,6 +45,9 @@ public class BungeeSuite extends Plugin {
 		DatabaseTableManager.createDefaultTables();
 		AnnouncementManager.loadAnnouncements();
 		ChatManager.loadChannels();
+		if(BansConfig.bans){
+			LoggingManager.log(ChatColor.GOLD+"Using bans plugin");
+		}
 		PrefixSuffixManager.loadPrefixes();
 		PrefixSuffixManager.loadSuffixes();
 		}else{
@@ -55,6 +62,8 @@ public class BungeeSuite extends Plugin {
 		proxy.getPluginManager().registerListener(this, new PlayerListener());
 		proxy.getPluginManager().registerListener(this, new ChatListener());
 		proxy.getPluginManager().registerListener(this, new ChatMessageListener());
+		proxy.getPluginManager().registerListener(this, new BansMessageListener());
+		proxy.getPluginManager().registerListener(this, new BansListener());
 	}
 	
 	private void setupSQL() {

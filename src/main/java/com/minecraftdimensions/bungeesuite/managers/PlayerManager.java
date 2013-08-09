@@ -139,7 +139,7 @@ public class PlayerManager {
 		}else{
 			ip = p.getProxiedPlayer().getAddress().getAddress().toString();
 		}
-		return ip;
+		return ip.substring(1,ip.length());
 	}
 	
 	public static void sendBroadcast(String message) {

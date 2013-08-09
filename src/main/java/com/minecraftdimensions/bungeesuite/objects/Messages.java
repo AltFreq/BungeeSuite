@@ -139,26 +139,16 @@ public class Messages {
 	public static String DEFAULT_BAN_REASON = colorize(m
 			.getString("DEFAULT_BAN_REASON","Breaking server rules"));
 	public static String DEFAULT_KICK_MESSAGE = colorize(m
-			.getString("DEFAULT_KICK_MESSAGE","&cYou have been kicked by {sender}"));
+			.getString("DEFAULT_KICK_MESSAGE","&cBreaking server rules"));
 	public static String BAN_PLAYER_MESSAGE = colorize(m.getString("BAN_PLAYER_MESSAGE", "&c"
 					+ "You have been banned for: {message}, by {sender}"));
 	public static String BAN_PLAYER_BROADCAST = colorize(m
 			.getString("BAN_PLAYER_BROADCAST", "&c"
 					+ "{player} has been banned for: {message}, by {sender}"));
-	public static String TEMP_BAN = colorize(m.getString("TEMP_BAN", "&c"
-			+ "You have been temporarily banned for {time}"));
 	public static String TEMP_BAN_BROADCAST = colorize(m.getString("TEMP_BAN_BROADCAST", "&c"
-					+ "{player} has been temporarily banned for {time}!"));
+					+ "{player} has been temporarily banned for {message} until {time}, by {sender}!"));
 	public static String TEMP_BAN_MESSAGE = colorize(m
-					.getString(
-							"TEMP_BAN_MESSAGE",
-							"&c"
-									+ "You have been temporarily banned for {time} for {message}!"));
-	public static String TEMP_BAN_BROADCAST_MESSAGE = colorize(m
-					.getString(
-							"TEMP_BAN_BROADCAST_MESSAGE",
-							"&c"
-									+ "{player} has been temporarily banned for {time} for {message}"));
+					.getString("TEMP_BAN_MESSAGE","&c"+ "You have been temporarily until {time} for {message}, by {sender}!"));
 	public static String PLAYER_UNBANNED = colorize(m.getString("PLAYER_UNBANNED", "&2"
 					+ "{player} has been unbanned by {sender}!"));
 	public static String PLAYER_BANNED_STILL_TEMP_MESSAGE = colorize(m
@@ -267,7 +257,7 @@ public class Messages {
 	public static String CLEANCHAT_DISABLED = colorize(m.getString("CLEANCHAT_DISABLED", "&c"
 					+ "CleanChat disabled"));
 	public static String AFK_DISPLAY = colorize(m.getString("AFK_DISPLAY", "&5"
-					+ "[AFK]&f"));
+					+ "[AFK]&r"));
 	public static String PLAYER_AFK = colorize(m.getString("PLAYER_AFK", "&6"
 					+ "{player} &6is now afk"));
 	public static String PLAYER_NOT_AFK = colorize(m.getString("PLAYER_NOT_AFK", "&7"

@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.SimpleTimeZone;
+import java.util.Calendar;
 
 import com.minecraftdimensions.bungeesuite.Utilities;
 import com.minecraftdimensions.bungeesuite.configs.BansConfig;
@@ -25,7 +25,20 @@ public class BansManager {
 						+ player + "'");
 	}
 
-	public static void banPlayer(String player, String bannedBy, String reason) throws SQLException{
+	public static void banPlayer(String bannedBy, String player, String reason) throws SQLException{
+		BSPlayer p = PlayerManager.getPlayer(bannedBy);
+		BSPlayer t = PlayerManager.getSimilarPlayer(player);
+		if(t!=null){
+			player = t.getName();
+		}
+		if(!PlayerManager.playerExists(player)){
+			p.sendMessage(Messages.PLAYER_DOES_NOT_EXIST);
+			return;
+		}
+		if(isPlayerBanned(player)){
+			p.sendMessage(Messages.PLAYER_ALREADY_BANNED);
+			return;
+		}
 		if(reason.equals("")){
 			reason = Messages.DEFAULT_BAN_REASON;
 		}
@@ -36,13 +49,8 @@ public class BansManager {
 		if(BansConfig.broadcastBans){
 			PlayerManager.sendBroadcast(Messages.BAN_PLAYER_BROADCAST.replace("{player}", player).replace("{message}", reason).replace("{sender}", bannedBy));
 		}else{
-			PlayerManager.sendMessageToPlayer(bannedBy, Messages.BAN_PLAYER_BROADCAST.replace("{player}", player).replace("{message}", reason).replace("{sender}", bannedBy));
+			p.sendMessage(Messages.BAN_PLAYER_BROADCAST.replace("{player}", player).replace("{message}", reason).replace("{sender}", bannedBy));
 		}
-	}
-
-	public static void tempBanPlayer(String player, String bannedBy,
-			String reason, Date bannedUntil) {
-
 	}
 	
 	public static String getPlayersIP(String player) throws SQLException{
@@ -50,6 +58,14 @@ public class BansManager {
 	}
 
 	public static void unbanPlayer(String sender,String player) throws SQLException {
+		if(!PlayerManager.playerExists(player)){
+			PlayerManager.sendMessageToPlayer(sender, Messages.PLAYER_DOES_NOT_EXIST);
+			return;
+		}
+		if(!isPlayerBanned(player)){
+			PlayerManager.sendMessageToPlayer(sender, Messages.PLAYER_NOT_BANNED);
+			return;
+		}
 		SQLManager.standardQuery("DELETE FROM BungeeBans WHERE player ='"+player+"'");
 		if(BansConfig.broadcastBans){
 			PlayerManager.sendBroadcast(Messages.PLAYER_UNBANNED.replace("{player}", player).replace("{sender}", sender));
@@ -59,7 +75,7 @@ public class BansManager {
 	}
 
 	public static void banIP(String bannedBy, String player, String reason) throws SQLException {
-		if(reason==null){
+		if(reason.equals("")){
 			reason = Messages.DEFAULT_BAN_REASON;
 		}
 		ArrayList<String> accounts = null;
@@ -71,9 +87,12 @@ public class BansManager {
 		for(String a: accounts){
 			if(!isPlayerBanned(a)){
 				SQLManager.standardQuery("INSERT INTO BungeeBans VALUES ('"+a+"', '"+bannedBy+"', '"+reason+"', 'ipban', NOW(), NULL)");
+			}else{
+				SQLManager.standardQuery("UPDATE BungeeBans SET type='ipban' WHERE player ='"+a+"')");
 			}
+			
 			if(PlayerManager.isPlayerOnline(a)){
-				disconnectPlayer(player,Messages.IPBAN_PLAYER.replace("{message}", reason).replace("{sender}", bannedBy));
+				disconnectPlayer(a,Messages.IPBAN_PLAYER.replace("{message}", reason).replace("{sender}", bannedBy));
 			}
 		}
 		if(BansConfig.broadcastBans){
@@ -89,25 +108,20 @@ public class BansManager {
 		if(!Utilities.isIPAddress(player)){
 		player=PlayerManager.getPlayersIP(player);
 		}
-		SQLManager.standardQuery("DELETE FROM BungeeBans B INNER JOIN BungeePlayers P ON B.player = P.playername WHERE ipadress ='"
-				+ player + "'");
+		SQLManager.standardQuery("DELETE BungeeBans FROM BungeeBans INNER JOIN BungeePlayers ON BungeeBans.player = BungeePlayers.playername WHERE BungeePlayers.ipaddress = '"+player+"'");
 		if(BansConfig.broadcastBans){
 			PlayerManager.sendBroadcast(Messages.PLAYER_UNBANNED.replace("{player}", player).replace("{sender}", sender));
 		}else{
 			PlayerManager.sendMessageToPlayer(sender,Messages.PLAYER_UNBANNED.replace("{player}", player).replace("{sender}", sender));
 		}
 	}
-	
-	public boolean isPlayerStillBanned(String player) throws SQLException{
-		return getBanInfo(player).stillBanned();
-	}
 
 	public static void kickAll(String sender, String message) {
 		if(message.equals("")){
 			message = Messages.DEFAULT_KICK_MESSAGE;
-		}else{
-			message = Messages.KICK_PLAYER_MESSAGE.replace("{message}", message).replace("{sender}", sender);
 		}
+			message = Messages.KICK_PLAYER_MESSAGE.replace("{message}", message).replace("{sender}", sender);
+		
 		for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
 			disconnectPlayer(p, message);
 		}
@@ -117,7 +131,7 @@ public class BansManager {
 		Ban b = null;
 		ResultSet res =SQLManager.sqlQuery("SELECT * FROM BungeeBans WHERE player = '"+player+"'");
 		while (res.next()){
-			b = new Ban(res.getString("player"), res.getString("bannedBy"), res.getString("reason"), res.getString("type"), res.getDate("banned_on"), res.getDate("banned_until"));
+			b = new Ban(res.getString("player"), res.getString("banned_by"), res.getString("reason"), res.getString("type"), res.getTimestamp("banned_on"), res.getTimestamp("banned_until"));
 		}
 		res.close();
 		return b;
@@ -131,7 +145,6 @@ public class BansManager {
 			return;
 		}else{
 			SimpleDateFormat sdf = new SimpleDateFormat();
-			sdf.setTimeZone(new SimpleTimeZone(0, "GMT"));
 			sdf.applyPattern("dd MMM yyyy HH:mm:ss z");
 			p.sendMessage(ChatColor.DARK_AQUA+"--------"+ChatColor.DARK_RED+"Ban Info"+ChatColor.DARK_AQUA+"--------");
 			p.sendMessage(ChatColor.RED+"Player: "+ChatColor.AQUA+b.getPlayer());
@@ -148,15 +161,21 @@ public class BansManager {
 		
 	}
 
-	public static void kickPlayer(String player, String sender, String reason) {
+	public static void kickPlayer(String sender, String player, String reason) {
 		if(reason.equals("")){
 			reason = Messages.DEFAULT_KICK_MESSAGE;
 		}
+		BSPlayer p = PlayerManager.getPlayer(sender);
+		BSPlayer t = PlayerManager.getSimilarPlayer(player);
+		if(t==null){
+			p.sendMessage(Messages.PLAYER_NOT_ONLINE);
+			return;
+		}
 		player = PlayerManager.getSimilarPlayer(player).getName();
 		if(PlayerManager.isPlayerOnline(player)){
-			disconnectPlayer(player,Messages.KICK_PLAYER_MESSAGE.replace("{message}", reason).replace("{sender}", sender));
+			disconnectPlayer(t.getName(),Messages.KICK_PLAYER_MESSAGE.replace("{message}", reason).replace("{sender}", sender));
 			if(BansConfig.broadcastKicks){
-				PlayerManager.sendBroadcast(Messages.KICK_PLAYER_BROADCAST.replace("{message}", reason).replace("{player}", player).replace("{sender}", sender));
+				PlayerManager.sendBroadcast(Messages.KICK_PLAYER_BROADCAST.replace("{message}", reason).replace("{player}", t.getName()).replace("{sender}", sender));
 			}
 		}
 	}
@@ -196,5 +215,56 @@ public class BansManager {
 	public static void reloadBans(String sender) {
 		PlayerManager.getPlayer(sender).sendMessage("Bans Reloaded");
 		BansConfig.reloadBans();
+	}
+
+	public static void tempBanPlayer(String sender, String player,
+			int minute, int hour, int day, String message) throws SQLException {
+		BSPlayer p = PlayerManager.getPlayer(sender);
+		BSPlayer t = PlayerManager.getSimilarPlayer(player);
+		if(t!=null){
+			player = t.getName();
+		}
+		if(!PlayerManager.playerExists(player)){
+			p.sendMessage(Messages.PLAYER_DOES_NOT_EXIST);
+			return;
+		}
+		if(isPlayerBanned(player)){
+			p.sendMessage(Messages.PLAYER_ALREADY_BANNED);
+			return;
+		}
+		if(message.equals("")){
+			message = Messages.DEFAULT_BAN_REASON;
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MINUTE, minute);
+		cal.add(Calendar.HOUR_OF_DAY, hour);
+		cal.add(Calendar.DATE, day);
+		Date sqlToday = new Date(cal.getTimeInMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.applyPattern("dd MMM yyyy HH:mm:ss");
+		String time = sdf.format(sqlToday);
+		sdf.applyPattern("yyyy-MM-dd HH:mm:ss");
+		System.out.println(sdf.format(sqlToday));
+		SQLManager.standardQuery("INSERT INTO BungeeBans (player,banned_by,reason,type,banned_on,banned_until) VALUES('"+player+"','"+sender+"','"+message+"','tempban',NOW(),'"+sdf.format(sqlToday)+"')");
+		if(t!=null){
+			disconnectPlayer(t.getName(),Messages.TEMP_BAN_MESSAGE.replace("{sender}", p.getName()).replace("{time}", time).replace("{message}", message));
+		}
+		if(BansConfig.broadcastBans){
+			PlayerManager.sendBroadcast(Messages.TEMP_BAN_BROADCAST.replace("{player}", player).replace("{sender}", p.getName()).replace("{message}", message).replace("{time}", time));
+		}else{
+			p.sendMessage(Messages.TEMP_BAN_BROADCAST.replace("{player}", player).replace("{sender}", p.getName()).replace("{message}", message).replace("{time}", time));
+		}
+		
+		
+	}
+
+	public static boolean checkTempBan(Ban b) throws SQLException {
+		java.util.Date today = new java.util.Date(Calendar.getInstance().getTimeInMillis());
+		java.util.Date banned = b.getBannedUntil();
+		if(today.compareTo(banned)>=0){
+			SQLManager.standardQuery("DELETE FROM BungeeBans WHERE player = '"+b.getPlayer()+"'");
+			return false;
+		}
+		return true;
 	}
 }
