@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.md_5.bungee.api.connection.Server;
 
+import com.minecraftdimensions.bungeesuite.BungeeSuite;
 import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 
@@ -55,10 +56,10 @@ public class PrefixSuffixManager {
 		String prefix ="";
 		String suffix = "";
 		for(String s: prefixes.keySet()){
-			prefix+=s+"%"+prefixes.get(s);
+			prefix+=s+"%"+prefixes.get(s)+"%";
 		}
 		for(String s: suffixes.keySet()){
-			suffix+=s+"%"+suffixes.get(s);
+			suffix+=s+"%"+suffixes.get(s)+"%";
 		}
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
