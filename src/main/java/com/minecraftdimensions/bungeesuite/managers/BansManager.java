@@ -242,7 +242,7 @@ public class BansManager {
 		Date sqlToday = new Date(cal.getTimeInMillis());
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		sdf.applyPattern("dd MMM yyyy HH:mm:ss");
-		String time = sdf.format(sqlToday+ "("+day+" days, "+hour+" hours, "+minute+ " minutes)");
+		String time = sdf.format(sqlToday)+"("+day+" days, "+hour+" hours, "+minute+ " minutes)";
 		sdf.applyPattern("yyyy-MM-dd HH:mm:ss");
 		SQLManager.standardQuery("INSERT INTO BungeeBans (player,banned_by,reason,type,banned_on,banned_until) VALUES('"+player+"','"+sender+"','"+message+"','tempban',NOW(),'"+sdf.format(sqlToday)+"')");
 		if(t!=null){
