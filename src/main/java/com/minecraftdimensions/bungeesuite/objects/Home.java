@@ -67,7 +67,7 @@ public class Home {
 		return loc.serialise();
 	}
 	public void teleportPlayerToHome(String player){
-		PlayerManager.getSimilarPlayer(player).teleportPlayerToLocation(loc);
+//		PlayerManager.getSimilarPlayer(player).teleportPlayerToLocation(loc);
 	}
 	public Location getLocation() {
 		return loc;

@@ -190,17 +190,6 @@ public class BSPlayer {
 		return null;
 	}
 	
-	public void teleportPlayerToLocation(Location loc){
-		//TODO
-	}
-	
-	public void teleportPlayerToPlayer(String player){
-		//TODO
-	}
-	public void teleportPlayerToPlayer(BSPlayer player){
-		//TODO
-	}
-	
 	public void setDeathBackLocation(Location loc){
 		deathBackLocation = loc;
 		lastBack = true;

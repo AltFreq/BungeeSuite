@@ -12,12 +12,14 @@ import com.minecraftdimensions.bungeesuite.listeners.BansMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.ChatListener;
 import com.minecraftdimensions.bungeesuite.listeners.ChatMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.PlayerListener;
+import com.minecraftdimensions.bungeesuite.listeners.TeleportsMessageListener;
 import com.minecraftdimensions.bungeesuite.managers.AnnouncementManager;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.DatabaseTableManager;
 import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PrefixSuffixManager;
 import com.minecraftdimensions.bungeesuite.managers.SQLManager;
+import com.minecraftdimensions.bungeesuite.managers.TeleportManager;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -50,6 +52,7 @@ public class BungeeSuite extends Plugin {
 		}
 		PrefixSuffixManager.loadPrefixes();
 		PrefixSuffixManager.loadSuffixes();
+		TeleportManager.initialise();
 		}else{
 			setupSQL();
 		}
@@ -59,11 +62,14 @@ public class BungeeSuite extends Plugin {
 		this.getProxy().registerChannel("BSChat");//in
 		this.getProxy().registerChannel("BungeeSuiteChat");//out
 		this.getProxy().registerChannel("BSBans");//in
+		this.getProxy().registerChannel("BSTeleports");//in
+		this.getProxy().registerChannel("BungeeSuiteTP");//out
 		proxy.getPluginManager().registerListener(this, new PlayerListener());
 		proxy.getPluginManager().registerListener(this, new ChatListener());
 		proxy.getPluginManager().registerListener(this, new ChatMessageListener());
 		proxy.getPluginManager().registerListener(this, new BansMessageListener());
 		proxy.getPluginManager().registerListener(this, new BansListener());
+		proxy.getPluginManager().registerListener(this, new TeleportsMessageListener());
 	}
 	
 	private void setupSQL() {

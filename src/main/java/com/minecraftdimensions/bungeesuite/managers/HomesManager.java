@@ -94,7 +94,7 @@ public class HomesManager {
 		Home h = p.getHomeSimilar(home);
 		if(h!=null){
 			p.sendMessage(Messages.SENT_HOME);
-			p.teleportPlayerToLocation(h.getLocation());
+//			p.teleportPlayerToLocation(h.getLocation());
 		}else{
 			p.sendMessage(Messages.HOME_DOES_NOT_EXIST);
 		}

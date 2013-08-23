@@ -24,7 +24,7 @@ import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 				}
 				String server = res.getString("server");
 				String world = res.getString("world");
-				createPortal(res.getString("portalname"), server,res.getString("filltype"),target,dest,new Region(new Location(server,world,res.getDouble("minx"),res.getDouble("miny"), res.getDouble("minz")), new Location(server,world,res.getDouble("xmax"),res.getDouble("ymax"),res.getDouble("zmax"))));
+//				createPortal(res.getString("portalname"), server,res.getString("filltype"),target,dest,new Region(new Location(server,world,res.getDouble("minx"),res.getDouble("miny"), res.getDouble("minz")), new Location(server,world,res.getDouble("xmax"),res.getDouble("ymax"),res.getDouble("zmax"))));
 			}
 			res.close();
 		}

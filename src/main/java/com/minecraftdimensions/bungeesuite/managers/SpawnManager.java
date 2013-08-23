@@ -83,7 +83,7 @@ public class SpawnManager {
 	}
 	
 	public static void sendPlayerToSpawn(BSPlayer player, Spawn spawn, boolean silent){
-		player.teleportPlayerToLocation(spawn.getLocation());
+//		player.teleportPlayerToLocation(spawn.getLocation());
 		if(!silent){
 			player.sendMessage(Messages.TELEPORTED_TO_SPAWN);
 		}
@@ -91,7 +91,7 @@ public class SpawnManager {
 	
 	public static void sendPlayerToSpawn(String player, Spawn spawn, boolean silent){
 		BSPlayer p = PlayerManager.getPlayer(player);
-		p.teleportPlayerToLocation(spawn.getLocation());
+//		p.teleportPlayerToLocation(spawn.getLocation());
 		if(!silent){
 			p.sendMessage(Messages.TELEPORTED_TO_SPAWN);
 		}

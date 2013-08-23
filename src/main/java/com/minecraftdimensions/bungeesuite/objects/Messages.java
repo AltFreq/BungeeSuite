@@ -25,6 +25,8 @@ public class Messages {
 	public static String WORLD_NOT_EXIST = colorize(m.getString("WORLD_NOT_EXIST", "&c"
 					+ "That world does not exist"));
 	// teleport specific messages
+	public static String ALL_PLAYERS_TELEPORTED = colorize(m.getString("ALL_PLAYERS_TELEPORTED", "&2"
+			+ "All players have been teleported to {player}"));
 	public static String TELEPORTED_TO_PLAYER = colorize(m.getString("TELEPORTED_TO_PLAYER", "&2"
 					+ "You have been teleported to {player}"));
 	public static String PLAYER_TELEPORT_PENDING = colorize(m.getString("PLAYER_TELEPORT_PENDING", "&c"
@@ -33,6 +35,8 @@ public class Messages {
 					"&c" + "That player already has a teleport pending"));
 	public static String PLAYER_TELEPORTED_TO_YOU = colorize(m.getString("PLAYER_TELEPORTED_TO_YOU", "&2"
 					+ "{player} has teleported to you"));
+	public static String PLAYER_TELEPORTED = colorize(m.getString("PLAYER_TELEPORTED", "&2"
+			+ "{player} has teleported to {target}"));
 	public static String PLAYER_REQUESTS_TO_TELEPORT_TO_YOU = colorize(m
 					.getString(
 							"PLAYER_REQUESTS_TO_TELEPORT_TO_YOU",

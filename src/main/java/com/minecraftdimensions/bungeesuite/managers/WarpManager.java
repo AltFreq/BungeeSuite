@@ -84,7 +84,7 @@ public class WarpManager {
 	
 	public static void sendPlayerToWarp(String player, Warp warp, boolean silent){
 		BSPlayer p = PlayerManager.getPlayer(player);
-		p.teleportPlayerToLocation(warp.getLocation());
+//		p.teleportPlayerToLocation(warp.getLocation());
 		if(!silent){
 			p.sendMessage(Messages.PLAYER_WARPED.replace("{warp}", warp.getName()));
 		}

@@ -1,7 +1,10 @@
 package com.minecraftdimensions.bungeesuite.objects;
 
+import com.minecraftdimensions.bungeesuite.managers.TeleportManager;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.Server;
 
 public class Location {
 	private ServerInfo server;
@@ -22,7 +25,7 @@ public class Location {
 	}
 	
 	public Location(String serialised){
-		String loc [] = serialised.split("~|~");
+		String loc [] = serialised.split("~!~");
 		server = ProxyServer.getInstance().getServerInfo(loc[0]);
 		world = loc[1];
 		x = Double.parseDouble(loc[2]);
@@ -32,9 +35,9 @@ public class Location {
 		pitch = Float.parseFloat(loc[6]);
 	}
 	
-	public Location(String server, String world, double x,
+	public Location(Server server, String world, double x,
 			double y, double z) {
-		this.server = ProxyServer.getInstance().getServerInfo(server);
+		this.server = server.getInfo();
 		this.world = world;
 		this.x =x;
 		this.y = y;
@@ -89,9 +92,9 @@ public class Location {
 		this.pitch=pitch;
 	}
 	public String serialise(){
-		return server.getName()+"~|~"+world+"~|~"+x+"~|~"+y+"~|~"+z+"~|~"+yaw+"~|~"+pitch;
+		return server.getName()+"~!~"+world+"~!~"+x+"~!~"+y+"~!~"+z+"~!~"+yaw+"~!~"+pitch;
 	}
 	public void teleportPlayerToLocation(BSPlayer player){
-		player.teleportPlayerToLocation(this);
+		TeleportManager.teleportPlayerToLocation(player,this);
 	}
 }
