@@ -345,6 +345,10 @@ public class ChatManager {
 			p.sendMessage(Messages.PLAYER_DOES_NOT_EXIST);
 			return;
 		}
+		BSPlayer t = PlayerManager.getSimilarPlayer(target);
+		if(t!=null){
+			target = t.getName();
+		}
 		if(command){
 				command = !PlayerManager.isPlayerMuted(target);
 		}else{
