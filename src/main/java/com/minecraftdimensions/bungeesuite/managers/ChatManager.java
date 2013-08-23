@@ -307,6 +307,10 @@ public class ChatManager {
 			s.sendMessage(Messages.NICKNAME_TAKEN);
 			return;
 		}
+		if(PlayerManager.playerExists(nickname) && !t.getName().equals(nickname)){
+			s.sendMessage(Messages.NICKNAME_TAKEN);
+			return;
+		}
 		PlayerManager.setPlayersNickname(target, nickname);
 		if (t!=null && !t.equals(s)) {
 				s.sendMessage(Messages.NICKNAMED_PLAYER.replace("{player}",
