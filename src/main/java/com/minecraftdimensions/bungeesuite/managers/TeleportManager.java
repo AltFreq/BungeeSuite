@@ -161,20 +161,21 @@ public class TeleportManager {
 		player.setDeathBackLocation(loc);
 	}
 	public static void setPlayersTeleportBackLocation(BSPlayer player, Location loc){
+		System.out.println("GOT LOCATION");
 		player.setTeleportBackLocation(loc);
-	}
+	}	
 	
-	public static void sendPlayerToTeleportBack(BSPlayer player){
-		teleportPlayerToLocation(player,player.getTeleportBackLocation());
-	}
-	
-	public static void sendPlayerToDeathBack(BSPlayer player){
-		teleportPlayerToLocation(player,player.getDeathBackLocation());
-	}
-	
-	
-	public static void sendPlayerToLastBack(BSPlayer player){
+	public static void sendPlayerToLastBack(BSPlayer player, boolean death, boolean teleport){
+		player.sendMessage(Messages.SENT_BACK);
+		if(death && teleport){
+			if(player.hasDeathBackLocation() || player.hasTeleportBackLocation()){
 		teleportPlayerToLocation(player,player.getLastBackLocation());
+			}
+		}else if(death){
+			teleportPlayerToLocation(player,player.getDeathBackLocation());
+		}else if(teleport){
+			teleportPlayerToLocation(player,player.getDeathBackLocation());
+		}
 	}
 	
 	public static void togglePlayersTeleports(BSPlayer player){

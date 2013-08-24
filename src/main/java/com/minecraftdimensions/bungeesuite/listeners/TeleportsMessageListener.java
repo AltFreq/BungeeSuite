@@ -39,17 +39,17 @@ public class TeleportsMessageListener implements Listener {
 			String sender= in.readUTF();
 			String loc = in.readUTF();
 			String locs[] = loc.split("~!~");
-			TeleportManager.teleportPlayerToLocation(PlayerManager.getPlayer(sender), new Location((Server)event.getSender(),locs[0],Double.parseDouble(locs[1]),Double.parseDouble(locs[2]),Double.parseDouble(locs[3])));
+			TeleportManager.teleportPlayerToLocation(PlayerManager.getPlayer(sender), new Location(((Server)event.getSender()).getInfo(),locs[0],Double.parseDouble(locs[1]),Double.parseDouble(locs[2]),Double.parseDouble(locs[3])));
 			return;
 		}
 		
 		if(task.equals("PlayersTeleportBackLocation")){
-			TeleportManager.setPlayersTeleportBackLocation(PlayerManager.getPlayer(in.readUTF()), new Location((Server)event.getSender(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble()));
+			TeleportManager.setPlayersTeleportBackLocation(PlayerManager.getPlayer(in.readUTF()), new Location(((Server)event.getSender()).getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble()));
 			return;
 		}
 		
 		if(task.equals("PlayersDeathBackLocation")){
-			TeleportManager.setPlayersDeathBackLocation(PlayerManager.getPlayer(in.readUTF()), new Location((Server)event.getSender(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble()));
+			TeleportManager.setPlayersDeathBackLocation(PlayerManager.getPlayer(in.readUTF()), new Location(((Server)event.getSender()).getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble()));
 			return;
 		}
 		
@@ -75,6 +75,11 @@ public class TeleportsMessageListener implements Listener {
 		
 		if(task.equals("TpAll")){
 			TeleportManager.tpAll(in.readUTF(),in.readUTF());
+			return;
+		}
+		
+		if(task.equals("SendPlayerBack")){
+			TeleportManager.sendPlayerToLastBack(PlayerManager.getPlayer(in.readUTF()),in.readBoolean(),in.readBoolean());
 			return;
 		}
 		

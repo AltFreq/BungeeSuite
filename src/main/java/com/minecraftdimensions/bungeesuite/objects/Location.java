@@ -35,9 +35,9 @@ public class Location {
 		pitch = Float.parseFloat(loc[6]);
 	}
 	
-	public Location(Server server, String world, double x,
+	public Location(ServerInfo serverInfo, String world, double x,
 			double y, double z) {
-		this.server = server.getInfo();
+		this.server = serverInfo;
 		this.world = world;
 		this.x =x;
 		this.y = y;

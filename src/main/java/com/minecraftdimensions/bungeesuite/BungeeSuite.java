@@ -20,6 +20,7 @@ import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PrefixSuffixManager;
 import com.minecraftdimensions.bungeesuite.managers.SQLManager;
 import com.minecraftdimensions.bungeesuite.managers.TeleportManager;
+import com.minecraftdimensions.bungeesuite.socket.SimpleSocketServer;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -46,6 +47,7 @@ public class BungeeSuite extends Plugin {
         if ( SQLManager.initialiseConnections() ) {
             DatabaseTableManager.createDefaultTables();
             AnnouncementManager.loadAnnouncements();
+            SimpleSocketServer.startServer();
             ChatManager.loadChannels();
             if ( BansConfig.bans ) {
                 LoggingManager.log( ChatColor.GOLD + "Using bans plugin" );
