@@ -10,6 +10,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
+import com.minecraftdimensions.bungeesuite.configs.TeleportConfig;
 import com.minecraftdimensions.bungeesuite.objects.Location;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
@@ -20,10 +21,12 @@ public class TeleportManager {
 	public static HashMap<BSPlayer, BSPlayer> pendingTeleportsTPAHere; // Player ----teleported---> player
 	public static HashMap<BSPlayer, Location> backLocations;
 	public static String OUTGOING_CHANNEL = "BungeeSuiteTP";
+	static int expireTime;
 
 	public static void initialise(){
 		pendingTeleportsTPA = new HashMap<BSPlayer,BSPlayer>();
 		pendingTeleportsTPAHere = new HashMap<BSPlayer,BSPlayer>();
+		expireTime =TeleportConfig.expireTime;
 	}
 	
 	public static void requestToTeleportToPlayer(String player, String target){
@@ -64,7 +67,7 @@ public class TeleportManager {
 							}
 						}
 					}
-				}, 10, TimeUnit.SECONDS);
+				}, expireTime, TimeUnit.SECONDS);
 	}
 	
 	public static void requestPlayerTeleportToYou(String player, String target){
@@ -105,7 +108,7 @@ public class TeleportManager {
 							}
 						}
 					}
-				}, 10, TimeUnit.SECONDS);
+				}, expireTime, TimeUnit.SECONDS);
 	}
 	
 	public static void acceptTeleportRequest(BSPlayer player){
