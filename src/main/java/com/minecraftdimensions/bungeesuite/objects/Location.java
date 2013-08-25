@@ -4,7 +4,6 @@ import com.minecraftdimensions.bungeesuite.managers.TeleportManager;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.Server;
 
 public class Location {
 	private ServerInfo server;

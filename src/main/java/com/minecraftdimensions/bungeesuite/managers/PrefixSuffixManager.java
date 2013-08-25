@@ -8,7 +8,6 @@ import java.util.List;
 
 import net.md_5.bungee.api.connection.Server;
 
-import com.minecraftdimensions.bungeesuite.BungeeSuite;
 import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 
