@@ -283,9 +283,11 @@ public class PlayerManager {
 		BSPlayer p = getSimilarPlayer(target);
 		if(p!=null){
 			if(p.isMuted()){
+				SQLManager.standardQuery("UPDATE BungeePlayers SET muted =0 WHERE playername ='"+p.getName()+"'");
 				p.setMute(false);
 				p.sendMessage(Messages.UNMUTED);
 			}else{
+				SQLManager.standardQuery("UPDATE BungeePlayers SET muted =1 WHERE playername ='"+p.getName()+"'");
 				p.setMute(true);
 				p.sendMessage(Messages.MUTED);
 			}
