@@ -16,7 +16,6 @@ import com.minecraftdimensions.bungeesuite.objects.Location;
  */
 public class SocketListener extends Thread {
 
-	private Logger jdkLogger = Logger.getLogger(this.getClass().getName());
     private Socket socket = null;
     private int port;
 
@@ -27,16 +26,17 @@ public class SocketListener extends Thread {
     public void run() {
         try {
     		DataInputStream in = new DataInputStream(socket.getInputStream());
+    		
     		port = in.readInt();
     		int length = in.readInt();
     		byte[] message = new byte[length];
     		in.readFully(message, 0, message.length);
     		DataInputStream data = new DataInputStream(new ByteArrayInputStream(message));
     		
-    		String task  = in.readUTF();
+    		String task  = data.readUTF();
     		
     		if(task.equals("PlayersTeleportBackLocation")){
-    			TeleportManager.setPlayersTeleportBackLocation(PlayerManager.getPlayer(in.readUTF()), new Location(getServer(new InetSocketAddress(socket.getInetAddress(), port)), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble()));
+    			TeleportManager.setPlayersTeleportBackLocation(PlayerManager.getPlayer(data.readUTF()), new Location(getServer(new InetSocketAddress(socket.getInetAddress(), port)), data.readUTF(), data.readDouble(), data.readDouble(), data.readDouble()));
     			return;
     		}
     		
@@ -45,7 +45,7 @@ public class SocketListener extends Thread {
     		in.close();
 
         } catch (IOException e) {
-        	jdkLogger.severe("run() error: " + e.toString());
+        	e.printStackTrace();
         }
     }
     
