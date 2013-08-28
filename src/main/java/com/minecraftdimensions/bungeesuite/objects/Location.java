@@ -19,6 +19,7 @@ public class Location {
 		this.world = world;
 		this.x = x;
 		this.y =y;
+		this.z = z;
 		this.yaw = yaw;
 		this.pitch = pitch;
 	}

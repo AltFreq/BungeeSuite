@@ -42,7 +42,7 @@ public class DatabaseTableManager {
 		//BungeeSpawns
 		runTableQuery("BungeeSpawns","CREATE TABLE BungeeSpawns (spawnname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, CONSTRAINT pk_spawnname PRIMARY KEY (spawnname))");
 		//BungeeWarps
-		runTableQuery("BungeeWarps", "CREATE TABLE BungeeWarps (warpname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, private TINYINT(1), CONSTRAINT pk_warp PRIMARY KEY (warpname))");
+		runTableQuery("BungeeWarps", "CREATE TABLE BungeeWarps (warpname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, hidden TINYINT(1),global TINYINT(1), CONSTRAINT pk_warp PRIMARY KEY (warpname))");
 		runTableUpdates();
 		} catch (SQLException e) {
 			e.printStackTrace();

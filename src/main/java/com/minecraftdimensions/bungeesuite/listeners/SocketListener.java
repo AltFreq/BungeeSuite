@@ -37,7 +37,6 @@ public class SocketListener extends Thread {
     		
     		if(task.equals("PlayersTeleportBackLocation")){
     			TeleportManager.setPlayersTeleportBackLocation(PlayerManager.getPlayer(data.readUTF()), new Location(getServer(new InetSocketAddress(socket.getInetAddress(), port)), data.readUTF(), data.readDouble(), data.readDouble(), data.readDouble()));
-    			return;
     		}
     		
     		

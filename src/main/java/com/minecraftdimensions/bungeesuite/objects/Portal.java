@@ -1,6 +1,6 @@
 package com.minecraftdimensions.bungeesuite.objects;
 
-import com.minecraftdimensions.bungeesuite.managers.WarpManager;
+import com.minecraftdimensions.bungeesuite.managers.WarpsManager;
 
 public class Portal {
 	String name;
@@ -32,7 +32,7 @@ public class Portal {
 	
 	public void sendPlayerToDestination(BSPlayer player){
 		if(target){
-		WarpManager.getWarp(targetName).getLocation().teleportPlayerToLocation(player);
+		WarpsManager.getWarp(targetName).getLocation().teleportPlayerToLocation(player);
 		}else{
 			player.sendToServer(targetName);
 		}

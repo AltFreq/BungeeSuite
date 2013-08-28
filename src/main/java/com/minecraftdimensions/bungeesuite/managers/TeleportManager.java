@@ -169,7 +169,11 @@ public class TeleportManager {
 	}	
 	
 	public static void sendPlayerToLastBack(BSPlayer player, boolean death, boolean teleport){
-		player.sendMessage(Messages.SENT_BACK);
+		if(player.hasDeathBackLocation() || player.hasTeleportBackLocation()){
+			player.sendMessage(Messages.SENT_BACK);
+		}else{
+			player.sendMessage(Messages.NO_BACK_TP);
+		}
 		if(death && teleport){
 			if(player.hasDeathBackLocation() || player.hasTeleportBackLocation()){
 		teleportPlayerToLocation(player,player.getLastBackLocation());

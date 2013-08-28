@@ -87,11 +87,14 @@ public class Messages {
 					+ "Warp already exists"));
 	public static String PLAYER_WARPED = colorize(m.getString("PLAYER_WARPED", "&7"
 					+ "You have been warped to {warp}"));
+	public static String PLAYER_WARPED_OTHER = colorize(m.getString("PLAYER_WARPED_OTHER", "&7"
+			+ "{player} has been warped to {warp}"));
 	public static String WARP_DOES_NOT_EXIST = colorize(m.getString("WARP_DOES_NOT_EXIST", "&c"
 					+ "That warp does not exist"));
 	public static String WARP_NO_PERMISSION = colorize(m.getString("WARP_NO_PERMISSION", "&c"
 					+ "You do not have permission to use that warp"));	
-	
+	public static String WARP_SERVER = colorize(m.getString("WARP_SERVER", "&c"
+			+ "Warp not on the same server"));	
 
 	// portal specific messages
 	public static String PORTAL_NO_PERMISSION = colorize(m.getString("PORTAL_NO_PERMISSION", "&c"

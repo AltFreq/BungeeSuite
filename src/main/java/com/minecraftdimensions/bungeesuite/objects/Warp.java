@@ -4,8 +4,9 @@ public class Warp {
 	private Location loc;
 	private String name;
 	private boolean hidden;
+	private boolean global;
 	
-	public Warp(String name, Location loc, boolean hidden){
+	public Warp(String name, Location loc, boolean hidden,boolean global){
 		this.name=name;
 		this.loc = loc;
 		this.hidden = hidden;
@@ -32,6 +33,14 @@ public class Warp {
 	
 	public void setHidden(boolean hidden){
 		this.hidden = hidden;
+	}
+	
+	public boolean isGlobal(){
+		return global;
+	}
+	
+	public void setGlobal(boolean global){
+		this.global = global;
 	}
 	
 	
