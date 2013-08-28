@@ -1,8 +1,10 @@
-package com.minecraftdimensions.bungeesuite.socket;
+package com.minecraftdimensions.bungeesuite.managers;
 
 import java.net.*;
 import java.util.logging.Logger;
 import java.io.*;
+
+import com.minecraftdimensions.bungeesuite.listeners.SocketListener;
 
 /*
  * Very simple socket server example. That responds to a single object with
@@ -22,26 +24,26 @@ import java.io.*;
  *  1) Call the static Client.send() method specifying the server host, port, and
  *     message. This returns your response.
  */
-public class SimpleSocketServer extends Thread {
+public class SocketManager extends Thread {
     
 	public static int DEFAULT_PORT = 14455;
 	
-    public static SimpleSocketServer startServer() {
-    	return startServer(SimpleSocketServer.DEFAULT_PORT);
+    public static SocketManager startServer() {
+    	return startServer(SocketManager.DEFAULT_PORT);
     }
-    public static synchronized SimpleSocketServer startServer(int port) {
-        SimpleSocketServer simpleSocketServer = new SimpleSocketServer(port);
+    public static synchronized SocketManager startServer(int port) {
+        SocketManager simpleSocketServer = new SocketManager(port);
         simpleSocketServer.start();
-        while (!simpleSocketServer.isServerRunning()) {}
+        while (!SocketManager.isServerRunning()) {}
         return simpleSocketServer;
     }
 
 	private Logger jdkLogger = Logger.getLogger(this.getClass().getName());
     private int port;
-    private ServerSocket serverSocket = null;
-    private boolean bRunning = false;
+    private static ServerSocket serverSocket = null;
+    private static boolean bRunning = false;
     
-    public SimpleSocketServer(int port) {
+    public SocketManager(int port) {
     	super("SimpleSock");
         this.port = port;
     }
@@ -53,7 +55,7 @@ public class SimpleSocketServer extends Thread {
             bRunning = true;
             while (true) {
                 Socket s = serverSocket.accept(); 
-                new ServerThread(s).start();
+                new SocketListener(s).start();
             }
         } 
         catch (IOException e) {
@@ -68,16 +70,14 @@ public class SimpleSocketServer extends Thread {
         }
         jdkLogger.info("Stopped");
     }
-    public void stopServer() {
-    	jdkLogger.info("Server: Stopping server...");
+    public static void stopServer() {
         try {
             if (serverSocket != null)
                 serverSocket.close();
         } catch (IOException e) {
-        	jdkLogger.severe("stopServer() error: " + e.toString());
         }
     }
-    public boolean isServerRunning() {
+    public static boolean isServerRunning() {
     	return bRunning;
     }
 }

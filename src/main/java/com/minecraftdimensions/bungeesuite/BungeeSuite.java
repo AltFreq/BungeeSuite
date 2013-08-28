@@ -3,6 +3,7 @@ package com.minecraftdimensions.bungeesuite;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 
 import com.minecraftdimensions.bungeesuite.commands.WhoIsCommand;
 import com.minecraftdimensions.bungeesuite.configs.BansConfig;
@@ -13,14 +14,16 @@ import com.minecraftdimensions.bungeesuite.listeners.ChatListener;
 import com.minecraftdimensions.bungeesuite.listeners.ChatMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.PlayerListener;
 import com.minecraftdimensions.bungeesuite.listeners.TeleportsMessageListener;
+import com.minecraftdimensions.bungeesuite.listeners.WarpsMessageListener;
 import com.minecraftdimensions.bungeesuite.managers.AnnouncementManager;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.DatabaseTableManager;
 import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PrefixSuffixManager;
 import com.minecraftdimensions.bungeesuite.managers.SQLManager;
+import com.minecraftdimensions.bungeesuite.managers.SocketManager;
 import com.minecraftdimensions.bungeesuite.managers.TeleportManager;
-import com.minecraftdimensions.bungeesuite.socket.SimpleSocketServer;
+import com.minecraftdimensions.bungeesuite.managers.WarpsManager;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -47,7 +50,7 @@ public class BungeeSuite extends Plugin {
         if ( SQLManager.initialiseConnections() ) {
             DatabaseTableManager.createDefaultTables();
             AnnouncementManager.loadAnnouncements();
-            SimpleSocketServer.startServer();
+            SocketManager.startServer();
             ChatManager.loadChannels();
             if ( BansConfig.bans ) {
                 LoggingManager.log( ChatColor.GOLD + "Using bans plugin" );
@@ -55,6 +58,11 @@ public class BungeeSuite extends Plugin {
             PrefixSuffixManager.loadPrefixes();
             PrefixSuffixManager.loadSuffixes();
             TeleportManager.initialise();
+            try {
+				WarpsManager.loadWarpLocations();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
             //test
         } else {
             setupSQL();
@@ -67,12 +75,15 @@ public class BungeeSuite extends Plugin {
         this.getProxy().registerChannel( "BSBans" );//in
         this.getProxy().registerChannel( "BSTeleports" );//in
         this.getProxy().registerChannel( "BungeeSuiteTP" );//out
+        this.getProxy().registerChannel( "BSWarps" );//in
+        this.getProxy().registerChannel( "BungeeSuiteWarps" );//out
         proxy.getPluginManager().registerListener( this, new PlayerListener() );
         proxy.getPluginManager().registerListener( this, new ChatListener() );
         proxy.getPluginManager().registerListener( this, new ChatMessageListener() );
         proxy.getPluginManager().registerListener( this, new BansMessageListener() );
         proxy.getPluginManager().registerListener( this, new BansListener() );
         proxy.getPluginManager().registerListener( this, new TeleportsMessageListener() );
+        proxy.getPluginManager().registerListener( this, new WarpsMessageListener() );
     }
 
     private void setupSQL() {
@@ -114,6 +125,9 @@ public class BungeeSuite extends Plugin {
     }
 
     public void onDisable() {
+    	if(SocketManager.isServerRunning()){
+    		SocketManager.stopServer();
+    	}
         SQLManager.closeConnections();
     }
 }

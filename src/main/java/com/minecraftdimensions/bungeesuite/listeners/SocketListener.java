@@ -1,4 +1,4 @@
-package com.minecraftdimensions.bungeesuite.socket;
+package com.minecraftdimensions.bungeesuite.listeners;
 
 import java.net.*;
 import java.util.logging.Logger;
@@ -14,13 +14,13 @@ import com.minecraftdimensions.bungeesuite.objects.Location;
  * Very simple socket server example. That responds to a single object with
  * another object. The
  */
-public class ServerThread extends Thread {
+public class SocketListener extends Thread {
 
 	private Logger jdkLogger = Logger.getLogger(this.getClass().getName());
     private Socket socket = null;
     private int port;
 
-    public ServerThread(Socket socket) {
+    public SocketListener(Socket socket) {
         this.socket = socket;
     }
 //this shit confuses me!
