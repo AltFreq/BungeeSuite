@@ -164,7 +164,6 @@ public class TeleportManager {
 		player.setDeathBackLocation(loc);
 	}
 	public static void setPlayersTeleportBackLocation(BSPlayer player, Location loc){
-		System.out.println("GOT LOCATION");
 		player.setTeleportBackLocation(loc);
 	}	
 	
