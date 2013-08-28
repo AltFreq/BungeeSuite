@@ -3,6 +3,7 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
+import com.minecraftdimensions.bungeesuite.configs.MainConfig;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -28,6 +29,6 @@ public class PlayerListener implements Listener {
 				}
 			}
 			
-		}, 5, TimeUnit.SECONDS);
+		}, MainConfig.playerDisconnectDelay, TimeUnit.SECONDS);
 	}
 }

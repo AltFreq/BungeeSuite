@@ -18,4 +18,5 @@ public class MainConfig {
 	public static int threads = config.getInt("Database.Threads", 5);
 	public static boolean motd = config.getBoolean("MOTD.Enabled", true);
 	public static boolean newPlayerBroadcast = config.getBoolean("NewPlayerBroadcast", true);
+	public static int playerDisconnectDelay = config.getInt("PlayerDisconnectDelay", 10);
 }
