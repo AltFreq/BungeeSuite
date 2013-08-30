@@ -195,9 +195,6 @@ public class TeleportManager {
 	}
 		
 	public static void teleportPlayerToPlayer(BSPlayer p, BSPlayer t){
-		if(!p.getServer().getInfo().equals(t.getServer().getInfo())){
-			p.getProxiedPlayer().connect(t.getServer().getInfo());
-		}
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
 		try {
@@ -208,7 +205,9 @@ public class TeleportManager {
 			e.printStackTrace();
 		}
 		sendPluginMessageTaskTP(t.getServer().getInfo(),b);
-		
+		if(!p.getServer().getInfo().equals(t.getServer().getInfo())){
+			p.getProxiedPlayer().connect(t.getServer().getInfo());
+		}
 	}
 
 	public static void tpAll(String sender, String target) {
@@ -227,9 +226,7 @@ public class TeleportManager {
 	}
 
 	public static void teleportPlayerToLocation(BSPlayer p, Location t) {
-		if(!p.getServer().getInfo().equals(t.getServer())){
-			p.getProxiedPlayer().connect(t.getServer());
-		}
+
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
 		try {
@@ -240,7 +237,9 @@ public class TeleportManager {
 			e.printStackTrace();
 		}
 		sendPluginMessageTaskTP(t.getServer(),b);
-		
+		if(!p.getServer().getInfo().equals(t.getServer())){
+			p.getProxiedPlayer().connect(t.getServer());
+		}
 	}
 	
 	public static void sendPluginMessageTaskTP(ServerInfo server, ByteArrayOutputStream b){

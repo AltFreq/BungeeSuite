@@ -144,9 +144,6 @@ public class WarpsManager {
         if ( !p.equals( s ) ) {
             s.sendMessage( Messages.PLAYER_WARPED_OTHER.replace( "{player}", p.getName() ).replace( "{warp}", w.getName() ) );
         }
-        if ( !l.getServer().equals( p.getServer().getInfo() ) ) {
-            p.sendToServer( l.getServer().getName() );
-        }
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream( b );
         try {
@@ -162,7 +159,9 @@ public class WarpsManager {
             e.printStackTrace();
         }
         sendPluginMessageTaskTP( l.getServer(), b );
-
+        if ( !l.getServer().equals( p.getServer().getInfo() ) ) {
+            p.sendToServer( l.getServer().getName() );
+        }
 
     }
 
