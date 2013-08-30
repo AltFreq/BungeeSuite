@@ -78,7 +78,7 @@ public class WarpsManager {
         return warps.containsKey( name.toLowerCase() );
     }
 
-    public static void getWarpsList( String sender, boolean server, boolean global, boolean hidden ) {
+    public static void getWarpsList( String sender, boolean server, boolean global, boolean hidden, boolean bypass ) {
         BSPlayer s = PlayerManager.getPlayer( sender );
         if ( !( server || global || hidden ) ) {
             s.sendMessage( ChatColor.RED + "No warps to display" );
@@ -88,11 +88,13 @@ public class WarpsManager {
         String hiddenString = ChatColor.GOLD + "Hidden warps: \n";
         for ( Warp w : warps.values() ) {
             if ( w.isGlobal() ) {
-                serverString += w.getName() + ", ";
+            	globalString += w.getName() + ", ";
             } else if ( w.isHidden() ) {
                 hiddenString += w.getName() + ", ";
             } else if ( s.getServer().getInfo().equals( w.getLocation().getServer() ) ) {
                 serverString += w.getName() + ", ";
+            }else if(bypass){
+            	globalString += w.getName() + ", ";
             }
         }
         if ( server ) {

@@ -35,7 +35,7 @@ public class WarpsMessageListener implements Listener {
         }
 
         if ( task.equals( "GetWarpsList" ) ) {
-            WarpsManager.getWarpsList( in.readUTF(), in.readBoolean(), in.readBoolean(), in.readBoolean() );
+            WarpsManager.getWarpsList( in.readUTF(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean());
             return;
         }
 
