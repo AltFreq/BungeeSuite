@@ -12,6 +12,7 @@ import com.minecraftdimensions.bungeesuite.listeners.BansListener;
 import com.minecraftdimensions.bungeesuite.listeners.BansMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.ChatListener;
 import com.minecraftdimensions.bungeesuite.listeners.ChatMessageListener;
+import com.minecraftdimensions.bungeesuite.listeners.HomesMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.PlayerListener;
 import com.minecraftdimensions.bungeesuite.listeners.TeleportsMessageListener;
 import com.minecraftdimensions.bungeesuite.listeners.WarpsMessageListener;
@@ -77,6 +78,8 @@ public class BungeeSuite extends Plugin {
         this.getProxy().registerChannel( "BungeeSuiteTP" );//out
         this.getProxy().registerChannel( "BSWarps" );//in
         this.getProxy().registerChannel( "BungeeSuiteWarps" );//out
+        this.getProxy().registerChannel( "BSHomes" );//in
+        this.getProxy().registerChannel( "BungeeSuiteHomes" );//out
         proxy.getPluginManager().registerListener( this, new PlayerListener() );
         proxy.getPluginManager().registerListener( this, new ChatListener() );
         proxy.getPluginManager().registerListener( this, new ChatMessageListener() );
@@ -84,6 +87,7 @@ public class BungeeSuite extends Plugin {
         proxy.getPluginManager().registerListener( this, new BansListener() );
         proxy.getPluginManager().registerListener( this, new TeleportsMessageListener() );
         proxy.getPluginManager().registerListener( this, new WarpsMessageListener() );
+        proxy.getPluginManager().registerListener( this, new HomesMessageListener() );
     }
 
     private void setupSQL() {

@@ -12,14 +12,12 @@ import com.minecraftdimensions.bungeesuite.objects.Messages;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
 public class HomesManager {
-	public static ArrayList<String> homeGroupsList = new ArrayList<String>();
-	public static HashMap<String, HashMap<String, Integer>> homeLimits = new HashMap<String, HashMap<String, Integer>>();
 	
 	
-	public static void createNewHome(String name,String owner, String server,String world, double x, double y, double z, float yaw, float pitch) throws SQLException{
+	public static void createNewHome(String player,int serverLimit, int globalLimit, String home, String server,String world, double x, double y, double z, float yaw, float pitch) throws SQLException{
 		Home h = new Home();
-		h.setName(name);
-		h.setOwner(owner);
+		h.setName(home);
+		h.setOwner(player);
 		h.setServer(server);
 		h.setWorld(world);
 		h.setX(x);
@@ -27,8 +25,8 @@ public class HomesManager {
 		h.setZ(z);
 		h.setYaw(yaw);
 		h.setPitch(pitch);
-		SQLManager.standardQuery("INSERT INTO BungeeHomes (player,home_name,server,world,x,y,z,yaw,pitch) VALUES('"+owner+"','"+name+"','"+server+"','"+world+"',"+x+","+y+","+z+","+yaw+","+pitch+",)");
-		PlayerManager.getPlayer(owner).addHome(h);
+		SQLManager.standardQuery("INSERT INTO BungeeHomes (player,home_name,server,world,x,y,z,yaw,pitch) VALUES('"+player+"','"+home+"','"+server+"','"+world+"',"+x+","+y+","+z+","+yaw+","+pitch+",)");
+		PlayerManager.getPlayer(player).addHome(h);
 	}
 	
 	public static int getPlayersHomesCount(String player, String server){
@@ -49,7 +47,7 @@ public class HomesManager {
 		}
 	}
 	
-	public static void listPlayersHomes(String player) throws SQLException {
+	public static void listPlayersHomes(String player, boolean serv, boolean global) throws SQLException {
 		BSPlayer p = PlayerManager.getPlayer(player);
 		HashMap<String,ArrayList<String>> homes = p.getHomesList();
 
@@ -89,7 +87,7 @@ public class HomesManager {
 		res.close();
 	}
 	
-	public static void sendPlayerToHome(String player,String home){
+	public static void sendPlayerToHome(String player,String home, boolean server, boolean global){
 		BSPlayer p = PlayerManager.getPlayer(player);
 		Home h = p.getHomeSimilar(home);
 		if(h!=null){
