@@ -1,5 +1,6 @@
 package com.minecraftdimensions.bungeesuite.objects;
 
+import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -245,7 +246,9 @@ public class BSPlayer {
         if ( name.length() > 16 ) {
             name = getDisplayingName().substring( 0, 16 );
         }
-        ProxyServer.getInstance().getPlayer( playername ).setDisplayName( name );
+        if(ChatConfig.updateNicknamesOnTab){
+        	ProxyServer.getInstance().getPlayer( playername ).setDisplayName( name );
+        }
     }
 
     public String getDisplayingName() {
