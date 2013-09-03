@@ -1,101 +1,170 @@
 package com.minecraftdimensions.bungeesuite.managers;
 
+import com.minecraftdimensions.bungeesuite.BungeeSuite;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
+import com.minecraftdimensions.bungeesuite.objects.Home;
+import com.minecraftdimensions.bungeesuite.objects.Location;
+import com.minecraftdimensions.bungeesuite.objects.Messages;
+import com.minecraftdimensions.bungeesuite.tasks.SendPluginMessage;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.config.ServerInfo;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import net.md_5.bungee.api.ChatColor;
-
-import com.minecraftdimensions.bungeesuite.objects.Home;
-import com.minecraftdimensions.bungeesuite.objects.Messages;
-import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 
 public class HomesManager {
-	
-	
-	public static void createNewHome(String player,int serverLimit, int globalLimit, String home, String server,String world, double x, double y, double z, float yaw, float pitch) throws SQLException{
-		Home h = new Home();
-		h.setName(home);
-		h.setOwner(player);
-		h.setServer(server);
-		h.setWorld(world);
-		h.setX(x);
-		h.setY(y);
-		h.setZ(z);
-		h.setYaw(yaw);
-		h.setPitch(pitch);
-		SQLManager.standardQuery("INSERT INTO BungeeHomes (player,home_name,server,world,x,y,z,yaw,pitch) VALUES('"+player+"','"+home+"','"+server+"','"+world+"',"+x+","+y+","+z+","+yaw+","+pitch+",)");
-		PlayerManager.getPlayer(player).addHome(h);
-	}
-	
-	public static int getPlayersHomesCount(String player, String server){
-		return PlayerManager.getPlayer(player).getHomesCountOnServer(server);
-	}
-	
-	public static void removeHome(String player,String home){
-		PlayerManager.getPlayer(player).removeHome(home);
-	}
-	
-	public static boolean canPlayerSetHome(String player, String home, String server,int maxHomesAllowed){
-		if(playersHomeExists(player,home)){
-			return true;
-		}else if(maxHomesAllowed>getPlayersHomesCount(player,server)){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	public static void listPlayersHomes(String player, boolean serv, boolean global) throws SQLException {
-		BSPlayer p = PlayerManager.getPlayer(player);
-		HashMap<String,ArrayList<String>> homes = p.getHomesList();
 
-		p.sendMessage(ChatColor.AQUA + "Your homes:");
-		for (String server : homes.keySet()) {
-			String message = ChatColor.GOLD + server + ": " + ChatColor.WHITE;
-			for (String home : homes.get(server)) {
-				message += " " + home + ",";
-			}
-			p.sendMessage(message.substring(0, server.length() - 1));
-		}
-	}
-	
-	public static void addHome(String player,Home home){
-		PlayerManager.getPlayer(player).addHome(home);
-	}
-	
-	public static boolean playersHomeExists(String player, String home){
-		return PlayerManager.getPlayer(player).homeExists(home);
-	}
-	
-	public static void loadPlayersHomes(String player) throws SQLException{
-		ResultSet res = SQLManager.sqlQuery("SELECT * FROM BungeeHomes WHERE player = '"+player+"'");
-		while(res.next()){
-			Home h = new Home();
-			h.setName(res.getString("home_name"));
-			h.setOwner(player);
-			h.setServer(res.getString("server"));
-			h.setWorld(res.getString("world"));
-			h.setX(res.getDouble("x"));
-			h.setY(res.getDouble("y"));
-			h.setZ(res.getDouble("z"));
-			h.setYaw(res.getFloat("yaw"));
-			h.setPitch(res.getFloat("pitch"));
-			addHome(player, h);
-		}
-		res.close();
-	}
-	
-	public static void sendPlayerToHome(String player,String home, boolean server, boolean global){
-		BSPlayer p = PlayerManager.getPlayer(player);
-		Home h = p.getHomeSimilar(home);
-		if(h!=null){
-			p.sendMessage(Messages.SENT_HOME);
-//			p.teleportPlayerToLocation(h.getLocation());
-		}else{
-			p.sendMessage(Messages.HOME_DOES_NOT_EXIST);
-		}
-	}
+    public static String OUTGOING_CHANNEL = "BungeeSuiteHomes";
+
+
+    public static void createNewHome( String player, int serverLimit, int globalLimit, String home, Location loc ) throws SQLException {
+        BSPlayer p = PlayerManager.getPlayer( player );
+
+        if ( getSimilarHome( p, home ) == null ) {
+            int globalHomeCount = getPlayersGlobalHomeCount( p );
+            int serverHomeCount = getPlayersServerHomeCount( p );
+            if ( globalHomeCount >= globalLimit ) {
+                p.sendMessage( Messages.NO_HOMES_ALLOWED_GLOBAL );
+                return;
+            }
+            if ( serverHomeCount >= serverLimit ) {
+                p.sendMessage( Messages.NO_HOMES_ALLOWED_SERVER );
+                return;
+            }
+            if ( p.getHomes().get( p.getServer().getInfo().getName() ) == null ) {
+                p.getHomes().put( p.getServer().getInfo().getName(), new ArrayList<Home>() );
+            }
+            p.getHomes().get( p.getServer().getInfo().getName() ).add( new Home( p.getName(), home, loc ) );
+            SQLManager.standardQuery( "INSERT INTO BungeeHomes (player,home_name,server,world,x,y,z,yaw,pitch) VALUES('" + player + "','" + home + "','" + loc.getServer().getName() + "','" + loc.getWorld() + "'," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch() + ",)" );
+            p.sendMessage( Messages.HOME_SET );
+        } else {
+            getSimilarHome( p, home ).setLoc( loc );
+            SQLManager.standardQuery( "UPDATE BungeeHomes SET server = '" + loc.getServer().getName() + "' world = '" + loc.getWorld() + "', x = " + loc.getX() + ", y = " + loc.getY() + ", z = " + loc.getZ() + ", yaw = " + loc.getYaw() + ", pitch = " + loc.getPitch() + "" );
+            p.sendMessage( Messages.HOME_UPDATED );
+            return;
+        }
+    }
+
+    private static int getPlayersGlobalHomeCount( BSPlayer player ) {
+        int count = 0;
+        for ( ArrayList<Home> list : player.getHomes().values() ) {
+            count += list.size();
+        }
+        return count;
+    }
+
+    private static int getPlayersServerHomeCount( BSPlayer player ) {
+        ArrayList<Home> list = player.getHomes().get( player.getServer().getInfo().getName() );
+        if ( list == null ) {
+            return 0;
+        } else {
+            return list.size();
+        }
+    }
+
+    public static void listPlayersHomes( BSPlayer player ) throws SQLException {
+
+        for ( String server : player.getHomes().keySet() ) {
+            String homes;
+            if ( server.equals( player.getServer().getInfo().getName() ) ) {
+                homes = ChatColor.RED + server + ": " + ChatColor.BLUE;
+            } else {
+                homes = ChatColor.GOLD + server + ": " + ChatColor.BLUE;
+            }
+            for ( Home h : player.getHomes().get( server ) ) {
+                homes += h.name + ", ";
+
+            }
+            player.sendMessage( homes.substring( 0, homes.length() - 2 ) );
+        }
+
+    }
+
+    public static void loadPlayersHomes( BSPlayer player ) throws SQLException {
+        ResultSet res = SQLManager.sqlQuery( "SELECT * FROM BungeeHomes WHERE player = '" + player.getName() + "'" );
+        while ( res.next() ) {
+            String server = res.getString( "server" );
+            Location l = new Location( server, res.getString( "world" ), res.getDouble( "x" ), res.getDouble( "y" ), res.getDouble( "z" ), res.getFloat( "yaw" ), res.getFloat( "pitch" ) );
+            Home h = new Home( player.getName(), res.getString( "home_name" ), l );
+            if ( player.getHomes().get( server ) == null ) {
+                ArrayList<Home> list = new ArrayList<>();
+                list.add( h );
+                player.getHomes().put( server, list );
+            } else {
+                player.getHomes().get( server ).add( h );
+            }
+        }
+        res.close();
+    }
+
+
+    public static Home getSimilarHome( BSPlayer player, String home ) {
+        for ( ArrayList<Home> list : player.getHomes().values() ) {
+            for ( Home h : list ) {
+                if ( h.name.toLowerCase().contains( home.toLowerCase() ) ) {
+                    return h;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void sendPlayerToHome( BSPlayer player, String home ) {
+        Home h = getSimilarHome( player, home );
+        if ( h == null ) {
+            player.sendMessage( Messages.HOME_DOES_NOT_EXIST );
+            return;
+        }
+        Location l = h.loc;
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream( b );
+        try {
+            out.writeUTF( "TeleportToLocation" );
+            out.writeUTF( player.getName() );
+            out.writeUTF( l.getWorld() );
+            out.writeDouble( l.getX() );
+            out.writeDouble( l.getY() );
+            out.writeDouble( l.getZ() );
+            out.writeFloat( l.getYaw() );
+            out.writeFloat( l.getPitch() );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        sendPluginMessageTaskHomes( l.getServer(), b );
+        if ( !player.getServer().getInfo().equals( l.getServer() ) ) {
+            player.getProxiedPlayer().connect( l.getServer() );
+        }
+        player.sendMessage( Messages.SENT_HOME );
+    }
+
+    public static void sendPluginMessageTaskHomes( ServerInfo server, ByteArrayOutputStream b ) {
+        BungeeSuite.proxy.getScheduler().runAsync( BungeeSuite.instance, new SendPluginMessage( OUTGOING_CHANNEL, server, b ) );
+    }
+
+
+    public static void deleteHome( String player, String home ) {
+        BSPlayer p = PlayerManager.getPlayer( player );
+        Home h = getSimilarHome( p, home );
+        if ( h == null ) {
+            p.sendMessage( Messages.HOME_DOES_NOT_EXIST );
+            return;
+        }
+        for ( ArrayList<Home> list : p.getHomes().values() ) {
+            if ( list.contains( h ) ) {
+                list.remove( h );
+                break;
+            }
+        }
+        try {
+            SQLManager.standardQuery( "DELETE BungeeHomes WHERE home_name = '" + h.name + "', player = '" + p.getName() + "'" );
+        } catch ( SQLException e ) {
+            e.printStackTrace();
+        }
+        p.sendMessage( Messages.HOME_DELETED );
+    }
 }
-	
+
