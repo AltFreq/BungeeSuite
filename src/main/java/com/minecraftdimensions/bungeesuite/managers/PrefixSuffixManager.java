@@ -17,7 +17,7 @@ public class PrefixSuffixManager {
 	
 	public static void loadPrefixes() {
 		Config chat = ChatConfig.c;
-		prefixes = new HashMap<String, String>();
+		prefixes = new HashMap<String, String>();				
 		chat.getString("Prefix.Groups.Default", "&5[Member]");
 		List<String> grouplist = chat.getSubNodes("Prefix.Groups");
 		for (String data : grouplist) {
