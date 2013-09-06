@@ -213,7 +213,7 @@ public class PlayerManager {
     }
 
     public static ArrayList<BSPlayer> getChatSpies() {
-        ArrayList<BSPlayer> spies = new ArrayList<BSPlayer>();
+        ArrayList<BSPlayer> spies = new ArrayList<>();
         for ( BSPlayer p : onlinePlayers.values() ) {
             if ( p.isChatSpying() ) {
                 spies.add( p );
