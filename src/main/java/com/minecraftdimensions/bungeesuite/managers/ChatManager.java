@@ -93,6 +93,7 @@ public class ChatManager {
                 sendPluginMessageTaskChat( server.getInfo(), b );
             }
         }
+        channelsSentToServers.put(server.getInfo().getName(), chans);
     }
 
     public static void sendChannelToServer( Server server, Channel channel ) {

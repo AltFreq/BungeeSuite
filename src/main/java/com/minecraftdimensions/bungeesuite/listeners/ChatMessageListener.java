@@ -44,8 +44,8 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "GetServerChannels" ) ) {
-            ChatManager.sendServerData( s );
             ChatManager.clearServersChannels( s );
+            ChatManager.sendServerData( s );
             ChatManager.sendDefaultChannelsToServer( s );
             for ( ProxiedPlayer p : s.getInfo().getPlayers() ) {
                 ChatManager.loadPlayersChannels( p, s );
