@@ -218,10 +218,10 @@ public class ChatManager {
 
     private static void setPlayerToForcedChannel( BSPlayer p, Server server ) {
         Channel c = getChannel( p.getChannel() );
-        ServerData sd = ChatManager.serverData.get( server.getInfo().getName() );
         if ( !c.isDefault() ) {
             return;
         }
+        ServerData sd = ChatManager.serverData.get( server.getInfo().getName() );
         if ( isFactionChannel( c ) && sd.usingFactions() ) {
             return;
         }
@@ -235,8 +235,8 @@ public class ChatManager {
                 channel = "Global";
             }
             p.setChannel( channel );
-        } else if ( ( p.getChannel().equals( "Faction" ) || p.getChannel().equals( "FactionAlly" ) ) && sd.usingFactions() ) {
-            p.setChannel( ChatManager.getServersDefaultChannel( sd ).getName() );
+        } else {
+            p.setChannel( ChatManager.getServersDefaultChannel( sd, c.getName() ).getName() );
         }
 
     }
@@ -575,10 +575,12 @@ public class ChatManager {
         }
     }
 
-    public static Channel getServersDefaultChannel( ServerData server ) {
+    public static Channel getServersDefaultChannel( ServerData server, String channel ) {
         if ( server.forcingChannel() ) {
             return getChannel( server.getForcedChannel() );
-        } else {
+        } else if(BungeeSuite.proxy.getServers().keySet().contains(channel)){
+        	return getChannel(server.getServerName());
+        }else{
             return getChannel( ChatConfig.defaultChannel );
         }
     }
@@ -591,7 +593,7 @@ public class ChatManager {
             newchannel = "FactionAlly";
             p.sendMessage( Messages.FACTION_ALLY_TOGGLE );
         } else if ( channel.equals( "FactionAlly" ) ) {
-            newchannel = getServersDefaultChannel( p.getServerData() ).getName();
+            newchannel = getServersDefaultChannel( p.getServerData(), channel ).getName();
             p.sendMessage( Messages.CHANNEL_TOGGLE.replace( "{channel}", newchannel ) );
         } else {
             newchannel = "Faction";
@@ -609,7 +611,7 @@ public class ChatManager {
             return;
         }
         if ( p.getChannel().equals( channel ) ) {
-            channel = getServersDefaultChannel( p.getServerData() ).getName();
+            channel = getServersDefaultChannel( p.getServerData(), channel ).getName();
             p.sendMessage( Messages.FACTION_OFF_TOGGLE );
         } else if ( channel.equals( "Faction" ) ) {
             p.sendMessage( Messages.FACTION_TOGGLE );
