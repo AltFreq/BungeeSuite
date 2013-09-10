@@ -1,6 +1,7 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.minecraftdimensions.bungeesuite.managers.BansManager;
 import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
@@ -21,8 +22,13 @@ public class BansListener implements Listener {
 				if(BansManager.checkTempBan(b)){
 					e.setCancelled(true);
 					SimpleDateFormat sdf = new SimpleDateFormat();
+					Date then = b.getBannedUntil();
+					Date now = new Date();
+					long timeDiff = then.getTime()-now.getTime();
+					long hours = timeDiff / (60 * 60 *1000);
+					long mins = timeDiff / (60 * 1000) % 60; 
 					sdf.applyPattern("dd MMM yyyy HH:mm:ss z");
-					e.setCancelReason(Messages.TEMP_BAN_MESSAGE.replace("{sender}", b.getBannedBy()).replace("{time}", sdf.format(b.getBannedUntil())).replace("{message}", b.getReasaon()));
+					e.setCancelReason(Messages.TEMP_BAN_MESSAGE.replace("{sender}", b.getBannedBy()).replace("{time}", sdf.format(then) + " ("+hours+":"+mins+" hours)").replace("{message}", b.getReasaon()));
 					LoggingManager.log(ChatColor.RED+e.getConnection().getName()+"'s connection refused due to being banned!");
 					return;
 				}
