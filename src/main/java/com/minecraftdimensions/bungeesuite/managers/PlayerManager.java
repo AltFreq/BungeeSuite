@@ -23,6 +23,7 @@ public class PlayerManager {
     private static HashMap<String, BSPlayer> onlinePlayers = new HashMap<>();
     static ProxyServer proxy = ProxyServer.getInstance();
     static BungeeSuite plugin = BungeeSuite.instance;
+    public static ArrayList<BSPlayer> kickedPlayers = new ArrayList<BSPlayer>();
 
     public static boolean playerExists( String player ) {
         if ( getSimilarPlayer( player ) != null ) {
@@ -38,7 +39,6 @@ public class PlayerManager {
         boolean chatspying = false;
         boolean dnd = false;
         boolean tps = true;
-
         if ( playerExists( player.getName() ) ) {
             ResultSet res = SQLManager.sqlQuery( "SELECT playername,nickname,channel,muted,chat_spying,dnd,tps FROM BungeePlayers WHERE playername = '" + player + "'" );
             while ( res.next() ) {
@@ -79,8 +79,10 @@ public class PlayerManager {
     }
 
     public static void unloadPlayer( String player ) {
-        onlinePlayers.remove( player );
-        LoggingManager.log( Messages.PLAYER_UNLOAD.replace( "{player}", player ) );
+    	if(onlinePlayers.containsKey(player)){
+    		onlinePlayers.remove( player );
+    		LoggingManager.log( Messages.PLAYER_UNLOAD.replace( "{player}", player ) );
+    	}
     }
 
     public static BSPlayer getPlayer( String player ) {
