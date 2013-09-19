@@ -9,7 +9,6 @@ import java.util.Calendar;
 
 import com.minecraftdimensions.bungeesuite.Utilities;
 import com.minecraftdimensions.bungeesuite.configs.BansConfig;
-import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Ban;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
