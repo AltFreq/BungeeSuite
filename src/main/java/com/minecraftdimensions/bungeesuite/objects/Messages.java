@@ -99,8 +99,8 @@ public class Messages {
     public static String PRIVATE_MESSAGE_SPY = colorize( m.getString( "PRIVATE_MESSAGE_SPY", "&7" + "[" + "&b" + "{sender}" + "&7" + "->" + "&6" + "{player}" + "&7" + "] {message}" ) );
     public static String MUTE_ALL_ENABLED = colorize( m.getString( "MUTE_ALL_ENABLED", "&c" + "All players have been muted by {sender}" ) );
     public static String MUTE_ALL_DISABLED = colorize( m.getString( "MUTE_ALL_DISABLED", "&2" + "All players have been unmuted by {sender}" ) );
-    public static String PLAYER_MUTED = colorize( m.getString( "PLAYER_MUTED", "&2" + "Player has been muted" ) );
-    public static String PLAYER_UNMUTED = colorize( m.getString( "PLAYER_UNMUTED", "&c" + "Player has been unmuted" ) );
+    public static String PLAYER_MUTED = colorize( m.getString( "PLAYER_MUTED", "&2" + "{player} has been muted" ) );
+    public static String PLAYER_UNMUTED = colorize( m.getString( "PLAYER_UNMUTED", "&c" + "{player} has been unmuted" ) );
     public static String MUTED = colorize( m.getString( "MUTED", "&c" + "You have been muted" ) );
     public static String UNMUTED = colorize( m.getString( "UNMUTED", "&2" + "You have been unmuted" ) );
     public static String PLAYER_NOT_MUTE = colorize( m.getString( "PLAYER_NOT_MUTE", "&c" + "That player is not muted" ) );
