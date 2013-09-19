@@ -15,9 +15,14 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChatListener implements Listener {
-
+	public static List<String> BlockedCommands = Arrays.asList("/l","/lc","/localchannel","/lchannel","/channellocal",
+		"/s","/sc","/serverchannel","/schannel","/channelserver",
+		"/g","/globalchat","/globalchannel","/gchannel");
+	
     @EventHandler
     public void playerLogin( ServerConnectedEvent e ) throws SQLException {
         ChatManager.loadPlayersChannels( e.getPlayer(), e.getServer() );
@@ -41,10 +46,21 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void playerChat( ChatEvent e ) throws SQLException {
-        if ( e.isCommand() ) {
+        BSPlayer p = PlayerManager.getPlayer( e.getSender().toString() );
+        if ( e.isCommand()) {
+        	if(BlockedCommands.contains(e.getMessage().split(" ")[0].toLowerCase())){
+                if ( ChatManager.MuteAll ) {
+                    p.sendMessage( Messages.MUTED );
+                    e.setCancelled( true );
+                }
+                if ( p.isMuted() ) {
+                    p.sendMessage( Messages.MUTED );
+                    e.setCancelled( true );
+                    System.out.println("muted");
+                }	
+        	}
             return;
         }
-        BSPlayer p = PlayerManager.getPlayer( e.getSender().toString() );
         if ( ChatManager.MuteAll ) {
             p.sendMessage( Messages.MUTED );
             e.setCancelled( true );
