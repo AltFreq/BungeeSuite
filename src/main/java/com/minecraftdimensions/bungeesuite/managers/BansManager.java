@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import com.minecraftdimensions.bungeesuite.Utilities;
 import com.minecraftdimensions.bungeesuite.configs.BansConfig;
+import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Ban;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
@@ -181,13 +182,17 @@ public class BansManager {
 	}
 
 	public static void disconnectPlayer(ProxiedPlayer player, String message) {
+        PlayerManager.unloadPlayer(player.getName());
 		player.disconnect(message);
 	}
 
 	public static void disconnectPlayer(String player, String message) {
+        PlayerManager.unloadPlayer(player);
 		ProxyServer.getInstance().getPlayer(player).disconnect(message);
 	}
 	public static void disconnectPlayer(BSPlayer player, String message) {
+
+        PlayerManager.unloadPlayer(player.getName());
 		player.getProxiedPlayer().disconnect(message);
 	}
 

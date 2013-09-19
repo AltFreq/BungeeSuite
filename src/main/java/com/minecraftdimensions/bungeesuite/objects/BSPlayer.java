@@ -27,6 +27,7 @@ public class BSPlayer {
     private Location teleportBackLocation;
     private boolean lastBack; //true = death false = teleport
     private String replyPlayer;
+	private boolean firstConnect = true;
 
     public BSPlayer( String name, String nickname, String channel, boolean muted, boolean chatspying, boolean dnd, boolean tps ) {
         this.playername = name;
@@ -307,5 +308,13 @@ public class BSPlayer {
 
     public HashMap<String, ArrayList<Home>> getHomes() {
         return homes;
+    }
+    
+    public boolean firstConnect(){
+    	return firstConnect;
+    }
+    
+    public void connected(){
+    	firstConnect = false;
     }
 }

@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerManager {
 
-    private static HashMap<String, BSPlayer> onlinePlayers = new HashMap<>();
+    public static HashMap<String, BSPlayer> onlinePlayers = new HashMap<>();
     static ProxyServer proxy = ProxyServer.getInstance();
     static BungeeSuite plugin = BungeeSuite.instance;
-    public static ArrayList<BSPlayer> kickedPlayers = new ArrayList<BSPlayer>();
+    public static ArrayList<ProxiedPlayer> kickedPlayers = new ArrayList<ProxiedPlayer>();
 
     public static boolean playerExists( String player ) {
         if ( getSimilarPlayer( player ) != null ) {

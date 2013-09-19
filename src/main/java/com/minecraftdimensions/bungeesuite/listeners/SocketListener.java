@@ -1,7 +1,6 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 
 import java.net.*;
-import java.util.logging.Logger;
 import java.io.*;
 
 import net.md_5.bungee.api.ProxyServer;
