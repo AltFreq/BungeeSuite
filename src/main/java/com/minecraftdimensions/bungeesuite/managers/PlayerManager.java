@@ -278,18 +278,16 @@ public class PlayerManager {
 
     public static void mutePlayer( String target ) throws SQLException {
         BSPlayer p = getSimilarPlayer( target );
+        boolean isMuted = isPlayerMuted( target );
         if ( p != null ) {
-            if ( p.isMuted() ) {
-                SQLManager.standardQuery( "UPDATE BungeePlayers SET muted =0 WHERE playername ='" + p.getName() + "'" );
+            if ( isMuted ) {
                 p.setMute( false );
                 p.sendMessage( Messages.UNMUTED );
             } else {
-                SQLManager.standardQuery( "UPDATE BungeePlayers SET muted =1 WHERE playername ='" + p.getName() + "'" );
                 p.setMute( true );
                 p.sendMessage( Messages.MUTED );
             }
         }
-        boolean isMuted = isPlayerMuted( target );
         SQLManager.standardQuery( "UPDATE BungeePlayers SET muted = " + !isMuted + " WHERE playername ='" + target + "'" );
 
     }

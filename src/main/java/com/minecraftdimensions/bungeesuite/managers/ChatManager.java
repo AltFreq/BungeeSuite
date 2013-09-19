@@ -367,10 +367,10 @@ public class ChatManager {
         }
         PlayerManager.mutePlayer( target );
         if ( command ) {
-            p.sendMessage( Messages.PLAYER_MUTED );
+            p.sendMessage( Messages.PLAYER_MUTED.replace("{player}", target) );
             return;
         } else {
-            p.sendMessage( Messages.PLAYER_UNMUTED );
+            p.sendMessage( Messages.PLAYER_UNMUTED.replace("{player}", target) );
         }
 
     }
