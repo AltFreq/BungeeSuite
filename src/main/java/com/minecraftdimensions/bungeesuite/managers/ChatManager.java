@@ -453,7 +453,13 @@ public class ChatManager {
         }
         if ( chan == null ) {
             if ( p.getServerData().forcingChannel() && !bypass ) {
-                chan = getChannel( p.getServerData().getForcedChannel() );
+            	String forcedChannel = p.getServerData().getForcedChannel();
+            	if(forcedChannel.equalsIgnoreCase("server")){
+            		forcedChannel = p.getServerData().getServerName();
+            	}else if(forcedChannel.equalsIgnoreCase("local")){
+            		forcedChannel = p.getServerData().getServerName()+" Local";
+            	}
+                chan = getChannel( forcedChannel );
             } else {
                 chan = getChannel( "Global" );
             }
@@ -476,14 +482,28 @@ public class ChatManager {
         return channel.getMembers().contains( p );
     }
 
-    public static boolean canPlayerToggleToDefault( BSPlayer p, Channel channel ) {
+    public static boolean canPlayerToggleToChannel( BSPlayer p, Channel channel ) {
         if ( channel.isDefault() ) {
             if ( p.getServerData().forcingChannel() ) {
-                if ( p.getServerData().getForcedChannel().equals( channel.getName() ) ) {
-                    return true;
+            	String forcedChannel = p.getServerData().getForcedChannel();
+                if ( forcedChannel.equalsIgnoreCase("local") ) {
+                	if(channel.getName().equals(p.getServer().getInfo().getName()+ "Local")){
+                		return true;
+                	}else{
+                		return false;
+                	}
+                }else if(forcedChannel.equalsIgnoreCase("server")){
+                	if(channel.getName().equals(p.getServer().getInfo().getName())){
+                		return true;
+                	}else{
+                		return false;
+                	}
+                }else if(forcedChannel.equalsIgnoreCase(channel.getName())){
+                	return true;
+                }else{
+                	return false;
                 }
             }
-            return false;
         }
         return true;
     }
@@ -506,8 +526,9 @@ public class ChatManager {
             return;
         }
         if ( !bypass ) {
-            if ( isPlayerChannelMember( p, c ) ) {
-                if ( canPlayerToggleToDefault( p, c ) ) {
+            if ( c.isDefault() || isPlayerChannelMember( p, c ) ) {
+            	
+                if ( canPlayerToggleToChannel( p, c ) ) {
                     setPlayersChannel( p, c );
                     return;
                 } else {
