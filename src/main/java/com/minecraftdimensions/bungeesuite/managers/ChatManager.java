@@ -48,7 +48,7 @@ public class ChatManager {
         for ( String servername : ProxyServer.getInstance().getServers().keySet() ) {
             loadChannel( server, servername, chan.getString( "Channels.Servers." + servername + ".Server", Messages.CHANNEL_DEFAULT_SERVER ), true, true );
             loadChannel( server, servername + " Local", chan.getString( "Channels.Servers." + servername + ".Local", Messages.CHANNEL_DEFAULT_LOCAL ), true, true );
-            loadServerData( servername, chan.getString( "Channels.Servers." + servername + ".Shortname", servername.substring( 0, 1 ) ), chan.getBoolean( "Channels.Servers." + servername + ".ForceChannel", false ), chan.getString( "Channels.Servers." + servername + ".ForcedChannel", "Server" ), chan.getBoolean( "Channels.Servers." + servername + ".UsingFactionChannels", false ), chan.getInt( "Channels.Servers." + servername + ".LocalRange", 50 ), chan.getString( "Channels.Servers." + servername + ".AdminColor", "&f" ), chan.getBoolean( "Channels.Servers." + servername + ".DisableConnectionMessages", true ) );
+            loadServerData( servername, chan.getString( "Channels.Servers." + servername + ".Shortname", servername.substring( 0, 1 ) ), chan.getBoolean( "Channels.Servers." + servername + ".ForceChannel", false ), chan.getString( "Channels.Servers." + servername + ".ForcedChannel", "Server" ), chan.getBoolean( "Channels.Servers." + servername + ".UsingFactionChannels", false ), chan.getInt( "Channels.Servers." + servername + ".LocalRange", 50 ), chan.getBoolean( "Channels.Servers." + servername + ".DisableConnectionMessages", true ) );
         }
         //Load custom channels from db
         ResultSet res = SQLManager.sqlQuery( "SELECT * FROM BungeeCustomChannels" );
@@ -62,8 +62,8 @@ public class ChatManager {
         LoggingManager.log( ChatColor.GOLD + "Channels loaded - " + ChatColor.DARK_GREEN + channels.size() );
     }
 
-    private static void loadServerData( String name, String shortName, boolean forcingChannel, String forcedChannel, boolean usingFacs, int localDistance, String adminColor, boolean connectionMessages ) {
-        ServerData d = new ServerData( name, shortName, forcingChannel, forcedChannel, usingFacs, localDistance, adminColor, connectionMessages );
+    private static void loadServerData( String name, String shortName, boolean forcingChannel, String forcedChannel, boolean usingFacs, int localDistance, boolean connectionMessages ) {
+        ServerData d = new ServerData( name, shortName, forcingChannel, forcedChannel, usingFacs, localDistance, connectionMessages );
         if ( serverData.get( d ) == null ) {
             serverData.put( name, d );
         }
