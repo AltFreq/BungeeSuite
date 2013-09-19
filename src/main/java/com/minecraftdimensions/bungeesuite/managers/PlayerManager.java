@@ -156,7 +156,7 @@ public class PlayerManager {
     }
 
     public static ArrayList<String> getPlayersAltAccounts( String player ) throws SQLException {
-        ArrayList<String> accounts = new ArrayList<String>();
+        ArrayList<String> accounts = new ArrayList<>();
         ResultSet res = SQLManager.sqlQuery( "SELECT playername from BungeePlayers WHERE ipaddress = (SELECT ipaddress FROM BungeePlayers WHERE playername = '" + player + "')" );
         while ( res.next() ) {
             accounts.add( res.getString( "playername" ) );
@@ -165,7 +165,7 @@ public class PlayerManager {
     }
 
     public static ArrayList<String> getPlayersAltAccountsByIP( String ip ) throws SQLException {
-        ArrayList<String> accounts = new ArrayList<String>();
+        ArrayList<String> accounts = new ArrayList<>();
         ResultSet res = SQLManager.sqlQuery( "SELECT playername from BungeePlayers WHERE ipaddress = '" + ip + "'" );
         while ( res.next() ) {
             accounts.add( res.getString( "playername" ) );
@@ -178,7 +178,7 @@ public class PlayerManager {
         return onlinePlayers.get( sender.getName() );
     }
 
-    public static void setPlayerAFK( String player, boolean isAFK, boolean sendGlobal, boolean hasDisplayPerm ) {
+    public static void setPlayerAFK( String player, boolean sendGlobal, boolean hasDisplayPerm ) {
         BSPlayer p = getPlayer( player );
         if ( !p.isAFK() ) {
             p.setAFK( true );
