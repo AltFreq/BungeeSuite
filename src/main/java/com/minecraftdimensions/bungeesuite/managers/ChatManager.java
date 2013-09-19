@@ -495,9 +495,9 @@ public class ChatManager {
 
     public static void togglePlayerToChannel( String sender, String channel, boolean bypass ) throws SQLException {
         BSPlayer p = PlayerManager.getPlayer( sender );
-        if ( channel.equals( "local" ) ) {
+        if ( channel.equals( "Local" ) ) {
             channel = p.getServer().getInfo().getName() + " Local";
-        } else if ( channel.equals( "server" ) ) {
+        } else if ( channel.equals( "Server" ) ) {
             channel = p.getServer().getInfo().getName();
         }
         Channel c = getSimilarChannel( channel );
