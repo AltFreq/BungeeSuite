@@ -93,7 +93,7 @@ public class ChatManager {
                 sendPluginMessageTaskChat( server.getInfo(), b );
             }
         }
-        channelsSentToServers.put(server.getInfo().getName(), chans);
+        channelsSentToServers.put( server.getInfo().getName(), chans );
     }
 
     public static void sendChannelToServer( Server server, Channel channel ) {
@@ -257,8 +257,8 @@ public class ChatManager {
         channelsSentToServers.remove( server.getInfo().getName() );
     }
 
-    public static void setPlayerAFK( String player, boolean isAFK, boolean sendGlobal, boolean hasDisplayPerm ) {
-        PlayerManager.setPlayerAFK( player, isAFK, sendGlobal, hasDisplayPerm );
+    public static void setPlayerAFK( String player, boolean sendGlobal, boolean hasDisplayPerm ) {
+        PlayerManager.setPlayerAFK( player, sendGlobal, hasDisplayPerm );
     }
 
     public static void setChatSpy( String player ) throws SQLException {
@@ -578,9 +578,9 @@ public class ChatManager {
     public static Channel getServersDefaultChannel( ServerData server, String channel ) {
         if ( server.forcingChannel() ) {
             return getChannel( server.getForcedChannel() );
-        } else if(BungeeSuite.proxy.getServers().keySet().contains(channel)){
-        	return getChannel(server.getServerName());
-        }else{
+        } else if ( BungeeSuite.proxy.getServers().keySet().contains( channel ) ) {
+            return getChannel( server.getServerName() );
+        } else {
             return getChannel( ChatConfig.defaultChannel );
         }
     }
