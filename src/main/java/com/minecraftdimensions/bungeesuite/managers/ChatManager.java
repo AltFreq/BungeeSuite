@@ -218,10 +218,14 @@ public class ChatManager {
 
     private static void setPlayerToForcedChannel( BSPlayer p, Server server ) {
         Channel c = getChannel( p.getChannel() );
+        ServerData sd = ChatManager.serverData.get( server.getInfo().getName() );
+        if(c==null ||(isFactionChannel(c) && !sd.usingFactions() && !sd.forcingChannel())){
+            p.setChannel( ChatManager.getServersDefaultChannel( sd ) );
+            return;
+        }
         if ( !c.isDefault() ) {
             return;
         }
-        ServerData sd = ChatManager.serverData.get( server.getInfo().getName() );
         if ( isFactionChannel( c ) && sd.usingFactions() ) {
             return;
         }
@@ -235,8 +239,6 @@ public class ChatManager {
                 channel = "Global";
             }
             p.setChannel( channel );
-        } else {
-            p.setChannel( ChatManager.getServersDefaultChannel( sd, c.getName() ).getName() );
         }
 
     }
@@ -596,14 +598,21 @@ public class ChatManager {
         }
     }
 
-    public static Channel getServersDefaultChannel( ServerData server, String channel ) {
-        if ( server.forcingChannel() ) {
-            return getChannel( server.getForcedChannel() );
-        } else if(BungeeSuite.proxy.getServers().keySet().contains(channel)){
-        	return getChannel(server.getServerName());
-        }else{
-            return getChannel( ChatConfig.defaultChannel );
-        }
+    public static String getServersDefaultChannel( ServerData server ) {
+    	String channel = null;
+    	if(server.forcingChannel()){
+    		channel = server.getForcedChannel();
+    	}else {
+    		channel =ChatConfig.defaultChannel;
+    	}
+    	if(channel.equalsIgnoreCase("Server")){
+    		return server.getServerName();
+    	}else if (channel.equalsIgnoreCase("Local")){
+    		return server.getServerName()+" Local";
+    	}
+    	else{
+    		return channel;
+    	}
     }
 
     public static void togglePlayersFactionsChannel( String player ) throws SQLException {
@@ -614,7 +623,7 @@ public class ChatManager {
             newchannel = "FactionAlly";
             p.sendMessage( Messages.FACTION_ALLY_TOGGLE );
         } else if ( channel.equals( "FactionAlly" ) ) {
-            newchannel = getServersDefaultChannel( p.getServerData(), channel ).getName();
+            newchannel = getServersDefaultChannel( p.getServerData());
             p.sendMessage( Messages.CHANNEL_TOGGLE.replace( "{channel}", newchannel ) );
         } else {
             newchannel = "Faction";
@@ -632,7 +641,7 @@ public class ChatManager {
             return;
         }
         if ( p.getChannel().equals( channel ) ) {
-            channel = getServersDefaultChannel( p.getServerData(), channel ).getName();
+            channel = getServersDefaultChannel( p.getServerData());
             p.sendMessage( Messages.FACTION_OFF_TOGGLE );
         } else if ( channel.equals( "Faction" ) ) {
             p.sendMessage( Messages.FACTION_TOGGLE );
