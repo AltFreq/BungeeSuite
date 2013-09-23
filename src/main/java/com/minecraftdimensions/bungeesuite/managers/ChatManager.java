@@ -227,16 +227,6 @@ public class ChatManager {
     private static void setPlayerToForcedChannel( BSPlayer p, Server server ) {
         Channel c = getChannel( p.getChannel() );
         ServerData sd = ChatManager.serverData.get( server.getInfo().getName() );
-        if(c==null ||(isFactionChannel(c) && !sd.usingFactions() && !sd.forcingChannel())){
-            p.setChannel( ChatManager.getServersDefaultChannel( sd ) );
-            return;
-        }
-        if ( !c.isDefault() ) {
-            return;
-        }
-        if ( isFactionChannel( c ) && sd.usingFactions() ) {
-            return;
-        }
         if ( sd.forcingChannel() ) {
             String channel = sd.getForcedChannel();
             if ( channel.equalsIgnoreCase( "server" ) ) {
@@ -248,10 +238,41 @@ public class ChatManager {
             }
             p.setChannel( channel );
         }
+        if ( !c.isDefault() ) {
+            return;
+        }
+        if ( isFactionChannel( c ) && sd.usingFactions() ) {
+            return;
+        }
+        	if(isServerChannel(c)){
+        		p.setChannel(sd.getServerName());
+        	}else if(isLocalChannel(c)){
+        		p.setChannel(sd.getServerName()+" Local");
+        	}else if(c.getName().equals("Global")){
+        		return;
+        	}else{
+            p.setChannel( ChatManager.getServersDefaultChannel( sd ) );
+            return;
+        	}
+        
 
     }
 
-    public static boolean isFactionChannel( Channel c ) {
+    private static boolean isLocalChannel(Channel c) {
+		if(c.isDefault() && BungeeSuite.proxy.getServers().containsKey(c.getName().split(" ")[0])){
+			return true;
+		}
+		return false;
+	}
+
+	private static boolean isServerChannel(Channel c) {
+		if(c.isDefault() && BungeeSuite.proxy.getServers().containsKey(c.getName())){
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isFactionChannel( Channel c ) {
         return c.getName().equals( "Faction" ) || c.getName().equals( "FactionAlly" );
     }
 

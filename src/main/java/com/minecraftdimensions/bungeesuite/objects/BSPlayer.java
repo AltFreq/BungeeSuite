@@ -38,31 +38,7 @@ public class BSPlayer {
         this.dnd = dnd;
         this.acceptingTeleports = tps;
     }
-
-    public BSPlayer( String serialised ) {
-        String[] data = serialised.split( "~" );
-        playername = data[0];
-        channel = data[1];
-        muted = Boolean.parseBoolean( data[2] );
-        nickname = data[3];
-        tempname = data[4];
-        chatspying = Boolean.parseBoolean( data[5] );
-        dnd = Boolean.parseBoolean( data[7] );
-        afk = Boolean.parseBoolean( data[8] );
-        acceptingTeleports = Boolean.parseBoolean( data[9] );
-        lastBack = Boolean.parseBoolean( data[10] );
-        if ( nickname.equals( "null" ) ) {
-            nickname = null;
-        }
-        if ( tempname.endsWith( "null" ) ) {
-            tempname = null;
-        }
-    }
-
-    public String serialise() {
-        return playername + "~" + channel + "~" + muted + "~" + nickname + "~" + tempname + "~" + chatspying + "~" + dnd + "~" + afk + "~" + acceptingTeleports + "~" + lastBack;
-    }
-
+    
     public String getName() {
         return playername;
     }
