@@ -208,7 +208,15 @@ public class ChatManager {
         DataOutputStream out = new DataOutputStream( b );
         try {
             out.writeUTF( "SendPlayer" );
-            out.writeUTF( p.serialise() );
+            out.writeUTF( p.getName() );
+            out.writeUTF( p.getChannel() );
+            out.writeBoolean( p.isMuted() );
+            out.writeUTF( p.getNickname() );
+            out.writeUTF( p.getTempName() );
+            out.writeBoolean( p.isChatSpying() );
+            out.writeBoolean( p.isDND() );
+            out.writeBoolean( p.isAFK() );
+   
         } catch ( IOException e ) {
             e.printStackTrace();
         }

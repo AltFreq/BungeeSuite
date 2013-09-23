@@ -103,6 +103,9 @@ public class BSPlayer {
     }
 
     public String getNickname() {
+    	if(nickname==null){
+    		return "";
+    	}
         return nickname;
     }
 
@@ -255,10 +258,10 @@ public class BSPlayer {
     public String getDisplayingName() {
         if ( tempname != null ) {
             return tempname;
-        } else if ( getNickname() != null ) {
-            return getNickname();
+        } else if ( nickname != null ) {
+            return nickname;
         } else {
-            return getName();
+            return playername;
         }
     }
 
@@ -298,6 +301,13 @@ public class BSPlayer {
         return ignores;
     }
 
+    public String getTempName(){
+    	if(tempname==null){
+    		return "";
+    	}
+    	return tempname;
+    }
+    
     public boolean hasIgnores() {
         return !ignores.isEmpty();
     }
