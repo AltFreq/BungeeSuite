@@ -237,6 +237,11 @@ public class ChatManager {
                 channel = "Global";
             }
             p.setChannel( channel );
+            return;
+        }
+        if(c==null){
+        	ChatManager.getServersDefaultChannel( sd );
+        	return;
         }
         if ( !c.isDefault() ) {
             return;

@@ -24,7 +24,7 @@ public class ChatListener implements Listener {
 		"/s","/sc","/serverchannel","/schannel","/channelserver",
 		"/g","/globalchat","/globalchannel","/gchannel");
 	
-    @EventHandler
+	@EventHandler( priority = EventPriority.HIGHEST )
     public void playerLogin( ServerConnectedEvent e ) throws SQLException {
         ChatManager.loadPlayersChannels( e.getPlayer(), e.getServer() );
         ChatManager.sendPlayer( e.getPlayer().getName(), e.getServer(), true );
