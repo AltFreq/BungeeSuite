@@ -63,7 +63,7 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "AFKPlayer" ) ) {
-            ChatManager.setPlayerAFK( in.readUTF(), in.readBoolean(), in.readBoolean(), in.readBoolean() );
+            ChatManager.setPlayerAFK( in.readUTF(), in.readBoolean(), in.readBoolean() );
             return;
         }
         if ( task.equals( "ReplyToPlayer" ) ) {

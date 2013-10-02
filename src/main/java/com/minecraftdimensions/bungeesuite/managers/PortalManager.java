@@ -20,12 +20,26 @@ public class PortalManager {
 
     public static void loadPortals() throws SQLException {
         ResultSet res = SQLManager.sqlQuery( "SELECT * FROM BungeePortals" );
-        Portal p = new Portal( res.getString( "portalname" ), res.getString( "server" ), res.getString( "filltype" ), res.getString( "type" ), res.getString( "destination" ), new Location( res.getString( "server" ), res.getString( "world" ), res.getDouble( "xmax" ), res.getDouble( "ymax" ), res.getDouble( "zmax" ) ), new Location( res.getString( "server" ), res.getString( "world" ), res.getDouble( "xmin" ), res.getDouble( "ymin" ), res.getDouble( "zmin" ) ) );
-        ArrayList<Portal> list = portals.get( p.getServer() );
+        while(res.next()){
+        String name = res.getString("portalname");
+        String server = res.getString("server");
+        String type = res.getString("type");
+        String dest = res.getString("destination");
+        String world = res.getString("world");
+        String fill = res.getString("filltype");
+        double xmax = res.getDouble("xmax");
+        double xmin = res.getDouble("xmin");
+        double ymax = res.getDouble("ymax");
+        double ymin = res.getDouble("ymin");
+        double zmax = res.getDouble("zmax");
+        double zmin = res.getDouble("zmin");
+        Portal p = new Portal(name, server, fill, type, dest, new Location(server,world, xmax,ymax,zmax), new Location(server,world, xmin,ymin,zmin));
+        	ArrayList<Portal> list = portals.get( p.getServer() );
         if ( list == null ) {
             list = new ArrayList<>();
         }
         list.add( p );
+        }
         res.close();
     }
 
