@@ -1,34 +1,18 @@
 package com.minecraftdimensions.bungeesuite;
 
+import com.minecraftdimensions.bungeesuite.commands.WhoIsCommand;
+import com.minecraftdimensions.bungeesuite.configs.BansConfig;
+import com.minecraftdimensions.bungeesuite.configs.MainConfig;
+import com.minecraftdimensions.bungeesuite.listeners.*;
+import com.minecraftdimensions.bungeesuite.managers.*;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.plugin.Plugin;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-
-import com.minecraftdimensions.bungeesuite.commands.WhoIsCommand;
-import com.minecraftdimensions.bungeesuite.configs.BansConfig;
-import com.minecraftdimensions.bungeesuite.configs.MainConfig;
-import com.minecraftdimensions.bungeesuite.listeners.BansListener;
-import com.minecraftdimensions.bungeesuite.listeners.BansMessageListener;
-import com.minecraftdimensions.bungeesuite.listeners.ChatListener;
-import com.minecraftdimensions.bungeesuite.listeners.ChatMessageListener;
-import com.minecraftdimensions.bungeesuite.listeners.HomesMessageListener;
-import com.minecraftdimensions.bungeesuite.listeners.PlayerListener;
-import com.minecraftdimensions.bungeesuite.listeners.TeleportsMessageListener;
-import com.minecraftdimensions.bungeesuite.listeners.WarpsMessageListener;
-import com.minecraftdimensions.bungeesuite.managers.AnnouncementManager;
-import com.minecraftdimensions.bungeesuite.managers.ChatManager;
-import com.minecraftdimensions.bungeesuite.managers.DatabaseTableManager;
-import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
-import com.minecraftdimensions.bungeesuite.managers.PrefixSuffixManager;
-import com.minecraftdimensions.bungeesuite.managers.SQLManager;
-import com.minecraftdimensions.bungeesuite.managers.SocketManager;
-import com.minecraftdimensions.bungeesuite.managers.TeleportManager;
-import com.minecraftdimensions.bungeesuite.managers.WarpsManager;
-
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.plugin.Plugin;
 
 public class BungeeSuite extends Plugin {
     public static BungeeSuite instance;
@@ -60,10 +44,11 @@ public class BungeeSuite extends Plugin {
             PrefixSuffixManager.loadSuffixes();
             TeleportManager.initialise();
             try {
-				WarpsManager.loadWarpLocations();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+                WarpsManager.loadWarpLocations();
+                PortalManager.loadPortals();
+            } catch ( SQLException e ) {
+                e.printStackTrace();
+            }
             //test
         } else {
             setupSQL();
@@ -129,9 +114,9 @@ public class BungeeSuite extends Plugin {
     }
 
     public void onDisable() {
-    	if(SocketManager.isServerRunning()){
-    		SocketManager.stopServer();
-    	}
+        if ( SocketManager.isServerRunning() ) {
+            SocketManager.stopServer();
+        }
         SQLManager.closeConnections();
     }
 }

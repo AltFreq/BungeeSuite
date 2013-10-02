@@ -4,8 +4,8 @@ import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 import net.md_5.bungee.api.ChatColor;
 
 public class Messages {
-   
-	static String configpath = "/plugins/BungeeSuite/Messages.yml";
+
+    static String configpath = "/plugins/BungeeSuite/Messages.yml";
     static Config m = new Config( configpath );
     public static String PLAYER_CONNECT_PROXY = colorize( m.getString( "PLAYER_CONNECT_PROXY", "{player}&e has joined the server!" ) );
     public static String PLAYER_DISCONNECT_PROXY = colorize( m.getString( "PLAYER_DISCONNECT_PROXY", "{player}&e has left the server!" ) );
@@ -58,9 +58,10 @@ public class Messages {
     public static String PORTAL_DELETED = colorize( m.getString( "PORTAL_DELETED", "&c" + "Portal deleted" ) );
     public static String PORTAL_FILLTYPE = colorize( m.getString( "PORTAL_FILLTYPE", "&c" + "That filltype does not exist" ) );
     public static String PORTAL_WRONG_TYPE = colorize( m.getString( "PORTAL_WRONG_TYPE", "&c" + "That type of portal does not exist, please use warp or server" ) );
-    public static String PORTAL_ALREADY_EXISTS = colorize( m.getString( "PORTAL_ALREADY_EXISTS", "&c" + "That portal already exists" ) );
     public static String PORTAL_DESTINATION_NOT_EXIST = colorize( m.getString( "PORTAL_DESTINATION_NOT_EXIST", "&c" + "That portal destination does not exist" ) );
     public static String PORTAL_DOES_NOT_EXIST = colorize( m.getString( "PORTAL_DOES_NOT_EXIST", "&c" + "That portal does not exist" ) );
+    public static String INVALID_PORTAL_TYPE = colorize( m.getString( "INVALID_PORTAL_TYPE", "&c" + "That is an invalid portal type. Use warp or server" ) );
+    public static String NO_SELECTION_MADE = colorize( m.getString( "NO_SELECTION_MADE", "&c" + "No world edit selection has been made" ) );
     // Spawn messages
     public static String SPAWN_DOES_NOT_EXIST = colorize( m.getString( "SPAWN_DOES_NOT_EXIST", "&c" + "The spawn point has not been set yet" ) );
     public static String SPAWN_UPDATED = colorize( m.getString( "SPAWN_UPDATED", "&2" + "Spawn point updated" ) );
@@ -149,5 +150,4 @@ public class Messages {
         return ChatColor.translateAlternateColorCodes( '&', input );
     }
 
-    public class NO_MORE_HOMES_GLOABAL {}
 }

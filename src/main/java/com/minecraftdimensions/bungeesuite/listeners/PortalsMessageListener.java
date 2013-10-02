@@ -1,29 +1,56 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 
+import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
+import com.minecraftdimensions.bungeesuite.managers.PortalManager;
+import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
+import com.minecraftdimensions.bungeesuite.objects.Location;
+import com.minecraftdimensions.bungeesuite.objects.Messages;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import com.minecraftdimensions.bungeesuite.BungeeSuite;
-
-import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
-
 public class PortalsMessageListener implements Listener {
-	
-	@EventHandler
-	public void receivePluginMessage(PluginMessageEvent event)
-			throws IOException, SQLException {
-		if (!event.getTag().equalsIgnoreCase("BSChat")) {
-			return;
-		}
 
-		DataInputStream in = new DataInputStream(new ByteArrayInputStream(
-				event.getData()));
-		String task = in.readUTF();
-		
-	}
+    @EventHandler
+    public void receivePluginMessage( PluginMessageEvent event ) throws IOException, SQLException {
+        if ( event.isCancelled() ) {
+            return;
+        }
+        if ( !event.getTag().equalsIgnoreCase( "BSPortals" ) ) {
+            return;
+        }
+        event.setCancelled( true );
+
+        DataInputStream in = new DataInputStream( new ByteArrayInputStream( event.getData() ) );
+
+        String task = in.readUTF();
+
+        if ( task.equals( "TeleportPlayer" ) ) {
+            PortalManager.teleportPlayer( PlayerManager.getPlayer( in.readUTF() ), in.readUTF(), in.readUTF(), in.readBoolean() );
+        } else if ( task.equals( "ListPortals" ) ) {
+            PortalManager.listPortals( PlayerManager.getPlayer( in.readUTF() ) );
+        } else if ( task.equals( "DeletePortal" ) ) {
+            PortalManager.deletePortal( PlayerManager.getPlayer( in.readUTF() ), in.readUTF() );
+        } else if ( task.equals( "SetPortal" ) ) {
+            BSPlayer sender = PlayerManager.getPlayer( in.readUTF() );
+            ServerInfo server = ( ServerInfo ) event.getSender();
+            boolean selection = in.readBoolean();
+            if ( !selection ) {
+                sender.sendMessage( Messages.NO_SELECTION_MADE );
+                return;
+            } else {
+                PortalManager.setPortal( sender, in.readUTF(), in.readUTF(), in.readUTF(), in.readUTF(), new Location( server, in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ), new Location( server, in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ) );
+            }
+        }
+
+        in.close();
+
+    }
 
 }

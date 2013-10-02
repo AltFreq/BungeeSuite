@@ -1,100 +1,222 @@
-	package com.minecraftdimensions.bungeesuite.managers;
+package com.minecraftdimensions.bungeesuite.managers;
 
-	import java.sql.ResultSet;
-	import java.sql.SQLException;
-	import java.util.HashMap;
-	import com.minecraftdimensions.bungeesuite.objects.Location;
-	import com.minecraftdimensions.bungeesuite.objects.Messages;
-import com.minecraftdimensions.bungeesuite.objects.Portal;
-import com.minecraftdimensions.bungeesuite.objects.Region;
-import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
+import com.minecraftdimensions.bungeesuite.BungeeSuite;
+import com.minecraftdimensions.bungeesuite.objects.*;
+import com.minecraftdimensions.bungeesuite.tasks.SendPluginMessage;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.config.ServerInfo;
 
-	public class PortalManager {
-			static HashMap<String,Portal> portals;
-		
-		public static void loadPortals() throws SQLException{
-			portals = new HashMap<String,Portal>();
-			ResultSet res = SQLManager.sqlQuery("SELECT * FROM BungeePortals");
-			while (res.next()){
-				boolean target = false;
-				String dest =res.getString("toServer");
-				if(dest==null){
-					target = true;
-					 dest = res.getString("toWarp");
-				}
-				String server = res.getString("server");
-				String world = res.getString("world");
-//				createPortal(res.getString("portalname"), server,res.getString("filltype"),target,dest,new Region(new Location(server,world,res.getDouble("minx"),res.getDouble("miny"), res.getDouble("minz")), new Location(server,world,res.getDouble("xmax"),res.getDouble("ymax"),res.getDouble("zmax"))));
-			}
-			res.close();
-		}
-		
-		public static void createPortal(String name, String server, String fillType, boolean target, String targetName, Region region){
-			Portal p = new Portal(name, server, fillType, target, targetName, region);
-			portals.put(name, p);
-		}
-		
-		public static void setPortal(BSPlayer sender, String name,String fillType, boolean target, String targetName, Region region) throws SQLException{
-			Portal p;
-			if(doesPortalExist(name)){
-				p = getPortal(name);
-				p.setRegion(region);
-				if(target){
-					SQLManager.standardQuery("UPDATE BungeePortals SET server='" + region.getMax().getServer()
-							+ "', world='" + region.getMax().getWorld() + "', filltype = '"+fillType+"', toPortal = NULL, toWarp ='"+targetName+"', xmax=" + region.getMax().getX() + ", ymax=" + region.getMax().getY() + ", zmax=" + region.getMax().getZ() + ", xmin = " + region.getMin().getX()+ ", ymin = "+ region.getMin().getY()+", zmin ="+region.getMin().getZ()
-							+ " WHERE portalname='" + name + "'");
-				}else{
-				SQLManager.standardQuery("UPDATE BungeePortals SET server='" + region.getMax().getServer()
-						+ "', world='" + region.getMax().getWorld() + "', filltype = '"+fillType+"', toPortal = '"+targetName+"', toWarp =NULL, xmax=" + region.getMax().getX() + ", ymax=" + region.getMax().getY() + ", zmax=" + region.getMax().getZ() + ", xmin = " + region.getMin().getX()+ ", ymin = "+ region.getMin().getY()+", zmin ="+region.getMin().getZ()
-						+ " WHERE portalname='" + name + "'");
-				}
-				sender.sendMessage(Messages.PORTAL_UPDATED);
-			}else{
-				p = new Portal(name, region.getMax().getServer().getName(), fillType, target, targetName, region);
-				portals.put(name, p);
-				SQLManager.standardQuery("INSERT INTO BungeePortals VALUES('"+p.getName()+"','" + p.getServer()
-						+ "', '"+targetName+"',NULL, '"+p.getWorld()+"', '"+p.getFillType()+"', "+ region.getMax().getX() + ", " + region.getMin().getX() + "," +region.getMax().getY()+","+region.getMin().getY()+","+region.getMax().getZ()+", " + region.getMin().getZ()+")");
-				sender.sendMessage(Messages.PORTAL_CREATED);
-			}
-		}
-		
-		public static void deletePortal(String portal, BSPlayer sender) throws SQLException{
-			portals.remove(portal);
-			SQLManager.standardQuery("DELETE FROM BungeePortals WHERE portalname='"+portal+"'");
-			sender.sendMessage(Messages.PORTAL_DELETED);
-		}
-		
-		public static Portal getPortal(String name){
-			return portals.get(name);
-		}
-		
-		public static Portal getSimilarPortal(String name){
-			if(portals.containsKey(name)){
-				return portals.get(name);
-			}
-			for(String portal: portals.keySet()){
-				if(portal.toLowerCase().equals(name)){
-					return portals.get(portal);
-				}
-			}
-			return null;
-		}
-		
-		public static boolean doesPortalExist(String name){
-			return portals.containsKey(name);
-		}
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-		public static HashMap<Boolean,String> getPortalsList(){
-			HashMap<Boolean,String> list = new HashMap<Boolean,String>();
-			for(Portal p: portals.values()){
-					list.put(true, p.getName());
-			}
-			return list;
-		}
+public class PortalManager {
+    static HashMap<ServerInfo, ArrayList<Portal>> portals = new HashMap<>();
+    public static String OUTGOING_CHANNEL = "BungeeSuitePortals";
 
-		
-		public static void sendPlayerToPortalDestination(String player, Portal portal){
-			BSPlayer p = PlayerManager.getPlayer(player);
-			portal.sendPlayerToDestination(p);
-		}
+    public static void loadPortals() throws SQLException {
+        ResultSet res = SQLManager.sqlQuery( "SELECT * FROM BungeePortals" );
+        Portal p = new Portal( res.getString( "portalname" ), res.getString( "server" ), res.getString( "filltype" ), res.getString( "type" ), res.getString( "destination" ), new Location( res.getString( "server" ), res.getString( "world" ), res.getDouble( "xmax" ), res.getDouble( "ymax" ), res.getDouble( "zmax" ) ), new Location( res.getString( "server" ), res.getString( "world" ), res.getDouble( "xmin" ), res.getDouble( "ymin" ), res.getDouble( "zmin" ) ) );
+        ArrayList<Portal> list = portals.get( p.getServer() );
+        if ( list == null ) {
+            list = new ArrayList<>();
+        }
+        list.add( p );
+        res.close();
+    }
+
+    public void getPortals( ServerInfo s ) {
+        for ( Portal p : portals.get( s ) ) {
+            sendPortal( p );
+        }
+    }
+
+
+    public static void setPortal( BSPlayer sender, String name, String type, String dest, String fillType, Location max, Location min ) throws SQLException {
+        if ( !( type.equalsIgnoreCase( "warp" ) || type.equalsIgnoreCase( "server" ) ) ) {
+            sender.sendMessage( Messages.INVALID_PORTAL_TYPE );
+            return;
+        }
+        fillType = fillType.toUpperCase();
+        if ( !( fillType.equals( "AIR" ) || fillType.equals( "LAVA" ) || fillType.equals( "WATER" ) || fillType.equals( "WEB" ) || fillType.equals( "SUGAR_CANE" ) || fillType.equals( "PORTAL" ) || fillType.equals( "END_PORTAL" ) ) ) {
+            sender.sendMessage( Messages.PORTAL_FILLTYPE );
+            return;
+        }
+        if ( dest.equalsIgnoreCase( "warp" ) ) {
+            if ( !WarpsManager.doesWarpExist( dest ) ) {
+                sender.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
+                return;
+            }
+        } else {
+            if ( BungeeSuite.proxy.getServerInfo( dest ) == null ) {
+                sender.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
+                return;
+            }
+        }
+        Portal p;
+        ArrayList<Portal> list = portals.get( max.getServer() );
+        if ( list == null ) {
+            list = new ArrayList<>();
+        }
+        if ( doesPortalExist( name ) ) {
+            p = getPortal( name );
+            for ( ArrayList<Portal> l : portals.values() ) {
+                if ( l.contains( p ) ) {
+                    l.remove( p );
+                    removePortal( p );
+                }
+            }
+
+            SQLManager.standardQuery( "UPDATE BungeePortals SET server='" + max.getServer() + "', world='" + max.getWorld() + "', type ='" + type + "' filltype = '" + fillType + "', destination = '" + dest + "', xmax=" + max.getX() + ", ymax=" + max.getY() + ", zmax=" + max.getZ() + ", xmin = " + min.getX() + ", ymin = " + min.getY() + ", zmin =" + min.getZ() + " WHERE portalname='" + name + "'" );
+
+            sender.sendMessage( Messages.PORTAL_UPDATED );
+        } else {
+            SQLManager.standardQuery( "INSERT INTO BungeePortals VALUES('" + name + "','" + max.getServer() + "','" + type + "', '" + dest + "', '" + max.getWorld() + "', '" + fillType + "', " + max.getX() + ", " + min.getX() + "," + max.getY() + "," + min.getY() + "," + max.getZ() + ", " + min.getZ() + ")" );
+
+            sender.sendMessage( Messages.PORTAL_CREATED );
+            p = new Portal( name, max.getServer().getName(), fillType, type, dest, max, min );
+
+
+        }
+        sendPortal( p );
+        list.add( p );
+    }
+
+    public static void sendPortal( Portal p ) {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream( b );
+        try {
+            out.writeUTF( "SendPortal" );
+            out.writeUTF( p.getName() );
+            out.writeUTF( p.getType() );
+            out.writeUTF( p.getDest() );
+            out.writeUTF( p.getFillType() );
+            Location max = p.getMax();
+            out.writeUTF( max.getWorld() );
+            out.writeDouble( max.getX() );
+            out.writeDouble( max.getY() );
+            out.writeDouble( max.getZ() );
+            Location min = p.getMin();
+            out.writeUTF( min.getWorld() );
+            out.writeDouble( min.getX() );
+            out.writeDouble( min.getY() );
+            out.writeDouble( min.getZ() );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        sendPluginMessageTaskPortals( p.getServer(), b );
+    }
+
+    public static void removePortal( Portal p ) {
+
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream( b );
+        try {
+            out.writeUTF( "DeletePortal" );
+            out.writeUTF( p.getName() );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        sendPluginMessageTaskPortals( p.getServer(), b );
+    }
+
+    public static void deletePortal( BSPlayer sender, String portal ) throws SQLException {
+        if ( !doesPortalExist( portal ) ) {
+            sender.sendMessage( Messages.PORTAL_DOES_NOT_EXIST );
+            return;
+        }
+        Portal p = getPortal( portal );
+        ArrayList<Portal> list = portals.get( p.getServer() );
+        list.remove( p );
+        SQLManager.standardQuery( "DELETE FROM BungeePortals WHERE portalname ='" + portal + "'" );
+        removePortal( p );
+
+        sender.sendMessage( Messages.PORTAL_DELETED );
+    }
+
+    public static Portal getPortal( String name ) {
+        for ( ArrayList<Portal> list : portals.values() ) {
+            for ( Portal p : list ) {
+                if ( p.getName().equalsIgnoreCase( name ) ) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean doesPortalExist( String name ) {
+        for ( ArrayList<Portal> list : portals.values() ) {
+            for ( Portal p : list ) {
+                if ( p.getName().equalsIgnoreCase( name ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void sendPluginMessageTaskPortals( ServerInfo server, ByteArrayOutputStream b ) {
+        BungeeSuite.proxy.getScheduler().runAsync( BungeeSuite.instance, new SendPluginMessage( OUTGOING_CHANNEL, server, b ) );
+    }
+
+    public static void teleportPlayer( BSPlayer p, String type, String dest, boolean perm ) {
+        if ( !perm ) {
+            p.sendMessage( Messages.PORTAL_NO_PERMISSION );
+            return;
+        }
+
+        if ( type.equalsIgnoreCase( "warp" ) ) {
+            if ( !WarpsManager.doesWarpExist( dest ) ) {
+                p.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
+            } else {
+                Warp w = WarpsManager.getWarp( dest );
+                Location loc = w.getLocation();
+                ByteArrayOutputStream b = new ByteArrayOutputStream();
+                DataOutputStream out = new DataOutputStream( b );
+                try {
+                    out.writeUTF( "TeleportPlayer" );
+                    out.writeUTF( p.getName() );
+                    out.writeUTF( loc.getWorld() );
+                    out.writeDouble( loc.getX() );
+                    out.writeDouble( loc.getY() );
+                    out.writeDouble( loc.getZ() );
+                    out.writeFloat( loc.getYaw() );
+                    out.writeFloat( loc.getPitch() );
+                } catch ( IOException e ) {
+                    e.printStackTrace();
+                }
+                sendPluginMessageTaskPortals( loc.getServer(), b );
+                if ( !loc.getServer().equals( p.getServer().getInfo() ) ) {
+                    p.sendToServer( loc.getServer().getName() );
+                }
+            }
+        } else {
+            if ( BungeeSuite.proxy.getServerInfo( dest ) == null ) {
+                p.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
+                return;
+            }
+            ServerInfo s = BungeeSuite.proxy.getServerInfo( dest );
+            if ( !s.equals( p.getServer().getInfo() ) ) {
+                p.connectTo( s );
+            }
+        }
+
+    }
+
+    public static void listPortals( BSPlayer p ) {
+        for ( ServerInfo s : portals.keySet() ) {
+            String message = "";
+            message += ChatColor.GOLD + s.getName() + ": " + ChatColor.RESET;
+            ArrayList<Portal> list = portals.get( s );
+            for ( Portal portal : list ) {
+                message += portal.getName() + ", ";
+            }
+            p.sendMessage( message );
+        }
+    }
 }

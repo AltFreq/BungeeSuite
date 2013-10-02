@@ -3,6 +3,7 @@ package com.minecraftdimensions.bungeesuite.objects;
 import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
@@ -27,7 +28,7 @@ public class BSPlayer {
     private Location teleportBackLocation;
     private boolean lastBack; //true = death false = teleport
     private String replyPlayer;
-	private boolean firstConnect = true;
+    private boolean firstConnect = true;
 
     public BSPlayer( String name, String nickname, String channel, boolean muted, boolean chatspying, boolean dnd, boolean tps ) {
         this.playername = name;
@@ -38,7 +39,7 @@ public class BSPlayer {
         this.dnd = dnd;
         this.acceptingTeleports = tps;
     }
-    
+
     public String getName() {
         return playername;
     }
@@ -79,9 +80,9 @@ public class BSPlayer {
     }
 
     public String getNickname() {
-    	if(nickname==null){
-    		return "";
-    	}
+        if ( nickname == null ) {
+            return "";
+        }
         return nickname;
     }
 
@@ -226,8 +227,8 @@ public class BSPlayer {
         if ( name.length() > 16 ) {
             name = getDisplayingName().substring( 0, 16 );
         }
-        if(ChatConfig.updateNicknamesOnTab){
-        	ProxyServer.getInstance().getPlayer( playername ).setDisplayName( name );
+        if ( ChatConfig.updateNicknamesOnTab ) {
+            ProxyServer.getInstance().getPlayer( playername ).setDisplayName( name );
         }
     }
 
@@ -277,13 +278,13 @@ public class BSPlayer {
         return ignores;
     }
 
-    public String getTempName(){
-    	if(tempname==null){
-    		return "";
-    	}
-    	return tempname;
+    public String getTempName() {
+        if ( tempname == null ) {
+            return "";
+        }
+        return tempname;
     }
-    
+
     public boolean hasIgnores() {
         return !ignores.isEmpty();
     }
@@ -295,12 +296,16 @@ public class BSPlayer {
     public HashMap<String, ArrayList<Home>> getHomes() {
         return homes;
     }
-    
-    public boolean firstConnect(){
-    	return firstConnect;
+
+    public boolean firstConnect() {
+        return firstConnect;
     }
-    
-    public void connected(){
-    	firstConnect = false;
+
+    public void connected() {
+        firstConnect = false;
+    }
+
+    public void connectTo( ServerInfo s ) {
+        getProxiedPlayer().connect( s );
     }
 }

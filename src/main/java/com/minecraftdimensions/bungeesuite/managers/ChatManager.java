@@ -216,7 +216,7 @@ public class ChatManager {
             out.writeBoolean( p.isChatSpying() );
             out.writeBoolean( p.isDND() );
             out.writeBoolean( p.isAFK() );
-   
+
         } catch ( IOException e ) {
             e.printStackTrace();
         }
@@ -239,9 +239,9 @@ public class ChatManager {
             p.setChannel( channel );
             return;
         }
-        if(c==null){
-        	ChatManager.getServersDefaultChannel( sd );
-        	return;
+        if ( c == null ) {
+            ChatManager.getServersDefaultChannel( sd );
+            return;
         }
         if ( !c.isDefault() ) {
             return;
@@ -249,35 +249,35 @@ public class ChatManager {
         if ( isFactionChannel( c ) && sd.usingFactions() ) {
             return;
         }
-        	if(isServerChannel(c)){
-        		p.setChannel(sd.getServerName());
-        	}else if(isLocalChannel(c)){
-        		p.setChannel(sd.getServerName()+" Local");
-        	}else if(c.getName().equals("Global")){
-        		return;
-        	}else{
+        if ( isServerChannel( c ) ) {
+            p.setChannel( sd.getServerName() );
+        } else if ( isLocalChannel( c ) ) {
+            p.setChannel( sd.getServerName() + " Local" );
+        } else if ( c.getName().equals( "Global" ) ) {
+            return;
+        } else {
             p.setChannel( ChatManager.getServersDefaultChannel( sd ) );
             return;
-        	}
-        
+        }
+
 
     }
 
-    private static boolean isLocalChannel(Channel c) {
-		if(c.isDefault() && BungeeSuite.proxy.getServers().containsKey(c.getName().split(" ")[0])){
-			return true;
-		}
-		return false;
-	}
+    private static boolean isLocalChannel( Channel c ) {
+        if ( c.isDefault() && BungeeSuite.proxy.getServers().containsKey( c.getName().split( " " )[0] ) ) {
+            return true;
+        }
+        return false;
+    }
 
-	private static boolean isServerChannel(Channel c) {
-		if(c.isDefault() && BungeeSuite.proxy.getServers().containsKey(c.getName())){
-			return true;
-		}
-		return false;
-	}
+    private static boolean isServerChannel( Channel c ) {
+        if ( c.isDefault() && BungeeSuite.proxy.getServers().containsKey( c.getName() ) ) {
+            return true;
+        }
+        return false;
+    }
 
-	public static boolean isFactionChannel( Channel c ) {
+    public static boolean isFactionChannel( Channel c ) {
         return c.getName().equals( "Faction" ) || c.getName().equals( "FactionAlly" );
     }
 
@@ -403,10 +403,10 @@ public class ChatManager {
         }
         PlayerManager.mutePlayer( target );
         if ( command ) {
-            p.sendMessage( Messages.PLAYER_MUTED.replace("{player}", target) );
+            p.sendMessage( Messages.PLAYER_MUTED.replace( "{player}", target ) );
             return;
         } else {
-            p.sendMessage( Messages.PLAYER_UNMUTED.replace("{player}", target) );
+            p.sendMessage( Messages.PLAYER_UNMUTED.replace( "{player}", target ) );
         }
 
     }
@@ -489,12 +489,12 @@ public class ChatManager {
         }
         if ( chan == null ) {
             if ( p.getServerData().forcingChannel() && !bypass ) {
-            	String forcedChannel = p.getServerData().getForcedChannel();
-            	if(forcedChannel.equalsIgnoreCase("server")){
-            		forcedChannel = p.getServerData().getServerName();
-            	}else if(forcedChannel.equalsIgnoreCase("local")){
-            		forcedChannel = p.getServerData().getServerName()+" Local";
-            	}
+                String forcedChannel = p.getServerData().getForcedChannel();
+                if ( forcedChannel.equalsIgnoreCase( "server" ) ) {
+                    forcedChannel = p.getServerData().getServerName();
+                } else if ( forcedChannel.equalsIgnoreCase( "local" ) ) {
+                    forcedChannel = p.getServerData().getServerName() + " Local";
+                }
                 chan = getChannel( forcedChannel );
             } else {
                 chan = getChannel( "Global" );
@@ -521,23 +521,23 @@ public class ChatManager {
     public static boolean canPlayerToggleToChannel( BSPlayer p, Channel channel ) {
         if ( channel.isDefault() ) {
             if ( p.getServerData().forcingChannel() ) {
-            	String forcedChannel = p.getServerData().getForcedChannel();
-                if ( forcedChannel.equalsIgnoreCase("local") ) {
-                	if(channel.getName().equals(p.getServer().getInfo().getName()+ "Local")){
-                		return true;
-                	}else{
-                		return false;
-                	}
-                }else if(forcedChannel.equalsIgnoreCase("server")){
-                	if(channel.getName().equals(p.getServer().getInfo().getName())){
-                		return true;
-                	}else{
-                		return false;
-                	}
-                }else if(forcedChannel.equalsIgnoreCase(channel.getName())){
-                	return true;
-                }else{
-                	return false;
+                String forcedChannel = p.getServerData().getForcedChannel();
+                if ( forcedChannel.equalsIgnoreCase( "local" ) ) {
+                    if ( channel.getName().equals( p.getServer().getInfo().getName() + "Local" ) ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if ( forcedChannel.equalsIgnoreCase( "server" ) ) {
+                    if ( channel.getName().equals( p.getServer().getInfo().getName() ) ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if ( forcedChannel.equalsIgnoreCase( channel.getName() ) ) {
+                    return true;
+                } else {
+                    return false;
                 }
             }
             return false;
@@ -564,7 +564,7 @@ public class ChatManager {
         }
         if ( !bypass ) {
             if ( c.isDefault() || isPlayerChannelMember( p, c ) ) {
-            	
+
                 if ( canPlayerToggleToChannel( p, c ) ) {
                     setPlayersChannel( p, c );
                     return;
@@ -634,20 +634,19 @@ public class ChatManager {
     }
 
     public static String getServersDefaultChannel( ServerData server ) {
-    	String channel = null;
-    	if(server.forcingChannel()){
-    		channel = server.getForcedChannel();
-    	}else {
-    		channel =ChatConfig.defaultChannel;
-    	}
-    	if(channel.equalsIgnoreCase("Server")){
-    		return server.getServerName();
-    	}else if (channel.equalsIgnoreCase("Local")){
-    		return server.getServerName()+" Local";
-    	}
-    	else{
-    		return channel;
-    	}
+        String channel = null;
+        if ( server.forcingChannel() ) {
+            channel = server.getForcedChannel();
+        } else {
+            channel = ChatConfig.defaultChannel;
+        }
+        if ( channel.equalsIgnoreCase( "Server" ) ) {
+            return server.getServerName();
+        } else if ( channel.equalsIgnoreCase( "Local" ) ) {
+            return server.getServerName() + " Local";
+        } else {
+            return channel;
+        }
     }
 
     public static void togglePlayersFactionsChannel( String player ) throws SQLException {
@@ -658,7 +657,7 @@ public class ChatManager {
             newchannel = "FactionAlly";
             p.sendMessage( Messages.FACTION_ALLY_TOGGLE );
         } else if ( channel.equals( "FactionAlly" ) ) {
-            newchannel = getServersDefaultChannel( p.getServerData());
+            newchannel = getServersDefaultChannel( p.getServerData() );
             p.sendMessage( Messages.CHANNEL_TOGGLE.replace( "{channel}", newchannel ) );
         } else {
             newchannel = "Faction";
@@ -676,7 +675,7 @@ public class ChatManager {
             return;
         }
         if ( p.getChannel().equals( channel ) ) {
-            channel = getServersDefaultChannel( p.getServerData());
+            channel = getServersDefaultChannel( p.getServerData() );
             p.sendMessage( Messages.FACTION_OFF_TOGGLE );
         } else if ( channel.equals( "Faction" ) ) {
             p.sendMessage( Messages.FACTION_TOGGLE );

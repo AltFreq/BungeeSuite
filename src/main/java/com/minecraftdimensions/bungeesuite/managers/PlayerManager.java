@@ -79,10 +79,10 @@ public class PlayerManager {
     }
 
     public static void unloadPlayer( String player ) {
-    	if(onlinePlayers.containsKey(player)){
-    		onlinePlayers.remove( player );
-    		LoggingManager.log( Messages.PLAYER_UNLOAD.replace( "{player}", player ) );
-    	}
+        if ( onlinePlayers.containsKey( player ) ) {
+            onlinePlayers.remove( player );
+            LoggingManager.log( Messages.PLAYER_UNLOAD.replace( "{player}", player ) );
+        }
     }
 
     public static BSPlayer getPlayer( String player ) {
