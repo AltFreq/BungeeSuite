@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class PortalManager {
     static HashMap<ServerInfo, ArrayList<Portal>> portals = new HashMap<>();
-    public static String OUTGOING_CHANNEL = "BungeeSuitePortals";
+    public static String OUTGOING_CHANNEL = "BungeeSuitePorts";
 
     public static void loadPortals() throws SQLException {
         ResultSet res = SQLManager.sqlQuery( "SELECT * FROM BungeePortals" );
