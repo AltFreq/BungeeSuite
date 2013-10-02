@@ -5,7 +5,7 @@ import com.minecraftdimensions.bungeesuite.managers.PortalManager;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Location;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
-import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -30,7 +30,6 @@ public class PortalsMessageListener implements Listener {
         DataInputStream in = new DataInputStream( new ByteArrayInputStream( event.getData() ) );
 
         String task = in.readUTF();
-
         if ( task.equals( "TeleportPlayer" ) ) {
             PortalManager.teleportPlayer( PlayerManager.getPlayer( in.readUTF() ), in.readUTF(), in.readUTF(), in.readBoolean() );
         } else if ( task.equals( "ListPortals" ) ) {
@@ -39,13 +38,13 @@ public class PortalsMessageListener implements Listener {
             PortalManager.deletePortal( PlayerManager.getPlayer( in.readUTF() ), in.readUTF() );
         } else if ( task.equals( "SetPortal" ) ) {
             BSPlayer sender = PlayerManager.getPlayer( in.readUTF() );
-            ServerInfo server = ( ServerInfo ) event.getSender();
+            Server s = (Server)event.getSender();
             boolean selection = in.readBoolean();
             if ( !selection ) {
                 sender.sendMessage( Messages.NO_SELECTION_MADE );
                 return;
             } else {
-                PortalManager.setPortal( sender, in.readUTF(), in.readUTF(), in.readUTF(), in.readUTF(), new Location( server, in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ), new Location( server, in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ) );
+                PortalManager.setPortal( sender, in.readUTF(), in.readUTF(), in.readUTF(), in.readUTF(), new Location( s.getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ), new Location( s.getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ) );
             }
         }
 
