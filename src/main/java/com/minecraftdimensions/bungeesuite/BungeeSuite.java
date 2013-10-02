@@ -65,6 +65,8 @@ public class BungeeSuite extends Plugin {
         this.getProxy().registerChannel( "BungeeSuiteWarps" );//out
         this.getProxy().registerChannel( "BSHomes" );//in
         this.getProxy().registerChannel( "BungeeSuiteHomes" );//out
+        this.getProxy().registerChannel( "BSPortals" );//in
+        this.getProxy().registerChannel( "BungeeSuitePorts" );//out
         proxy.getPluginManager().registerListener( this, new PlayerListener() );
         proxy.getPluginManager().registerListener( this, new ChatListener() );
         proxy.getPluginManager().registerListener( this, new ChatMessageListener() );
@@ -73,6 +75,7 @@ public class BungeeSuite extends Plugin {
         proxy.getPluginManager().registerListener( this, new TeleportsMessageListener() );
         proxy.getPluginManager().registerListener( this, new WarpsMessageListener() );
         proxy.getPluginManager().registerListener( this, new HomesMessageListener() );
+        proxy.getPluginManager().registerListener( this, new PortalsMessageListener() );
     }
 
     private void setupSQL() {
