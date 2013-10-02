@@ -181,13 +181,17 @@ public class BansManager {
 	}
 
 	public static void disconnectPlayer(ProxiedPlayer player, String message) {
+        PlayerManager.unloadPlayer(player.getName());
 		player.disconnect(message);
 	}
 
 	public static void disconnectPlayer(String player, String message) {
+        PlayerManager.unloadPlayer(player);
 		ProxyServer.getInstance().getPlayer(player).disconnect(message);
 	}
 	public static void disconnectPlayer(BSPlayer player, String message) {
+
+        PlayerManager.unloadPlayer(player.getName());
 		player.getProxiedPlayer().disconnect(message);
 	}
 

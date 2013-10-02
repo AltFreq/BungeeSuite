@@ -27,6 +27,7 @@ public class BSPlayer {
     private Location teleportBackLocation;
     private boolean lastBack; //true = death false = teleport
     private String replyPlayer;
+	private boolean firstConnect = true;
 
     public BSPlayer( String name, String nickname, String channel, boolean muted, boolean chatspying, boolean dnd, boolean tps ) {
         this.playername = name;
@@ -37,31 +38,7 @@ public class BSPlayer {
         this.dnd = dnd;
         this.acceptingTeleports = tps;
     }
-
-    public BSPlayer( String serialised ) {
-        String[] data = serialised.split( "~" );
-        playername = data[0];
-        channel = data[1];
-        muted = Boolean.parseBoolean( data[2] );
-        nickname = data[3];
-        tempname = data[4];
-        chatspying = Boolean.parseBoolean( data[5] );
-        dnd = Boolean.parseBoolean( data[7] );
-        afk = Boolean.parseBoolean( data[8] );
-        acceptingTeleports = Boolean.parseBoolean( data[9] );
-        lastBack = Boolean.parseBoolean( data[10] );
-        if ( nickname.equals( "null" ) ) {
-            nickname = null;
-        }
-        if ( tempname.endsWith( "null" ) ) {
-            tempname = null;
-        }
-    }
-
-    public String serialise() {
-        return playername + "~" + channel + "~" + muted + "~" + nickname + "~" + tempname + "~" + chatspying + "~" + dnd + "~" + afk + "~" + acceptingTeleports + "~" + lastBack;
-    }
-
+    
     public String getName() {
         return playername;
     }
@@ -102,6 +79,9 @@ public class BSPlayer {
     }
 
     public String getNickname() {
+    	if(nickname==null){
+    		return "";
+    	}
         return nickname;
     }
 
@@ -254,10 +234,10 @@ public class BSPlayer {
     public String getDisplayingName() {
         if ( tempname != null ) {
             return tempname;
-        } else if ( getNickname() != null ) {
-            return getNickname();
+        } else if ( nickname != null ) {
+            return nickname;
         } else {
-            return getName();
+            return playername;
         }
     }
 
@@ -297,6 +277,13 @@ public class BSPlayer {
         return ignores;
     }
 
+    public String getTempName(){
+    	if(tempname==null){
+    		return "";
+    	}
+    	return tempname;
+    }
+    
     public boolean hasIgnores() {
         return !ignores.isEmpty();
     }
@@ -307,5 +294,13 @@ public class BSPlayer {
 
     public HashMap<String, ArrayList<Home>> getHomes() {
         return homes;
+    }
+    
+    public boolean firstConnect(){
+    	return firstConnect;
+    }
+    
+    public void connected(){
+    	firstConnect = false;
     }
 }

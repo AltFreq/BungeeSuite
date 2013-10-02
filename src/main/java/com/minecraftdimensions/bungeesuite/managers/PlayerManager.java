@@ -20,9 +20,10 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerManager {
 
-    private static HashMap<String, BSPlayer> onlinePlayers = new HashMap<>();
+    public static HashMap<String, BSPlayer> onlinePlayers = new HashMap<>();
     static ProxyServer proxy = ProxyServer.getInstance();
     static BungeeSuite plugin = BungeeSuite.instance;
+    public static ArrayList<ProxiedPlayer> kickedPlayers = new ArrayList<ProxiedPlayer>();
 
     public static boolean playerExists( String player ) {
         if ( getSimilarPlayer( player ) != null ) {
@@ -38,7 +39,6 @@ public class PlayerManager {
         boolean chatspying = false;
         boolean dnd = false;
         boolean tps = true;
-
         if ( playerExists( player.getName() ) ) {
             ResultSet res = SQLManager.sqlQuery( "SELECT playername,nickname,channel,muted,chat_spying,dnd,tps FROM BungeePlayers WHERE playername = '" + player + "'" );
             while ( res.next() ) {
@@ -79,8 +79,10 @@ public class PlayerManager {
     }
 
     public static void unloadPlayer( String player ) {
-        onlinePlayers.remove( player );
-        LoggingManager.log( Messages.PLAYER_UNLOAD.replace( "{player}", player ) );
+    	if(onlinePlayers.containsKey(player)){
+    		onlinePlayers.remove( player );
+    		LoggingManager.log( Messages.PLAYER_UNLOAD.replace( "{player}", player ) );
+    	}
     }
 
     public static BSPlayer getPlayer( String player ) {
@@ -278,18 +280,16 @@ public class PlayerManager {
 
     public static void mutePlayer( String target ) throws SQLException {
         BSPlayer p = getSimilarPlayer( target );
+        boolean isMuted = isPlayerMuted( target );
         if ( p != null ) {
-            if ( p.isMuted() ) {
-                SQLManager.standardQuery( "UPDATE BungeePlayers SET muted =0 WHERE playername ='" + p.getName() + "'" );
+            if ( isMuted ) {
                 p.setMute( false );
                 p.sendMessage( Messages.UNMUTED );
             } else {
-                SQLManager.standardQuery( "UPDATE BungeePlayers SET muted =1 WHERE playername ='" + p.getName() + "'" );
                 p.setMute( true );
                 p.sendMessage( Messages.MUTED );
             }
         }
-        boolean isMuted = isPlayerMuted( target );
         SQLManager.standardQuery( "UPDATE BungeePlayers SET muted = " + !isMuted + " WHERE playername ='" + target + "'" );
 
     }
