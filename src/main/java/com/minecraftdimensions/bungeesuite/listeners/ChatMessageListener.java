@@ -59,7 +59,9 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "GetPlayer" ) ) {
-            ChatManager.sendPlayer( in.readUTF(), s, true );
+        	String player = in.readUTF();
+            ChatManager.sendPlayer( player, s, true );
+            IgnoresManager.sendPlayersIgnores( PlayerManager.getPlayer( player ), s );
             return;
         }
         if ( task.equals( "AFKPlayer" ) ) {
