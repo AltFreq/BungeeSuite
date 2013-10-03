@@ -30,6 +30,7 @@ public class PortalsMessageListener implements Listener {
         DataInputStream in = new DataInputStream( new ByteArrayInputStream( event.getData() ) );
 
         String task = in.readUTF();
+        Server s = (Server)event.getSender();
         if ( task.equals( "TeleportPlayer" ) ) {
             PortalManager.teleportPlayer( PlayerManager.getPlayer( in.readUTF() ), in.readUTF(), in.readUTF(), in.readBoolean() );
         } else if ( task.equals( "ListPortals" ) ) {
@@ -38,7 +39,6 @@ public class PortalsMessageListener implements Listener {
             PortalManager.deletePortal( PlayerManager.getPlayer( in.readUTF() ), in.readUTF() );
         } else if ( task.equals( "SetPortal" ) ) {
             BSPlayer sender = PlayerManager.getPlayer( in.readUTF() );
-            Server s = (Server)event.getSender();
             boolean selection = in.readBoolean();
             if ( !selection ) {
                 sender.sendMessage( Messages.NO_SELECTION_MADE );
@@ -46,6 +46,8 @@ public class PortalsMessageListener implements Listener {
             } else {
                 PortalManager.setPortal( sender, in.readUTF(), in.readUTF(), in.readUTF(), in.readUTF(), new Location( s.getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ), new Location( s.getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ) );
             }
+        }else if ( task.equals( "RequestPortals" )){
+        	PortalManager.getPortals(s.getInfo());
         }
 
         in.close();

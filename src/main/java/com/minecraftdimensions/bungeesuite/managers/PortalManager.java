@@ -45,7 +45,7 @@ public class PortalManager {
         res.close();
     }
 
-    public void getPortals( ServerInfo s ) {
+    public static void getPortals( ServerInfo s ) {
         for ( Portal p : portals.get( s ) ) {
             sendPortal( p );
         }
