@@ -7,6 +7,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -255,7 +256,12 @@ public class BSPlayer {
     }
 
     public void updatePlayer() {
-        ChatManager.sendPlayer( playername, getServer(), false );
+        try {
+			ChatManager.sendPlayer( playername, getServer(), false );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public void sendMessageToPlayer( BSPlayer target, String message ) {

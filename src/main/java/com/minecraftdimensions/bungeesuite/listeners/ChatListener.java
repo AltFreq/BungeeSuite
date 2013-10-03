@@ -25,7 +25,6 @@ public class ChatListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerLogin( ServerConnectedEvent e ) throws SQLException {
         ChatManager.loadPlayersChannels( e.getPlayer(), e.getServer() );
-        ChatManager.sendPlayer( e.getPlayer().getName(), e.getServer(), true );
         IgnoresManager.sendPlayersIgnores( PlayerManager.getPlayer( e.getPlayer() ), e.getServer() );
         BSPlayer p = PlayerManager.getPlayer( e.getPlayer() );
         if ( p != null ) {
