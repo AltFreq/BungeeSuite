@@ -40,7 +40,6 @@ public class PortalManager {
             portals.put(p.getServer(), list);
         }
         list.add( p );
-        System.out.println("Portal loaded "+ p.getName());
         }
         res.close();
     }
@@ -162,7 +161,6 @@ public class PortalManager {
     public static boolean doesPortalExist( String name ) {
         for ( ArrayList<Portal> list : portals.values() ) {
             for ( Portal p : list ) {
-            	System.out.println(p.getName());
                 if ( p.getName().equalsIgnoreCase( name ) ) {
                     return true;
                 }
