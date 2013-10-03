@@ -37,8 +37,10 @@ public class PortalManager {
         	ArrayList<Portal> list = portals.get( p.getServer() );
         if ( list == null ) {
             list = new ArrayList<>();
+            portals.put(p.getServer(), list);
         }
         list.add( p );
+        System.out.println("Portal loaded "+ p.getName());
         }
         res.close();
     }
@@ -71,31 +73,24 @@ public class PortalManager {
                 return;
             }
         }
-        Portal p;
         ArrayList<Portal> list = portals.get( max.getServer() );
         if ( list == null ) {
             list = new ArrayList<>();
+            portals.put(max.getServer(), list);
         }
         if ( doesPortalExist( name ) ) {
-            p = getPortal( name );
-            for ( ArrayList<Portal> l : portals.values() ) {
-                if ( l.contains( p ) ) {
-                    l.remove( p );
-                    removePortal( p );
-                }
-            }
+        	Portal old = getPortal(name);
+            removePortal( old );
 
-            SQLManager.standardQuery( "UPDATE BungeePortals SET server='" + max.getServer() + "', world='" + max.getWorld() + "', type ='" + type + "' filltype = '" + fillType + "', destination = '" + dest + "', xmax=" + max.getX() + ", ymax=" + max.getY() + ", zmax=" + max.getZ() + ", xmin = " + min.getX() + ", ymin = " + min.getY() + ", zmin =" + min.getZ() + " WHERE portalname='" + name + "'" );
+            SQLManager.standardQuery( "UPDATE BungeePortals SET server='" + max.getServer().getName() + "', world='" + max.getWorld() + "', type ='" + type + "', filltype = '" + fillType + "', destination = '" + dest + "', xmax=" + max.getX() + ", ymax=" + max.getY() + ", zmax=" + max.getZ() + ", xmin = " + min.getX() + ", ymin = " + min.getY() + ", zmin =" + min.getZ() + " WHERE portalname='" + name + "'" );
 
             sender.sendMessage( Messages.PORTAL_UPDATED );
         } else {
-            SQLManager.standardQuery( "INSERT INTO BungeePortals VALUES('" + name + "','" + max.getServer() + "','" + type + "', '" + dest + "', '" + max.getWorld() + "', '" + fillType + "', " + max.getX() + ", " + min.getX() + "," + max.getY() + "," + min.getY() + "," + max.getZ() + ", " + min.getZ() + ")" );
+            SQLManager.standardQuery( "INSERT INTO BungeePortals VALUES('" + name + "','" + max.getServer().getName() + "','" + type + "', '" + dest + "', '" + max.getWorld() + "', '" + fillType + "', " + max.getX() + ", " + min.getX() + "," + max.getY() + "," + min.getY() + "," + max.getZ() + ", " + min.getZ() + ")" );
 
             sender.sendMessage( Messages.PORTAL_CREATED );
-            p = new Portal( name, max.getServer().getName(), fillType, type, dest, max, min );
-
-
         }
+        Portal p = new Portal( name, max.getServer().getName(), fillType, type, dest, max, min );
         sendPortal( p );
         list.add( p );
     }
@@ -126,6 +121,7 @@ public class PortalManager {
     }
 
     public static void removePortal( Portal p ) {
+    	portals.get(p.getServer()).remove(p);
 
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream( b );
@@ -166,6 +162,7 @@ public class PortalManager {
     public static boolean doesPortalExist( String name ) {
         for ( ArrayList<Portal> list : portals.values() ) {
             for ( Portal p : list ) {
+            	System.out.println(p.getName());
                 if ( p.getName().equalsIgnoreCase( name ) ) {
                     return true;
                 }
