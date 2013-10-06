@@ -9,5 +9,7 @@ public class SpawnConfig {
 	public static Config spawnConfig = new Config(configpath);
 	public static boolean newspawn = spawnConfig.getBoolean("Spawn new players at newspawn",
 			false);
+	public static boolean forcespawn = spawnConfig.getBoolean("Spawn all players reconnecting players at proxy spawn",
+			false);
 	
 }

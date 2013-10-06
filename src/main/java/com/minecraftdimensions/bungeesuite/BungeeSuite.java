@@ -46,6 +46,7 @@ public class BungeeSuite extends Plugin {
             try {
                 WarpsManager.loadWarpLocations();
                 PortalManager.loadPortals();
+                SpawnManager.loadSpawns();
             } catch ( SQLException e ) {
                 e.printStackTrace();
             }
@@ -67,6 +68,8 @@ public class BungeeSuite extends Plugin {
         this.getProxy().registerChannel( "BungeeSuiteHomes" );//out
         this.getProxy().registerChannel( "BSPortals" );//in
         this.getProxy().registerChannel( "BungeeSuitePorts" );//out
+        this.getProxy().registerChannel( "BSSpawns" );//in
+        this.getProxy().registerChannel( "BungeeSuiteSpawn" );//out
         proxy.getPluginManager().registerListener( this, new PlayerListener() );
         proxy.getPluginManager().registerListener( this, new ChatListener() );
         proxy.getPluginManager().registerListener( this, new ChatMessageListener() );
@@ -76,6 +79,8 @@ public class BungeeSuite extends Plugin {
         proxy.getPluginManager().registerListener( this, new WarpsMessageListener() );
         proxy.getPluginManager().registerListener( this, new HomesMessageListener() );
         proxy.getPluginManager().registerListener( this, new PortalsMessageListener() );
+        proxy.getPluginManager().registerListener( this, new SpawnListener() );
+        proxy.getPluginManager().registerListener( this, new SpawnMessageListener() );
     }
 
     private void setupSQL() {

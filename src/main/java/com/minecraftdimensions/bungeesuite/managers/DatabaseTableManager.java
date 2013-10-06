@@ -38,7 +38,7 @@ public class DatabaseTableManager {
             //BungeePortals
             runTableQuery( "BungeePortals", "CREATE TABLE BungeePortals(portalname VARCHAR(100), server VARCHAR(100),type VARCHAR(20), destination VARCHAR(100), world VARCHAR(100), filltype VARCHAR(100) DEFAULT 'AIR', xmax INT(11), xmin INT(11), ymax INT(11), ymin INT(11), zmax INT(11), zmin INT(11), CONSTRAINT pk_portalname PRIMARY KEY (portalname))" );
             //BungeeSpawns
-            runTableQuery( "BungeeSpawns", "CREATE TABLE BungeeSpawns (spawnname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, CONSTRAINT pk_spawnname PRIMARY KEY (spawnname))" );
+            runTableQuery( "BungeeSpawns", "CREATE TABLE BungeeSpawns (spawnname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, CONSTRAINT pk_spawnname PRIMARY KEY (spawnname, server))" );
             //BungeeWarps
             runTableQuery( "BungeeWarps", "CREATE TABLE BungeeWarps (warpname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, hidden TINYINT(1),global TINYINT(1), CONSTRAINT pk_warp PRIMARY KEY (warpname))" );
             runTableUpdates();
