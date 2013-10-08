@@ -43,7 +43,7 @@ public class HomesManager {
             p.sendMessage( Messages.HOME_SET );
         } else {
             getSimilarHome( p, home ).setLoc( loc );
-            SQLManager.standardQuery( "UPDATE BungeeHomes SET server = '" + loc.getServer().getName() + "', world = '" + loc.getWorld() + "', x = " + loc.getX() + ", y = " + loc.getY() + ", z = " + loc.getZ() + ", yaw = " + loc.getYaw() + ", pitch = " + loc.getPitch() + "" );
+            SQLManager.standardQuery( "UPDATE BungeeHomes SET server = '" + loc.getServer().getName() + "', world = '" + loc.getWorld() + "', x = " + loc.getX() + ", y = " + loc.getY() + ", z = " + loc.getZ() + ", yaw = " + loc.getYaw() + ", pitch = " + loc.getPitch() + " WHERE player = '"+player+"'" );
             p.sendMessage( Messages.HOME_UPDATED );
             return;
         }
