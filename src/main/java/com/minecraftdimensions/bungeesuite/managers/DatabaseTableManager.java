@@ -26,7 +26,7 @@ public class DatabaseTableManager {
         try {
             runTableQuery( "BungeePlayers", "CREATE TABLE BungeePlayers (playername VARCHAR(100), lastonline DATETIME NOT NULL, ipaddress VARCHAR(100), nickname VARCHAR(100), channel VARCHAR(100),muted TINYINT(1) DEFAULT 0, chat_spying TINYINT(1) DEFAULT 0, dnd TINYINT(1) DEFAULT 0, tps TINYINT(1) DEFAULT 1,CONSTRAINT pk_playername PRIMARY KEY (playername))" );
             //BungeeBans
-            runTableQuery( "BungeeBans", "CREATE TABLE BungeeBans (player VARCHAR(100), banned_by VARCHAR(100), reason VARCHAR(255), type VARCHAR(100), banned_on DATETIME NOT NULL, banned_until DATETIME, CONSTRAINT pk_bannedPlayer PRIMARY KEY (player), CONSTRAINT fk_banner FOREIGN KEY (banned_by) REFERENCES BungeePlayers (playername))" );
+            runTableQuery( "BungeeBans", "CREATE TABLE BungeeBans (player VARCHAR(100), banned_by VARCHAR(100), reason VARCHAR(255), type VARCHAR(100), banned_on DATETIME NOT NULL, banned_until DATETIME, CONSTRAINT pk_bannedPlayer PRIMARY KEY (player))" );
             //BungeeChatIgnores
             runTableQuery( "BungeeChatIgnores", "CREATE TABLE BungeeChatIgnores (player VARCHAR(100), ignoring VARCHAR(100), CONSTRAINT pk_ignored PRIMARY KEY (player,ignoring), CONSTRAINT fk_player FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT fk_ignored FOREIGN KEY (ignoring) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)" );
             //BungeeChannelMembers
