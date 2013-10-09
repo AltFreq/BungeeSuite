@@ -561,10 +561,12 @@ public class ChatManager {
 
     public static void togglePlayerToChannel( String sender, String channel, boolean bypass ) throws SQLException {
         BSPlayer p = PlayerManager.getPlayer( sender );
-        if ( channel.equals( "Local" ) ) {
+        if ( channel.equalsIgnoreCase( "Local" ) ) {
             channel = p.getServer().getInfo().getName() + " Local";
-        } else if ( channel.equals( "Server" ) ) {
+        } else if ( channel.equalsIgnoreCase( "Server" ) ) {
             channel = p.getServer().getInfo().getName();
+        } else if (channel.equalsIgnoreCase( "Global" ) ) {
+            channel = "Global";
         }
         Channel c = getSimilarChannel( channel );
         if ( c == null ) {
