@@ -79,6 +79,9 @@ public class SpawnManager {
 			player.sendMessage(Messages.SPAWN_DOES_NOT_EXIST);
 			return;
 		}
+		if(player==null){
+			return;
+		}
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream( b );
         try {
