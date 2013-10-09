@@ -96,7 +96,7 @@ public class TeleportManager {
 					@Override
 					public void run() {
 						if (pendingTeleportsTPAHere.containsKey(bt)) {
-							if(!pendingTeleportsTPAHere.get(bp).equals(bt)){
+							if(!pendingTeleportsTPAHere.get(bt).equals(bp)){
 								return;
 							}
 							if(bp!=null){
