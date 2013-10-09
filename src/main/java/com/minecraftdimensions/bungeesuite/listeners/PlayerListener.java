@@ -20,7 +20,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void playerLogin( PostLoginEvent e ) throws SQLException {
-        if ( !PlayerManager.onlinePlayers.containsKey( e.getPlayer().getName() ) ) {
+        if ( !PlayerManager.onlinePlayers.containsKey( e.getPlayer().getName() )) {
             PlayerManager.loadPlayer( e.getPlayer() );
         }
     }

@@ -3,12 +3,13 @@ package com.minecraftdimensions.bungeesuite.managers;
 import java.net.*;
 import java.io.*;
 
+import com.minecraftdimensions.bungeesuite.configs.MainConfig;
 import com.minecraftdimensions.bungeesuite.listeners.SocketListener;
 
 
 public class SocketManager extends Thread {
     
-	public static int DEFAULT_PORT = 14455;
+	public static int DEFAULT_PORT = MainConfig.BackupSocketPort;
 	
     public static SocketManager startServer() {
     	return startServer(SocketManager.DEFAULT_PORT);

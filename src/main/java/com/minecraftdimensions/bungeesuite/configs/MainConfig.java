@@ -19,4 +19,5 @@ public class MainConfig {
 	public static boolean motd = config.getBoolean("MOTD.Enabled", true);
 	public static boolean newPlayerBroadcast = config.getBoolean("NewPlayerBroadcast", true);
 	public static int playerDisconnectDelay = config.getInt("PlayerDisconnectDelay", 10);
+	public static int BackupSocketPort = config.getInt("BackupSocketPort", 14455);
 }
