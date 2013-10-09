@@ -3,7 +3,6 @@ package com.minecraftdimensions.bungeesuite.listeners;
 import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.managers.*;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -47,9 +46,9 @@ public class ChatMessageListener implements Listener {
             ChatManager.clearServersChannels( s );
             ChatManager.sendServerData( s );
             ChatManager.sendDefaultChannelsToServer( s );
-            for ( ProxiedPlayer p : s.getInfo().getPlayers() ) {
-                ChatManager.loadPlayersChannels( p, s );
-            }
+            //            for ( ProxiedPlayer p : s.getInfo().getPlayers() ) {
+            //                ChatManager.loadPlayersChannels( p, s );
+            //            }
             PrefixSuffixManager.sendPrefixAndSuffixToServer( s );
             return;
         }
@@ -59,7 +58,7 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "GetPlayer" ) ) {
-        	String player = in.readUTF();
+            String player = in.readUTF();
             ChatManager.sendPlayer( player, s, true );
             IgnoresManager.sendPlayersIgnores( PlayerManager.getPlayer( player ), s );
             return;
