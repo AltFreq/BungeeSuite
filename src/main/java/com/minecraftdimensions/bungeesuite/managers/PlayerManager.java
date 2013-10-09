@@ -248,7 +248,7 @@ public class PlayerManager {
 
     public static void sendMessageToSpies( Server server, String message ) {
         for ( BSPlayer p : getChatSpies() ) {
-            if ( !p.getServer().equals( server ) ) {
+            if ( !p.getServer().getInfo().getName().equals( server.getInfo().getName() ) ) {
                 p.sendMessage( message );
             }
         }
