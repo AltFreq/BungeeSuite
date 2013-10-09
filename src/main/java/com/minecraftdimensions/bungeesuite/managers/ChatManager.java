@@ -549,7 +549,7 @@ public class ChatManager {
                     return false;
                 }
             }
-            return false;
+            return true;
         }
         return true;
     }
