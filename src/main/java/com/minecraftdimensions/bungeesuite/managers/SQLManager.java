@@ -26,7 +26,7 @@ public class SQLManager{
 		for (int i = 0; i < MainConfig.threads; i++) {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
-				connection = DriverManager.getConnection("jdbc:mysql://" + MainConfig.url
+				connection = DriverManager.getConnection("jdbc:mysql://" + MainConfig.host
 						+ ":" + MainConfig.port + "/" + MainConfig.database, MainConfig.username, MainConfig.password);
 			} catch (SQLException | ClassNotFoundException ex) {
 				System.out.println(ChatColor.DARK_RED+"SQL is unable to conect");
@@ -66,7 +66,7 @@ public class SQLManager{
 		ConnectionHandler ch = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://" + MainConfig.url
+			connection = DriverManager.getConnection("jdbc:mysql://" + MainConfig.host
 					+ ":" + MainConfig.port + "/" + MainConfig.database, MainConfig.username, MainConfig.password);
 		} catch (SQLException | ClassNotFoundException ex) {
 			System.out.println("SQL is unable to create a new connection");

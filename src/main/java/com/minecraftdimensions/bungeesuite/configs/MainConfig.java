@@ -10,7 +10,7 @@ public class MainConfig {
 
 	/* MySQL Information */
 	public static String dbtype = config.getString("Database.Type", "MySQL");
-	public static String url = config.getString("Database.URL", "localhost");
+	public static String host = config.getString("Database.Host", "localhost");
 	public static String database = config.getString("Database.Database", "minecraft");
 	public static String port = config.getString("Database.Port", "3306");
 	public static String username = config.getString("Database.Username", "username");

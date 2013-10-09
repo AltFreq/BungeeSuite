@@ -89,9 +89,9 @@ public class BungeeSuite extends Plugin {
         try {
             BufferedReader bufferRead = new BufferedReader( new InputStreamReader( System.in ) );
             String s = bufferRead.readLine();
-            MainConfig.config.setString( "Database.URL", s );
-            MainConfig.url = s;
-            System.out.println( ChatColor.GREEN + "URL set to: " + s );
+            MainConfig.config.setString( "Database.Host", s );
+            MainConfig.host = s;
+            System.out.println( ChatColor.GREEN + "Host set to: " + s );
             System.out.println( ChatColor.DARK_RED + "Enter your database name:" );
             s = bufferRead.readLine();
             MainConfig.config.setString( "Database.Database", s );
