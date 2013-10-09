@@ -61,8 +61,9 @@ public class PortalManager {
             sender.sendMessage( Messages.PORTAL_FILLTYPE );
             return;
         }
-        if ( dest.equalsIgnoreCase( "warp" ) ) {
-            if ( !WarpsManager.doesWarpExist( dest ) ) {
+        if ( type.equalsIgnoreCase( "warp" ) ) {
+        	Warp w = WarpsManager.getWarp(dest.toLowerCase());
+            if ( w==null ) {
                 sender.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
                 return;
             }
@@ -178,12 +179,11 @@ public class PortalManager {
             p.sendMessage( Messages.PORTAL_NO_PERMISSION );
             return;
         }
-
         if ( type.equalsIgnoreCase( "warp" ) ) {
-            if ( !WarpsManager.doesWarpExist( dest ) ) {
+            Warp w = WarpsManager.getWarp( dest );
+            if ( w==null ) {
                 p.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
             } else {
-                Warp w = WarpsManager.getWarp( dest );
                 Location loc = w.getLocation();
                 ByteArrayOutputStream b = new ByteArrayOutputStream();
                 DataOutputStream out = new DataOutputStream( b );
