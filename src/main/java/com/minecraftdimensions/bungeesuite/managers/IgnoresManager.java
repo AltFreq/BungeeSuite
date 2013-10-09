@@ -28,7 +28,7 @@ public class IgnoresManager {
 		if(PlayerManager.playerExists(ignore)){
 			if(!p.isIgnoring(ignore)){
 		p.addIgnore(ignore);
-		SQLManager.standardQuery("INSERT INTO BungeeChatIgnores VALUES ('"+p.getName()+"', '"+ignore+"')");
+		SQLManager.standardQuery("INSERT INTO BungeeChatIgnores (player,ignoring) VALUES ('"+p.getName()+"', '"+ignore+"')");
 		p.sendMessage(Messages.PLAYER_IGNORED.replace("{player}", ignore));
 			}else{
 				removeIgnore(p, ignore);

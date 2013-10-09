@@ -85,7 +85,7 @@ public class PortalManager {
 
             sender.sendMessage( Messages.PORTAL_UPDATED );
         } else {
-            SQLManager.standardQuery( "INSERT INTO BungeePortals VALUES('" + name + "','" + max.getServer().getName() + "','" + type + "', '" + dest + "', '" + max.getWorld() + "', '" + fillType + "', " + max.getX() + ", " + min.getX() + "," + max.getY() + "," + min.getY() + "," + max.getZ() + ", " + min.getZ() + ")" );
+            SQLManager.standardQuery( "INSERT INTO BungeePortals (portalname,server,type,destination,world,filltype,xmax,xmin,ymax,ymin,zmax,zmin) VALUES('" + name + "','" + max.getServer().getName() + "','" + type + "', '" + dest + "', '" + max.getWorld() + "', '" + fillType + "', " + max.getX() + ", " + min.getX() + "," + max.getY() + "," + min.getY() + "," + max.getZ() + ", " + min.getZ() + ")" );
 
             sender.sendMessage( Messages.PORTAL_CREATED );
         }

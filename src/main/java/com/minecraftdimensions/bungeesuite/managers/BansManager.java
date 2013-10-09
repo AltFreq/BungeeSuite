@@ -83,7 +83,7 @@ public class BansManager {
         }
         for ( String a : accounts ) {
             if ( !isPlayerBanned( a ) ) {
-                SQLManager.standardQuery( "INSERT INTO BungeeBans VALUES ('" + a + "', '" + bannedBy + "', '" + reason + "', 'ipban', NOW(), NULL)" );
+                SQLManager.standardQuery( "INSERT INTO BungeeBans (player,banned_by,reason,type,banned_on,banned_until) VALUES ('" + a + "', '" + bannedBy + "', '" + reason + "', 'ipban', NOW(), NULL)" );
             } else {
                 SQLManager.standardQuery( "UPDATE BungeeBans SET type='ipban' WHERE player ='" + a + "')" );
             }

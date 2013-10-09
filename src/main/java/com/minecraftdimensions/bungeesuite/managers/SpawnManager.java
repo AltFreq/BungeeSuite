@@ -148,7 +148,7 @@ public class SpawnManager {
 			SQLManager.standardQuery("UPDATE BungeeSpawns SET server = '"+l.getServer().getName()+"', world = '"+l.getWorld()+"', x = "+l.getX()+", y ="+l.getY()+", z = "+l.getZ()+", yaw = "+l.getYaw()+", pitch = "+l.getPitch()+" WHERE spawnname ='server' AND server ='"+l.getServer().getName()+"'");
 			p.sendMessage(Messages.SPAWN_UPDATED);
 		}else{
-			SQLManager.standardQuery("INSERT INTO BungeeSpawns VALUES('server','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
+			SQLManager.standardQuery("INSERT INTO BungeeSpawns (spawnname, server, world, x, y, z, yaw, pitch) VALUES('server','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
 			p.sendMessage(Messages.SPAWN_SET);
 		}
 		sendSpawn("server",l);
@@ -159,7 +159,7 @@ public class SpawnManager {
 			SQLManager.standardQuery("UPDATE BungeeSpawns SET server = '"+l.getServer().getName()+"', world = '"+l.getWorld()+"', x = "+l.getX()+", y ="+l.getY()+", z = "+l.getZ()+", yaw = "+l.getYaw()+", pitch = "+l.getPitch()+" WHERE spawnname ='"+l.getWorld()+"' AND server ='"+l.getServer().getName()+"'");
 			p.sendMessage(Messages.SPAWN_UPDATED);
 		}else{
-			SQLManager.standardQuery("INSERT INTO BungeeSpawns VALUES('"+l.getWorld()+"','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
+			SQLManager.standardQuery("INSERT INTO BungeeSpawns (spawnname, server, world, x, y, z, yaw, pitch) VALUES('"+l.getWorld()+"','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
 			p.sendMessage(Messages.SPAWN_SET);
 		}
 		sendSpawn(l.getWorld(),l);
@@ -171,7 +171,7 @@ public class SpawnManager {
 			SQLManager.standardQuery("UPDATE BungeeSpawns SET server = '"+l.getServer().getName()+"', world = '"+l.getWorld()+"', x = "+l.getX()+", y ="+l.getY()+", z = "+l.getZ()+", yaw = "+l.getYaw()+", pitch = "+l.getPitch()+" WHERE spawnname ='NewPlayerSpawn'");
 			p.sendMessage(Messages.SPAWN_UPDATED);
 		}else{
-			SQLManager.standardQuery("INSERT INTO BungeeSpawns VALUES('NewPlayerSpawn','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
+			SQLManager.standardQuery("INSERT INTO  BungeeSpawns (spawnname, server, world, x, y, z, yaw, pitch) VALUES('NewPlayerSpawn','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
 			p.sendMessage(Messages.SPAWN_SET);
 		}
 		NewPlayerSpawn = l;
@@ -182,7 +182,7 @@ public class SpawnManager {
 			SQLManager.standardQuery("UPDATE BungeeSpawns SET server = '"+l.getServer().getName()+"', world = '"+l.getWorld()+"', x = "+l.getX()+", y ="+l.getY()+", z = "+l.getZ()+", yaw = "+l.getYaw()+", pitch = "+l.getPitch()+" WHERE spawnname ='ProxySpawn'");
 			p.sendMessage(Messages.SPAWN_UPDATED);
 		}else{
-			SQLManager.standardQuery("INSERT INTO BungeeSpawns VALUES('ProxySpawn','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
+			SQLManager.standardQuery("INSERT INTO BungeeSpawns (spawnname, server, world, x, y, z, yaw, pitch) VALUES('ProxySpawn','"+l.getServer().getName()+"', '"+l.getWorld()+"', "+l.getX()+", "+l.getY()+",  "+l.getZ()+", "+l.getYaw()+",  "+l.getPitch()+")");
 			p.sendMessage(Messages.SPAWN_SET);
 		}
 		ProxySpawn = l;

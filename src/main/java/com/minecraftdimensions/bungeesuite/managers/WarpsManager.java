@@ -46,7 +46,7 @@ public class WarpsManager {
         } else {
             w = new Warp( name, loc, hidden, global );
             warps.put( name.toLowerCase(), w );
-            SQLManager.standardQuery( "INSERT INTO BungeeWarps VALUES ('" + name + "', '" + loc.getServer().getName() + "','" + loc.getWorld() + "'," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch() + ", " + hidden + ", " + global + ")" );
+            SQLManager.standardQuery( "INSERT INTO BungeeWarps (warpname, server, world, x, y, z, yaw, pitch, hidden, global)VALUES ('" + name + "', '" + loc.getServer().getName() + "','" + loc.getWorld() + "'," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch() + ", " + hidden + ", " + global + ")" );
             sender.sendMessage( Messages.WARP_CREATED );
         }
     }
