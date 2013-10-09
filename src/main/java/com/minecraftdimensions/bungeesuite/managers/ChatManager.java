@@ -19,7 +19,6 @@ import net.md_5.bungee.api.connection.Server;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,14 +143,14 @@ public class ChatManager {
         return p.getPlayersChannels();
     }
 
-    public static void loadPlayersChannels( ProxiedPlayer player, Server server ) throws SQLException {
-        ResultSet res = SQLManager.sqlQuery( "SELECT channel FROM BungeeChannelMembers WHERE player = '" + player.getName() + "'" );
-        while ( res.next() ) {
-            getChannel( res.getString( "channel" ) ).addMember( player.getName() );
-        }
-        res.close();
-        sendPlayersChannels( PlayerManager.getPlayer( player ), server );
-    }
+    //getPlayersChannels    public static void loadPlayersChannels( ProxiedPlayer player, Server server ) throws SQLException {
+    //        ResultSet res = SQLManager.sqlQuery( "SELECT channel FROM BungeeChannelMembers WHERE player = '" + player.getName() + "'" );
+    //        while ( res.next() ) {
+    //            getChannel( res.getString( "channel" ) ).addMember( player.getName() );
+    //        }
+    //        res.close();
+    //        sendPlayersChannels( PlayerManager.getPlayer( player ), server );
+    //    }
 
     private static void sendPlayersChannels( BSPlayer p, Server server ) {
         for ( Channel c : p.getPlayersChannels() ) {
@@ -445,7 +444,7 @@ public class ChatManager {
         PrefixSuffixManager.loadSuffixes();
         loadChannels();
         for ( ProxiedPlayer p : BungeeSuite.proxy.getPlayers() ) {
-            ChatManager.loadPlayersChannels( p, p.getServer() );
+            //            ChatManager.loadPlayersChannels( p, p.getServer() );
             ChatManager.sendPlayer( p.getName(), p.getServer(), true );
             IgnoresManager.sendPlayersIgnores( PlayerManager.getPlayer( p ), p.getServer() );
         }
