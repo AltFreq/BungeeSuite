@@ -51,14 +51,7 @@ public class ChatManager {
             loadServerData( servername, chan.getString( "Channels.Servers." + servername + ".Shortname", servername.substring( 0, 1 ) ), chan.getBoolean( "Channels.Servers." + servername + ".ForceChannel", false ), chan.getString( "Channels.Servers." + servername + ".ForcedChannel", "Server" ), chan.getBoolean( "Channels.Servers." + servername + ".UsingFactionChannels", false ), chan.getInt( "Channels.Servers." + servername + ".LocalRange", 50 ), chan.getBoolean( "Channels.Servers." + servername + ".DisableConnectionMessages", true ) );
         }
         //Load custom channels from db
-        ResultSet res = SQLManager.sqlQuery( "SELECT * FROM BungeeCustomChannels" );
-        try {
-            while ( res.next() ) {
-                loadChannel( res.getString( "owner" ), res.getString( "channelname" ), res.getString( "format" ), false, res.getBoolean( "open" ) );
-            }
-        } catch ( SQLException e ) {
-            e.printStackTrace();
-        }
+
         LoggingManager.log( ChatColor.GOLD + "Channels loaded - " + ChatColor.DARK_GREEN + channels.size() );
     }
 
@@ -225,9 +218,9 @@ public class ChatManager {
     }
 
     private static void setPlayerToForcedChannel( BSPlayer p, Server server ) throws SQLException {
-    	
+
         Channel c = getChannel( p.getChannel() );
-        
+
         ServerData sd = ChatManager.serverData.get( server.getInfo().getName() );
         if ( sd.forcingChannel() ) {
             String channel = sd.getForcedChannel();
@@ -238,13 +231,13 @@ public class ChatManager {
             } else if ( channel.equalsIgnoreCase( "global" ) ) {
                 channel = "Global";
             }
-            c = getChannel(channel);
-            setPlayersChannel(p, c, false);
+            c = getChannel( channel );
+            setPlayersChannel( p, c, false );
             return;
         }
         if ( c == null ) {
-           c = getChannel( ChatManager.getServersDefaultChannel( sd ));
-           setPlayersChannel(p, c, false);
+            c = getChannel( ChatManager.getServersDefaultChannel( sd ) );
+            setPlayersChannel( p, c, false );
             return;
         }
         if ( !c.isDefault() ) {
@@ -254,16 +247,16 @@ public class ChatManager {
             return;
         }
         if ( isServerChannel( c ) ) {
-        	c = getChannel( sd.getServerName() );
-        	setPlayersChannel(p, c, false);
+            c = getChannel( sd.getServerName() );
+            setPlayersChannel( p, c, false );
         } else if ( isLocalChannel( c ) ) {
-        	c = getChannel( sd.getServerName() + " Local" );
-        	setPlayersChannel(p, c, false);
+            c = getChannel( sd.getServerName() + " Local" );
+            setPlayersChannel( p, c, false );
         } else if ( c.getName().equals( "Global" ) ) {
             return;
         } else {
-        	c = getChannel( ChatManager.getServersDefaultChannel( sd ) );
-        	setPlayersChannel(p, c, false);
+            c = getChannel( ChatManager.getServersDefaultChannel( sd ) );
+            setPlayersChannel( p, c, false );
             return;
         }
 
@@ -514,8 +507,8 @@ public class ChatManager {
         p.setChannel( channel.getName() );
         p.updatePlayer();
         SQLManager.standardQuery( "UPDATE BungeePlayers SET channel ='" + channel.getName() + "' WHERE playername = '" + p.getName() + "'" );
-        if(message){
-        	p.sendMessage( Messages.CHANNEL_TOGGLE.replace( "{channel}", channel.getName() ) );
+        if ( message ) {
+            p.sendMessage( Messages.CHANNEL_TOGGLE.replace( "{channel}", channel.getName() ) );
         }
     }
 
@@ -565,7 +558,7 @@ public class ChatManager {
             channel = p.getServer().getInfo().getName() + " Local";
         } else if ( channel.equalsIgnoreCase( "Server" ) ) {
             channel = p.getServer().getInfo().getName();
-        } else if (channel.equalsIgnoreCase( "Global" ) ) {
+        } else if ( channel.equalsIgnoreCase( "Global" ) ) {
             channel = "Global";
         }
         Channel c = getSimilarChannel( channel );
@@ -577,7 +570,7 @@ public class ChatManager {
             if ( c.isDefault() || isPlayerChannelMember( p, c ) ) {
 
                 if ( canPlayerToggleToChannel( p, c ) ) {
-                    setPlayersChannel( p, c, true);
+                    setPlayersChannel( p, c, true );
                     return;
                 } else {
                     p.sendMessage( Messages.CHANNEL_UNTOGGLABLE.replace( "{channel}", c.getName() ) );
@@ -674,8 +667,8 @@ public class ChatManager {
             newchannel = "Faction";
             p.sendMessage( Messages.FACTION_TOGGLE );
         }
-        Channel c = getChannel(newchannel);
-        setPlayersChannel(p, c, false);
+        Channel c = getChannel( newchannel );
+        setPlayersChannel( p, c, false );
     }
 
     public static void toggleToPlayersFactionChannel( String sender, String channel, boolean hasFaction ) throws SQLException {
@@ -692,8 +685,8 @@ public class ChatManager {
         } else {
             p.sendMessage( Messages.FACTION_ALLY_TOGGLE );
         }
-        Channel c = getChannel(channel);
-        setPlayersChannel(p, c, false);
+        Channel c = getChannel( channel );
+        setPlayersChannel( p, c, false );
     }
 
     public static void sendPlayerChannelInformation( String sender, String channel, boolean perm ) {
