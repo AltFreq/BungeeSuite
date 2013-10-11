@@ -20,12 +20,15 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void playerLogin( PostLoginEvent e ) throws SQLException {
-        if ( !PlayerManager.onlinePlayers.containsKey( e.getPlayer().getName() )) {
+        if ( !PlayerManager.onlinePlayers.containsKey( e.getPlayer().getName() ) ) {
             PlayerManager.loadPlayer( e.getPlayer() );
+        }
+        if ( MainConfig.motd ) {
+            PlayerManager.sendMessageToPlayer( e.getPlayer().getName(), Messages.MOTD );
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler( priority = EventPriority.LOW )
     public void playerLogout( final PlayerDisconnectEvent e ) {
         int dcTime = MainConfig.playerDisconnectDelay;
         final BSPlayer p = PlayerManager.getPlayer( e.getPlayer() );

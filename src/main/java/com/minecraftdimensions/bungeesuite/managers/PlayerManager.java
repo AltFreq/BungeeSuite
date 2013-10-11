@@ -71,19 +71,19 @@ public class PlayerManager {
             sendBroadcast( Messages.NEW_PLAYER_BROADCAST.replace( "{player}", player.getName() ) );
         }
         addPlayer( bsplayer );
-        
-        if(SpawnConfig.newspawn && SpawnManager.NewPlayerSpawn!=null){
-        	SpawnManager.newPlayers.add(player);
-        	ProxyServer.getInstance().getScheduler().schedule(BungeeSuite.instance, new Runnable(){
 
-				@Override
-				public void run() {
-					SpawnManager.sendPlayerToNewPlayerSpawn(bsplayer, true);
-					SpawnManager.newPlayers.remove(player);
-				}
-        		
-        	}, 300, TimeUnit.MILLISECONDS);
-        
+        if ( SpawnConfig.newspawn && SpawnManager.NewPlayerSpawn != null ) {
+            SpawnManager.newPlayers.add( player );
+            ProxyServer.getInstance().getScheduler().schedule( BungeeSuite.instance, new Runnable() {
+
+                @Override
+                public void run() {
+                    SpawnManager.sendPlayerToNewPlayerSpawn( bsplayer, true );
+                    SpawnManager.newPlayers.remove( player );
+                }
+
+            }, 300, TimeUnit.MILLISECONDS );
+
         }
     }
 
@@ -135,7 +135,9 @@ public class PlayerManager {
         if ( player.equals( "CONSOLE" ) ) {
             ProxyServer.getInstance().getConsole().sendMessage( message );
         } else {
-            getPlayer( player ).sendMessage( message );
+            for ( String line : message.split( "\n" ) ) {
+                getPlayer( player ).sendMessage( line );
+            }
         }
     }
 
