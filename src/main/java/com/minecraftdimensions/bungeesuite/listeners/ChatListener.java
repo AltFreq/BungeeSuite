@@ -1,7 +1,6 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 
 
-import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
@@ -27,10 +26,7 @@ public class ChatListener implements Listener {
         BSPlayer p = PlayerManager.getPlayer( e.getPlayer() );
         if ( p != null ) {
             p.updateDisplayName();
-            if ( p.firstConnect() && ChatConfig.broadcastProxyConnectionMessages ) {
-                p.connected();
-                PlayerManager.sendBroadcast( Messages.PLAYER_CONNECT_PROXY.replace( "{player}", p.getDisplayingName() ) );
-            }
+
         }
     }
 

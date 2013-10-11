@@ -1,7 +1,6 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
-import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 import com.minecraftdimensions.bungeesuite.configs.MainConfig;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
@@ -9,6 +8,7 @@ import com.minecraftdimensions.bungeesuite.objects.Messages;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
@@ -23,8 +23,19 @@ public class PlayerListener implements Listener {
         if ( !PlayerManager.onlinePlayers.containsKey( e.getPlayer().getName() ) ) {
             PlayerManager.loadPlayer( e.getPlayer() );
         }
-        if ( MainConfig.motd ) {
-            PlayerManager.sendMessageToPlayer( e.getPlayer().getName(), Messages.MOTD );
+    }
+    
+    @EventHandler(priority = EventPriority.LOW)
+    public void playerLogin( ServerConnectedEvent e ) throws SQLException {
+        BSPlayer p = PlayerManager.getPlayer( e.getPlayer() );
+        if ( p.firstConnect() ) {
+        	if(MainConfig.broadcastProxyConnectionMessages){
+        		PlayerManager.sendBroadcast( Messages.PLAYER_CONNECT_PROXY.replace( "{player}", p.getDisplayingName() ) );
+        	}
+            if ( MainConfig.motd ) {
+                PlayerManager.sendMessageToPlayer( e.getPlayer().getName(), Messages.MOTD );
+            }
+    		p.connected();
         }
     }
 
@@ -39,7 +50,7 @@ public class PlayerListener implements Listener {
                 public void run() {
                     if ( PlayerManager.isPlayerOnline( p.getName() ) && ProxyServer.getInstance().getPlayer( e.getPlayer().getName() ) == null ) {
                         if ( !PlayerManager.kickedPlayers.contains( e.getPlayer() ) ) {
-                            if ( ChatConfig.broadcastProxyConnectionMessages ) {
+                            if ( MainConfig.broadcastProxyConnectionMessages ) {
                                 PlayerManager.sendBroadcast( Messages.PLAYER_DISCONNECT_PROXY.replace( "{player}", p.getDisplayingName() ) );
                             }
                         } else {
@@ -53,7 +64,7 @@ public class PlayerListener implements Listener {
         } else {
             if ( PlayerManager.isPlayerOnline( p.getName() ) && ProxyServer.getInstance().getPlayer( e.getPlayer().getName() ) == null ) {
                 if ( !PlayerManager.kickedPlayers.contains( e.getPlayer() ) ) {
-                    if ( ChatConfig.broadcastProxyConnectionMessages ) {
+                    if ( MainConfig.broadcastProxyConnectionMessages ) {
                         PlayerManager.sendBroadcast( Messages.PLAYER_DISCONNECT_PROXY.replace( "{player}", p.getDisplayingName() ) );
                     }
                 } else {

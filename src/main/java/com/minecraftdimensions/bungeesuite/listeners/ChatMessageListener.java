@@ -43,13 +43,13 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "GetServerChannels" ) ) {
-            ChatManager.clearServersChannels( s );
-            ChatManager.sendServerData( s );
-            ChatManager.sendDefaultChannelsToServer( s );
+//            ChatManager.clearServersChannels( s );
+            ChatManager.sendServerData( s.getInfo() );
+            ChatManager.sendDefaultChannelsToServer( s.getInfo() );
             //            for ( ProxiedPlayer p : s.getInfo().getPlayers() ) {
             //                ChatManager.loadPlayersChannels( p, s );
             //            }
-            PrefixSuffixManager.sendPrefixAndSuffixToServer( s );
+            PrefixSuffixManager.sendPrefixAndSuffixToServer( s.getInfo() );
             return;
         }
         if ( task.equals( "AdminChat" ) ) {

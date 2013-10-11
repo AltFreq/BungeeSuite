@@ -17,7 +17,6 @@ public class ChatConfig {
 		 public static String globalChatRegex = c.getString("GlobalChatRegex",
 		 "\\{(factions_.*?)\\}");
 		 public static String defaultChannel = c.getString("DefaultChannel", "Global");		 
-		 public static boolean broadcastProxyConnectionMessages = c.getBoolean("BroadcastProxyConnectionMessages", true);
 		 public static void reload(){
 			 c = new Config(configpath);
 			 logChat = c.getBoolean("Log chat to console", true);

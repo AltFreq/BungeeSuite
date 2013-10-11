@@ -2,7 +2,8 @@ package com.minecraftdimensions.bungeesuite.managers;
 
 import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
-import net.md_5.bungee.api.connection.Server;
+
+import net.md_5.bungee.api.config.ServerInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -34,7 +35,7 @@ public class PrefixSuffixManager {
     }
 
 
-    public static void sendPrefixAndSuffixToServer( Server server ) throws IOException {
+    public static void sendPrefixAndSuffixToServer( ServerInfo s ) throws IOException {
         for ( Affix a : affixes ) {
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream( b );
@@ -42,7 +43,7 @@ public class PrefixSuffixManager {
             out.writeBoolean( a.type );
             out.writeUTF( a.group );
             out.writeUTF( a.affix );
-            ChatManager.sendPluginMessageTaskChat( server.getInfo(), b );
+            ChatManager.sendPluginMessageTaskChat( s, b );
         }
     }
 

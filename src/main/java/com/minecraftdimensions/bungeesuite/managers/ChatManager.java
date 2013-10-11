@@ -28,7 +28,6 @@ public class ChatManager {
 
     public static ArrayList<Channel> channels = new ArrayList<Channel>();
     public static HashMap<String, ServerData> serverData = new HashMap<String, ServerData>();
-    public static HashMap<String, ArrayList<Channel>> channelsSentToServers = new HashMap<String, ArrayList<Channel>>();
     public static boolean MuteAll;
 
     public static void loadChannels() {
@@ -70,10 +69,9 @@ public class ChatManager {
         return serverData.get( server.getInfo().getName() ).usingFactions();
     }
 
-    public static void sendDefaultChannelsToServer( Server server ) {
-        ArrayList<Channel> chans = getDefaultChannels( server.getInfo().getName() );
+    public static void sendDefaultChannelsToServer( ServerInfo s ) {
+        ArrayList<Channel> chans = getDefaultChannels( s.getName() );
         for ( Channel c : chans ) {
-            if ( !sentChannelToServer( server, c ) ) {
                 ByteArrayOutputStream b = new ByteArrayOutputStream();
                 DataOutputStream out = new DataOutputStream( b );
                 try {
@@ -82,26 +80,23 @@ public class ChatManager {
                 } catch ( IOException e ) {
                     e.printStackTrace();
                 }
-                sendPluginMessageTaskChat( server.getInfo(), b );
-            }
+                sendPluginMessageTaskChat( s, b );
         }
-        channelsSentToServers.put( server.getInfo().getName(), chans );
     }
 
-    public static void sendChannelToServer( Server server, Channel channel ) {
-        if ( !sentChannelToServer( server, channel ) ) {
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream( b );
-            try {
-                out.writeUTF( "SendChannel" );
-                out.writeUTF( channel.serialise() );
-            } catch ( IOException e ) {
-                e.printStackTrace();
-            }
-            sendPluginMessageTaskChat( server.getInfo(), b );
-            channelsSentToServers.get( server.getInfo().getName() ).add( channel );
-        }
-    }
+//    public static void sendChannelToServer( Server server, Channel channel ) {
+//        if ( !sentChannelToServer( server, channel ) ) {
+//            ByteArrayOutputStream b = new ByteArrayOutputStream();
+//            DataOutputStream out = new DataOutputStream( b );
+//            try {
+//                out.writeUTF( "SendChannel" );
+//                out.writeUTF( channel.serialise() );
+//            } catch ( IOException e ) {
+//                e.printStackTrace();
+//            }
+//            sendPluginMessageTaskChat( server.getInfo(), b );
+//        }
+//    }
 
     public static ArrayList<Channel> getDefaultChannels( String server ) {
         ArrayList<Channel> chans = new ArrayList<Channel>();
@@ -152,22 +147,15 @@ public class ChatManager {
     //        sendPlayersChannels( PlayerManager.getPlayer( player ), server );
     //    }
 
-    private static void sendPlayersChannels( BSPlayer p, Server server ) {
-        for ( Channel c : p.getPlayersChannels() ) {
-            if ( !channelsSentToServers.get( server.getInfo().getName() ).contains( c ) ) {
-                sendChannelToServer( server, c );
-            }
-        }
+//    private static void sendPlayersChannels( BSPlayer p, Server server ) {
+//        for ( Channel c : p.getPlayersChannels() ) {
+//            if ( !channelsSentToServers.get( server.getInfo().getName() ).contains( c ) ) {
+//                sendChannelToServer( server, c );
+//            }
+//       }
+//    }
 
-    }
 
-    public static boolean channelsSentToServer( Server server ) {
-        return channelsSentToServers.containsKey( server.getInfo().getName() );
-    }
-
-    public static boolean sentChannelToServer( Server server, Channel channel ) {
-        return channelsSentToServers.get( server.getInfo().getName() ) != null && channelsSentToServers.get( server.getInfo().getName() ).contains( channel );
-    }
 
     public static Channel getChannel( String name ) {
         for ( Channel chan : channels ) {
@@ -280,17 +268,6 @@ public class ChatManager {
         return c.getName().equals( "Faction" ) || c.getName().equals( "FactionAlly" );
     }
 
-    public static void checkServerEmpty( String server ) {
-        for ( Channel c : channelsSentToServers.get( server ) ) {
-            if ( c.isDefault() && c.getMembers().isEmpty() ) {
-                channelsSentToServers.remove( server );
-            }
-        }
-    }
-
-    public static void clearServersChannels( Server server ) {
-        channelsSentToServers.remove( server.getInfo().getName() );
-    }
 
     public static void setPlayerAFK( String player, boolean sendGlobal, boolean hasDisplayPerm ) {
         PlayerManager.setPlayerAFK( player, sendGlobal, hasDisplayPerm );
@@ -421,32 +398,32 @@ public class ChatManager {
         p.sendMessage( Messages.PLAYER_MUTED );
     }
 
-    public static void reloadChat( String readUTF ) throws SQLException {
-        for ( String s : channelsSentToServers.keySet() ) {
-            ServerInfo si = BungeeSuite.proxy.getServerInfo( s );
-            if ( si != null ) {
-                ByteArrayOutputStream b = new ByteArrayOutputStream();
-                DataOutputStream out = new DataOutputStream( b );
-                try {
-                    out.writeUTF( "ReloadChat" );
-                } catch ( IOException e ) {
-                    e.printStackTrace();
-                }
-                sendPluginMessageTaskChat( si, b );
-            }
+    public static void reloadChat( String readUTF ) throws SQLException, IOException {
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream( b );
+        try {
+            out.writeUTF( "Reload" );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        for ( ServerInfo s : BungeeSuite.proxy.getServers().values() ) {
+                sendPluginMessageTaskChat( s, b );
         }
         channels.clear();
         serverData.clear();
-        channelsSentToServers.clear();
         PrefixSuffixManager.affixes.clear();
         ChatConfig.reload();
+        Channels.reload();
         PrefixSuffixManager.loadPrefixes();
         PrefixSuffixManager.loadSuffixes();
         loadChannels();
-        for ( ProxiedPlayer p : BungeeSuite.proxy.getPlayers() ) {
-            //            ChatManager.loadPlayersChannels( p, p.getServer() );
-            ChatManager.sendPlayer( p.getName(), p.getServer(), true );
-            IgnoresManager.sendPlayersIgnores( PlayerManager.getPlayer( p ), p.getServer() );
+        for ( ServerInfo s : BungeeSuite.proxy.getServers().values() ) {
+            ChatManager.sendServerData( s );
+            ChatManager.sendDefaultChannelsToServer( s );
+            PrefixSuffixManager.sendPrefixAndSuffixToServer( s );
+        }
+        for( ProxiedPlayer p: BungeeSuite.proxy.getPlayers()){
+        	sendPlayer(p.getName(), p.getServer(), true);
         }
     }
 
@@ -585,16 +562,16 @@ public class ChatManager {
 
     }
 
-    public static void sendServerData( Server s ) {
+    public static void sendServerData( ServerInfo s ) {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream( b );
         try {
             out.writeUTF( "SendServerData" );
-            out.writeUTF( serverData.get( s.getInfo().getName() ).serialise() );
+            out.writeUTF( serverData.get( s.getName() ).serialise() );
         } catch ( IOException e ) {
             e.printStackTrace();
         }
-        sendPluginMessageTaskChat( s.getInfo(), b );
+        sendPluginMessageTaskChat( s, b );
     }
 
     public static void sendGlobalChat( String player, String message, Server server ) {
