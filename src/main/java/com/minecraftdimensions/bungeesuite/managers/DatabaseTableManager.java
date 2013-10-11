@@ -1,7 +1,5 @@
 package com.minecraftdimensions.bungeesuite.managers;
 
-import net.md_5.bungee.api.ChatColor;
-
 import java.sql.SQLException;
 
 
@@ -10,7 +8,6 @@ public class DatabaseTableManager {
     public static void runTableQuery( String name, String query ) throws SQLException {
         boolean tableExists = false;
         tableExists = SQLManager.doesTableExist( name );
-        LoggingManager.log( ChatColor.GREEN + "Checking table " + name + " exists: " + tableExists );
         if ( !tableExists ) {
             SQLManager.standardQuery( query );
         }

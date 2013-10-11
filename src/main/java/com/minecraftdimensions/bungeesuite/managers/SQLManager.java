@@ -20,7 +20,6 @@ public class SQLManager {
     public static boolean initialiseConnections() {
         Connection connection = null;
         for ( int i = 0; i < MainConfig.threads; i++ ) {
-            LoggingManager.log( ChatColor.GREEN + "Attempting to start connection " + i + 1 );
             try {
                 Class.forName( "com.mysql.jdbc.Driver" );
                 connection = DriverManager.getConnection( "jdbc:mysql://" + MainConfig.host + ":" + MainConfig.port + "/" + MainConfig.database, MainConfig.username, MainConfig.password );
@@ -28,13 +27,10 @@ public class SQLManager {
                 System.out.println( ChatColor.DARK_RED + "SQL is unable to conect" );
                 return false;
             }
-            LoggingManager.log( ChatColor.GREEN + "Successful!" );
             connections.add( new ConnectionHandler( connection ) );
             connection = null;
         }
 
-
-        LoggingManager.log( ChatColor.GREEN + "Starting SQL connection scheduler" );
         ProxyServer.getInstance().getScheduler().schedule( BungeeSuite.instance, new Runnable() {
             public void run() {
                 Iterator<ConnectionHandler> cons = connections.iterator();

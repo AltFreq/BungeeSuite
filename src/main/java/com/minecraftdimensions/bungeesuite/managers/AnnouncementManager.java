@@ -5,7 +5,6 @@ import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 import com.minecraftdimensions.bungeesuite.configs.Announcements;
 import com.minecraftdimensions.bungeesuite.tasks.GlobalAnnouncements;
 import com.minecraftdimensions.bungeesuite.tasks.ServerAnnouncements;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
@@ -20,7 +19,6 @@ public class AnnouncementManager {
 
     public static void loadAnnouncements() {
         //create defaults
-        LoggingManager.log( ChatColor.GREEN + "Setting announcement defaults" );
         setDefaults();
         // load global announcements
         if ( Announcements.announcer ) {
@@ -52,7 +50,6 @@ public class AnnouncementManager {
                 }
             }
         }
-        LoggingManager.log( ChatColor.GREEN + "Anouncements loaded" );
     }
 
     private static void setDefaults() {
@@ -73,7 +70,6 @@ public class AnnouncementManager {
                 announcements.setListString( "Announcements." + server + ".Messages", l );
             }
         }
-        LoggingManager.log( ChatColor.GREEN + "Defaults set" );
     }
 
     public static void reloadAnnouncements() {
