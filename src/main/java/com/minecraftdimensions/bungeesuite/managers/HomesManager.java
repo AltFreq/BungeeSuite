@@ -43,7 +43,7 @@ public class HomesManager {
             p.sendMessage( Messages.HOME_SET );
         } else {
             getSimilarHome( p, home ).setLoc( loc );
-            SQLManager.standardQuery( "UPDATE BungeeHomes SET server = '" + loc.getServer().getName() + "', world = '" + loc.getWorld() + "', x = " + loc.getX() + ", y = " + loc.getY() + ", z = " + loc.getZ() + ", yaw = " + loc.getYaw() + ", pitch = " + loc.getPitch() + " WHERE player = '"+player+"'" );
+            SQLManager.standardQuery( "UPDATE BungeeHomes SET server = '" + loc.getServer().getName() + "', world = '" + loc.getWorld() + "', x = " + loc.getX() + ", y = " + loc.getY() + ", z = " + loc.getZ() + ", yaw = " + loc.getYaw() + ", pitch = " + loc.getPitch() + " WHERE player = '" + player + "' AND home_name ='" + home + "'" );
             p.sendMessage( Messages.HOME_UPDATED );
             return;
         }
@@ -67,11 +67,11 @@ public class HomesManager {
     }
 
     public static void listPlayersHomes( BSPlayer player ) throws SQLException {
-    	if(player.getHomes().isEmpty()){
-    		player.sendMessage(Messages.NO_HOMES);
-    		return;
-    	}
-    	boolean empty = true;
+        if ( player.getHomes().isEmpty() ) {
+            player.sendMessage( Messages.NO_HOMES );
+            return;
+        }
+        boolean empty = true;
         for ( String server : player.getHomes().keySet() ) {
             String homes;
             if ( server.equals( player.getServer().getInfo().getName() ) ) {
@@ -83,9 +83,9 @@ public class HomesManager {
                 homes += h.name + ", ";
                 empty = false;
             }
-            if(empty){
-            	player.sendMessage(Messages.NO_HOMES);
-            	return;
+            if ( empty ) {
+                player.sendMessage( Messages.NO_HOMES );
+                return;
             }
             player.sendMessage( homes.substring( 0, homes.length() - 2 ) );
         }
