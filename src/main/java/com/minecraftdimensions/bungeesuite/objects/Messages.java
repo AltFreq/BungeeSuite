@@ -10,7 +10,7 @@ public class Messages {
     public static String PLAYER_CONNECT_PROXY = colorize( m.getString( "PLAYER_CONNECT_PROXY", "{player}&e has joined the server!" ) );
     public static String PLAYER_DISCONNECT_PROXY = colorize( m.getString( "PLAYER_DISCONNECT_PROXY", "{player}&e has left the server!" ) );
     public static String PLAYER_DOES_NOT_EXIST = colorize( m.getString( "PLAYER_DOES_NOT_EXIST", "&c" + "That player does not exist" ) );
-    public static String PLAYER_LOAD = colorize( m.getString( "PLAYER_LOAD", "Loadded player &9{player}" ) );
+    public static String PLAYER_LOAD = colorize( m.getString( "PLAYER_LOAD", "Loaded player &9{player}" ) );
     public static String PLAYER_UNLOAD = colorize( m.getString( "PLAYER_UNLOAD", "Unloaded player &c{player}" ) );
     public static String PLAYER_NOT_ONLINE = colorize( m.getString( "PLAYER_NOT_ONLINE", "&c" + "That player is not online" ) );
     public static String NO_PLAYERS_ONLINE = colorize( m.getString( "NO_PLAYERS_ONLINE", "&c" + "There must be players online to use this command" ) );
