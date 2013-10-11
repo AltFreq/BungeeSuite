@@ -1,5 +1,7 @@
 package com.minecraftdimensions.bungeesuite.managers;
 
+import net.md_5.bungee.api.ChatColor;
+
 import java.sql.SQLException;
 
 
@@ -8,6 +10,7 @@ public class DatabaseTableManager {
     public static void runTableQuery( String name, String query ) throws SQLException {
         boolean tableExists = false;
         tableExists = SQLManager.doesTableExist( name );
+        LoggingManager.log( ChatColor.GREEN + "Checking table " + name + " exists: " + tableExists );
         if ( !tableExists ) {
             SQLManager.standardQuery( query );
         }
@@ -30,9 +33,9 @@ public class DatabaseTableManager {
             //BungeeChatIgnores
             runTableQuery( "BungeeChatIgnores", "CREATE TABLE BungeeChatIgnores (player VARCHAR(100), ignoring VARCHAR(100), CONSTRAINT pk_ignored PRIMARY KEY (player,ignoring), CONSTRAINT fk_player FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT fk_ignored FOREIGN KEY (ignoring) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)" );
             //BungeeChannelMembers
-//            runTableQuery( "BungeeChannelMembers", "CREATE TABLE BungeeChannelMembers (player VARCHAR(100), channel VARCHAR(100), CONSTRAINT pk_channelmember PRIMARY KEY (player,channel), CONSTRAINT fk_playermember FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)" );
+            //            runTableQuery( "BungeeChannelMembers", "CREATE TABLE BungeeChannelMembers (player VARCHAR(100), channel VARCHAR(100), CONSTRAINT pk_channelmember PRIMARY KEY (player,channel), CONSTRAINT fk_playermember FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)" );
             //BungeeCustomChannels
-//            runTableQuery( "BungeeCustomChannels", "CREATE TABLE BungeeCustomChannels (channelname VARCHAR(100), owner VARCHAR(100), format VARCHAR(300), open TINYINT(1), CONSTRAINT pk_channelunique PRIMARY KEY (channelname))" );
+            //            runTableQuery( "BungeeCustomChannels", "CREATE TABLE BungeeCustomChannels (channelname VARCHAR(100), owner VARCHAR(100), format VARCHAR(300), open TINYINT(1), CONSTRAINT pk_channelunique PRIMARY KEY (channelname))" );
             //BungeeHomes
             runTableQuery( "BungeeHomes", "CREATE TABLE BungeeHomes (player VARCHAR(100), home_name VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, CONSTRAINT pk_home PRIMARY KEY (player,home_name,server), CONSTRAINT fk_playerhome FOREIGN KEY (player) REFERENCES BungeePlayers (playername) ON UPDATE CASCADE ON DELETE CASCADE)" );
             //BungeePortals
@@ -41,15 +44,9 @@ public class DatabaseTableManager {
             runTableQuery( "BungeeSpawns", "CREATE TABLE BungeeSpawns (spawnname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, CONSTRAINT pk_spawnname PRIMARY KEY (spawnname, server))" );
             //BungeeWarps
             runTableQuery( "BungeeWarps", "CREATE TABLE BungeeWarps (warpname VARCHAR(100), server VARCHAR(100), world VARCHAR(100), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT, hidden TINYINT(1) DEFAULT 0,global TINYINT(1) DEFAULT 1, CONSTRAINT pk_warp PRIMARY KEY (warpname))" );
-            runTableUpdates();
+
         } catch ( SQLException e ) {
             e.printStackTrace();
         }
-    }
-
-    private static void runTableUpdates() throws SQLException {
-        //add dnd to BungeePlayers
-        runTableQuery( "BungeePlayers", "ALTER TABLE BungeePlayers ADD dnd TINYINT(1), ADD tps TINYInT(1)" );
-
     }
 }

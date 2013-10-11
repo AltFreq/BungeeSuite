@@ -20,7 +20,9 @@ public class BungeeSuite extends Plugin {
 
     public void onEnable() {
         instance = this;
+        LoggingManager.log( ChatColor.GREEN + "Starting BungeeSuite" );
         proxy = ProxyServer.getInstance();
+        LoggingManager.log( ChatColor.GREEN + "Initialising Managers" );
         initialiseManagers();
         registerListeners();
         registerCommands();
@@ -32,10 +34,16 @@ public class BungeeSuite extends Plugin {
     }
 
     private void initialiseManagers() {
+        LoggingManager.log( ChatColor.GREEN + "Opening SQLConnections" );
         if ( SQLManager.initialiseConnections() ) {
+            LoggingManager.log( ChatColor.GREEN + "Checking tables" );
             DatabaseTableManager.createDefaultTables();
+            LoggingManager.log( ChatColor.GREEN + "Loading announcements" );
             AnnouncementManager.loadAnnouncements();
-            SocketManager.startServer();
+            LoggingManager.log( ChatColor.GREEN + "Starting socket" );
+            if ( MainConfig.UserSocketPort ) {
+                SocketManager.startServer();
+            }
             ChatManager.loadChannels();
             if ( BansConfig.bans ) {
                 LoggingManager.log( ChatColor.GOLD + "Using bans plugin" );
