@@ -229,7 +229,10 @@ public class BSPlayer {
             name = getDisplayingName().substring( 0, 16 );
         }
         if ( ChatConfig.updateNicknamesOnTab ) {
-            ProxyServer.getInstance().getPlayer( playername ).setDisplayName( name );
+            ProxiedPlayer p = ProxyServer.getInstance().getPlayer( playername );
+            if ( p != null && name != null ) {
+                p.setDisplayName( name );
+            }
         }
     }
 
@@ -257,11 +260,11 @@ public class BSPlayer {
 
     public void updatePlayer() {
         try {
-			ChatManager.sendPlayer( playername, getServer(), false );
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            ChatManager.sendPlayer( playername, getServer(), false );
+        } catch ( SQLException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void sendMessageToPlayer( BSPlayer target, String message ) {
