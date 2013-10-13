@@ -20,31 +20,35 @@ public class PortalManager {
 
     public static void loadPortals() throws SQLException {
         ResultSet res = SQLManager.sqlQuery( "SELECT * FROM BungeePortals" );
-        while(res.next()){
-        String name = res.getString("portalname");
-        String server = res.getString("server");
-        String type = res.getString("type");
-        String dest = res.getString("destination");
-        String world = res.getString("world");
-        String fill = res.getString("filltype");
-        double xmax = res.getDouble("xmax");
-        double xmin = res.getDouble("xmin");
-        double ymax = res.getDouble("ymax");
-        double ymin = res.getDouble("ymin");
-        double zmax = res.getDouble("zmax");
-        double zmin = res.getDouble("zmin");
-        Portal p = new Portal(name, server, fill, type, dest, new Location(server,world, xmax,ymax,zmax), new Location(server,world, xmin,ymin,zmin));
-        	ArrayList<Portal> list = portals.get( p.getServer() );
-        if ( list == null ) {
-            list = new ArrayList<>();
-            portals.put(p.getServer(), list);
-        }
-        list.add( p );
+        while ( res.next() ) {
+            String name = res.getString( "portalname" );
+            String server = res.getString( "server" );
+            String type = res.getString( "type" );
+            String dest = res.getString( "destination" );
+            String world = res.getString( "world" );
+            String fill = res.getString( "filltype" );
+            double xmax = res.getDouble( "xmax" );
+            double xmin = res.getDouble( "xmin" );
+            double ymax = res.getDouble( "ymax" );
+            double ymin = res.getDouble( "ymin" );
+            double zmax = res.getDouble( "zmax" );
+            double zmin = res.getDouble( "zmin" );
+            Portal p = new Portal( name, server, fill, type, dest, new Location( server, world, xmax, ymax, zmax ), new Location( server, world, xmin, ymin, zmin ) );
+            ArrayList<Portal> list = portals.get( p.getServer() );
+            if ( list == null ) {
+                list = new ArrayList<>();
+                portals.put( p.getServer(), list );
+            }
+            list.add( p );
         }
         res.close();
     }
 
     public static void getPortals( ServerInfo s ) {
+        ArrayList<Portal> list = portals.get( s );
+        if ( list == null ) {
+            return;
+        }
         for ( Portal p : portals.get( s ) ) {
             sendPortal( p );
         }
@@ -62,8 +66,8 @@ public class PortalManager {
             return;
         }
         if ( type.equalsIgnoreCase( "warp" ) ) {
-        	Warp w = WarpsManager.getWarp(dest.toLowerCase());
-            if ( w==null ) {
+            Warp w = WarpsManager.getWarp( dest.toLowerCase() );
+            if ( w == null ) {
                 sender.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
                 return;
             }
@@ -76,10 +80,10 @@ public class PortalManager {
         ArrayList<Portal> list = portals.get( max.getServer() );
         if ( list == null ) {
             list = new ArrayList<>();
-            portals.put(max.getServer(), list);
+            portals.put( max.getServer(), list );
         }
         if ( doesPortalExist( name ) ) {
-        	Portal old = getPortal(name);
+            Portal old = getPortal( name );
             removePortal( old );
 
             SQLManager.standardQuery( "UPDATE BungeePortals SET server='" + max.getServer().getName() + "', world='" + max.getWorld() + "', type ='" + type + "', filltype = '" + fillType + "', destination = '" + dest + "', xmax=" + max.getX() + ", ymax=" + max.getY() + ", zmax=" + max.getZ() + ", xmin = " + min.getX() + ", ymin = " + min.getY() + ", zmin =" + min.getZ() + " WHERE portalname='" + name + "'" );
@@ -121,7 +125,7 @@ public class PortalManager {
     }
 
     public static void removePortal( Portal p ) {
-    	portals.get(p.getServer()).remove(p);
+        portals.get( p.getServer() ).remove( p );
 
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream( b );
@@ -181,7 +185,7 @@ public class PortalManager {
         }
         if ( type.equalsIgnoreCase( "warp" ) ) {
             Warp w = WarpsManager.getWarp( dest );
-            if ( w==null ) {
+            if ( w == null ) {
                 p.sendMessage( Messages.PORTAL_DESTINATION_NOT_EXIST );
             } else {
                 Location loc = w.getLocation();
