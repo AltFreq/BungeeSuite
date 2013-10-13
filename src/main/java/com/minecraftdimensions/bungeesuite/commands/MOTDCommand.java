@@ -21,7 +21,10 @@ public class MOTDCommand extends Command {
             ProxiedPlayer p = ( ProxiedPlayer ) sender;
             p.chat( "/motd" );
         } else {
-            sender.sendMessage( Messages.MOTD );
+            for ( String split : Messages.MOTD.split( "\n" ) ) {
+                sender.sendMessage( split );
+            }
+
         }
     }
 
