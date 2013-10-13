@@ -27,10 +27,9 @@ public class BSVersionCommand extends Command {
         if ( !sender.hasPermission( "bungeesuite.version" ) || !sender.hasPermission( "bungeesuite.admin" ) ) {
             ProxiedPlayer p = ( ProxiedPlayer ) sender;
             p.chat( "/bsversion" );
-            return;
         } else {
 
-            sender.sendMessage( ChatColor.RED + "BungeeSuite version" + ChatColor.GOLD + BungeeSuite.instance.getDescription().getVersion() );
+            sender.sendMessage( ChatColor.RED + "BungeeSuite version - " + ChatColor.GOLD + BungeeSuite.instance.getDescription().getVersion() );
             if ( sender instanceof ProxiedPlayer ) {
                 ProxiedPlayer p = ( ProxiedPlayer ) sender;
                 ServerInfo s = p.getServer().getInfo();
