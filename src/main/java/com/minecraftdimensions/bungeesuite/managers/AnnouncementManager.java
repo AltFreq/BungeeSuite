@@ -1,7 +1,6 @@
 package com.minecraftdimensions.bungeesuite.managers;
 
 import com.minecraftdimensions.bungeesuite.BungeeSuite;
-import com.minecraftdimensions.bungeesuite.configlibrary.Config;
 import com.minecraftdimensions.bungeesuite.configs.Announcements;
 import com.minecraftdimensions.bungeesuite.tasks.GlobalAnnouncements;
 import com.minecraftdimensions.bungeesuite.tasks.ServerAnnouncements;
@@ -13,8 +12,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AnnouncementManager {
-    public static ArrayList<ScheduledTask> announcementTasks = new ArrayList<ScheduledTask>();
-    static Config announcements = Announcements.announcements;
+    public static ArrayList<ScheduledTask> announcementTasks = new ArrayList<>();
     static ProxyServer proxy = ProxyServer.getInstance();
 
     public static void loadAnnouncements() {
@@ -22,9 +20,9 @@ public class AnnouncementManager {
         setDefaults();
         // load global announcements
         if ( Announcements.announcer ) {
-            List<String> global = announcements.getListString( "Announcements.Global.Messages", new ArrayList<String>() );
+            List<String> global = Announcements.announcements.getListString( "Announcements.Global.Messages", new ArrayList<String>() );
             if ( !global.isEmpty() ) {
-                int interval = announcements.getInt( "Announcements.Global.Interval", 0 );
+                int interval = Announcements.announcements.getInt( "Announcements.Global.Interval", 0 );
                 if ( interval > 0 ) {
                     GlobalAnnouncements g = new GlobalAnnouncements();
                     for ( String messages : global ) {
@@ -36,9 +34,9 @@ public class AnnouncementManager {
             }
             //load server announcements
             for ( String server : proxy.getServers().keySet() ) {
-                List<String> servermes = announcements.getListString( "Announcements." + server + ".Messages", new ArrayList<String>() );
+                List<String> servermes = Announcements.announcements.getListString( "Announcements." + server + ".Messages", new ArrayList<String>() );
                 if ( !servermes.isEmpty() ) {
-                    int interval = announcements.getInt( "Announcements." + server + ".Interval", 0 );
+                    int interval = Announcements.announcements.getInt( "Announcements." + server + ".Interval", 0 );
                     if ( interval > 0 ) {
                         ServerAnnouncements s = new ServerAnnouncements( proxy.getServerInfo( server ) );
                         for ( String messages : servermes ) {
@@ -53,21 +51,21 @@ public class AnnouncementManager {
     }
 
     private static void setDefaults() {
-        List<String> check = announcements.getSubNodes( "Announcements" );
+        List<String> check = Announcements.announcements.getSubNodes( "Announcements" );
         if ( !check.contains( "Global" ) ) {
-            announcements.setInt( "Announcements.Global.Interval", 300 );
+            Announcements.announcements.setInt( "Announcements.Global.Interval", 300 );
             List<String> l = new ArrayList<String>();
             l.add( "&4Welcome to the server!" );
             l.add( "&aDon't forget to check out our website" );
-            announcements.setListString( "Announcements.Global.Messages", l );
+            Announcements.announcements.setListString( "Announcements.Global.Messages", l );
         }
         for ( String server : proxy.getServers().keySet() ) {
             if ( !check.contains( server ) ) {
-                announcements.setInt( "Announcements." + server + ".Interval", 150 );
+                Announcements.announcements.setInt( "Announcements." + server + ".Interval", 150 );
                 List<String> l = new ArrayList<String>();
                 l.add( "&4Welcome to the " + server + " server!" );
                 l.add( "&aDon't forget to check out our website" );
-                announcements.setListString( "Announcements." + server + ".Messages", l );
+                Announcements.announcements.setListString( "Announcements." + server + ".Messages", l );
             }
         }
     }
