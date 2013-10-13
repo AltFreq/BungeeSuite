@@ -1,6 +1,7 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 
 import com.minecraftdimensions.bungeesuite.managers.HomesManager;
+import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuite.objects.Location;
 import net.md_5.bungee.api.connection.Server;
@@ -37,6 +38,8 @@ public class HomesMessageListener implements Listener {
             HomesManager.createNewHome( in.readUTF(), in.readInt(), in.readInt(), in.readUTF(), new Location( ( ( Server ) event.getSender() ).getInfo().getName(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble(), in.readFloat(), in.readFloat() ) );
         } else if ( task.equals( "GetHomesList" ) ) {
             HomesManager.listPlayersHomes( PlayerManager.getPlayer( in.readUTF() ) );
+        } else if ( task.equals( "SendVersion" ) ) {
+            LoggingManager.log( in.readUTF() );
         }
         in.close();
 

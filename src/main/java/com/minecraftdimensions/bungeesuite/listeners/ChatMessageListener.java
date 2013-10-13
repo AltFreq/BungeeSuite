@@ -43,7 +43,7 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "GetServerChannels" ) ) {
-//            ChatManager.clearServersChannels( s );
+            //            ChatManager.clearServersChannels( s );
             ChatManager.sendServerData( s.getInfo() );
             ChatManager.sendDefaultChannelsToServer( s.getInfo() );
             //            for ( ProxiedPlayer p : s.getInfo().getPlayers() ) {
@@ -132,6 +132,10 @@ public class ChatMessageListener implements Listener {
         }
         if ( task.equals( "SetChannelFormat" ) ) {
             ChatManager.setChannelsFormat( in.readUTF(), in.readUTF(), in.readBoolean() );
+            return;
+        }
+        if ( task.equals( "SendVersion" ) ) {
+            LoggingManager.log( in.readUTF() );
             return;
         }
     }

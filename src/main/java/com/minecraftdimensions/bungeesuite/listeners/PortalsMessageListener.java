@@ -1,5 +1,6 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 
+import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuite.managers.PortalManager;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
@@ -30,7 +31,7 @@ public class PortalsMessageListener implements Listener {
         DataInputStream in = new DataInputStream( new ByteArrayInputStream( event.getData() ) );
 
         String task = in.readUTF();
-        Server s = (Server)event.getSender();
+        Server s = ( Server ) event.getSender();
         if ( task.equals( "TeleportPlayer" ) ) {
             PortalManager.teleportPlayer( PlayerManager.getPlayer( in.readUTF() ), in.readUTF(), in.readUTF(), in.readBoolean() );
         } else if ( task.equals( "ListPortals" ) ) {
@@ -42,12 +43,13 @@ public class PortalsMessageListener implements Listener {
             boolean selection = in.readBoolean();
             if ( !selection ) {
                 sender.sendMessage( Messages.NO_SELECTION_MADE );
-                return;
             } else {
                 PortalManager.setPortal( sender, in.readUTF(), in.readUTF(), in.readUTF(), in.readUTF(), new Location( s.getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ), new Location( s.getInfo(), in.readUTF(), in.readDouble(), in.readDouble(), in.readDouble() ) );
             }
-        }else if ( task.equals( "RequestPortals" )){
-        	PortalManager.getPortals(s.getInfo());
+        } else if ( task.equals( "RequestPortals" ) ) {
+            PortalManager.getPortals( s.getInfo() );
+        } else if ( task.equals( "SendVersion" ) ) {
+            LoggingManager.log( in.readUTF() );
         }
 
         in.close();

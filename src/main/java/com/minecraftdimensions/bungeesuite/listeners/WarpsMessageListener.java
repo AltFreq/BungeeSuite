@@ -1,5 +1,6 @@
 package com.minecraftdimensions.bungeesuite.listeners;
 
+import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuite.managers.WarpsManager;
 import com.minecraftdimensions.bungeesuite.objects.Location;
@@ -35,7 +36,7 @@ public class WarpsMessageListener implements Listener {
         }
 
         if ( task.equals( "GetWarpsList" ) ) {
-            WarpsManager.getWarpsList( in.readUTF(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean());
+            WarpsManager.getWarpsList( in.readUTF(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean() );
             return;
         }
 
@@ -47,6 +48,10 @@ public class WarpsMessageListener implements Listener {
         if ( task.equals( "DeleteWarp" ) ) {
             WarpsManager.deleteWarp( PlayerManager.getPlayer( in.readUTF() ), in.readUTF() );
             return;
+        }
+
+        if ( task.equals( "SendVersion" ) ) {
+            LoggingManager.log( in.readUTF() );
         }
 
     }
