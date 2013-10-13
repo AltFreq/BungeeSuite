@@ -17,7 +17,7 @@ public class MOTDCommand extends Command {
 
     @Override
     public void execute( CommandSender sender, String[] args ) {
-        if ( !sender.hasPermission( "bungeesuite.motd" ) || !sender.hasPermission( "bungeesuite.admin" ) ) {
+        if ( !( sender.hasPermission( "bungeesuite.motd" ) || sender.hasPermission( "bungeesuite.admin" ) ) ) {
             ProxiedPlayer p = ( ProxiedPlayer ) sender;
             p.chat( "/motd" );
         } else {

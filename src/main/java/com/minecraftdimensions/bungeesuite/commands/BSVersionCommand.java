@@ -24,7 +24,7 @@ public class BSVersionCommand extends Command {
 
     @Override
     public void execute( CommandSender sender, String[] args ) {
-        if ( !sender.hasPermission( "bungeesuite.version" ) || !sender.hasPermission( "bungeesuite.admin" ) ) {
+        if ( !( sender.hasPermission( "bungeesuite.version" ) || sender.hasPermission( "bungeesuite.admin" ) ) ) {
             ProxiedPlayer p = ( ProxiedPlayer ) sender;
             p.chat( "/bsversion" );
         } else {
