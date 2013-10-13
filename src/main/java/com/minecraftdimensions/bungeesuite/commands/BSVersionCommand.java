@@ -20,7 +20,7 @@ import java.io.IOException;
 public class BSVersionCommand extends Command {
 
     public BSVersionCommand() {
-        super( "bsversion", "bsversions" );
+        super( "bsversion" );
     }
 
     @Override
