@@ -1,14 +1,18 @@
 package com.minecraftdimensions.bungeesuite.managers;
 
+import com.minecraftdimensions.bungeesuite.BungeeSuite;
 import com.minecraftdimensions.bungeesuite.Utilities;
 import com.minecraftdimensions.bungeesuite.configs.BansConfig;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Ban;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
+import com.minecraftdimensions.bungeesuite.tasks.SendPluginMessage;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -266,5 +270,9 @@ public class BansManager {
             return false;
         }
         return true;
+    }
+
+    public static void sendPluginMessageTaskBans( ServerInfo server, ByteArrayOutputStream b ) {
+        BungeeSuite.proxy.getScheduler().runAsync( BungeeSuite.instance, new SendPluginMessage( "BungeeSuiteBans", server, b ) );
     }
 }

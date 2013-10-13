@@ -1,5 +1,6 @@
 package com.minecraftdimensions.bungeesuite;
 
+import com.minecraftdimensions.bungeesuite.commands.BSVersionCommand;
 import com.minecraftdimensions.bungeesuite.configs.MainConfig;
 import com.minecraftdimensions.bungeesuite.listeners.*;
 import com.minecraftdimensions.bungeesuite.managers.*;
@@ -59,6 +60,7 @@ public class BungeeSuite extends Plugin {
         this.getProxy().registerChannel( "BSChat" );//in
         this.getProxy().registerChannel( "BungeeSuiteChat" );//out
         this.getProxy().registerChannel( "BSBans" );//in
+        this.getProxy().registerChannel( "BungeeSuiteBans" ); //out
         this.getProxy().registerChannel( "BSTeleports" );//in
         this.getProxy().registerChannel( "BungeeSuiteTP" );//out
         this.getProxy().registerChannel( "BSWarps" );//in
