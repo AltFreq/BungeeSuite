@@ -125,9 +125,6 @@ public class BungeeSuite extends Plugin {
     }
 
     public void onDisable() {
-        if ( SocketManager.isServerRunning() ) {
-            SocketManager.stopServer();
-        }
         SQLManager.closeConnections();
     }
 }
