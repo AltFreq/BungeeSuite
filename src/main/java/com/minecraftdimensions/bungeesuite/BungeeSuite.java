@@ -1,6 +1,5 @@
 package com.minecraftdimensions.bungeesuite;
 
-import com.minecraftdimensions.bungeesuite.commands.WhoIsCommand;
 import com.minecraftdimensions.bungeesuite.configs.MainConfig;
 import com.minecraftdimensions.bungeesuite.listeners.*;
 import com.minecraftdimensions.bungeesuite.managers.*;
@@ -28,8 +27,8 @@ public class BungeeSuite extends Plugin {
     }
 
     private void registerCommands() {
-        proxy.getPluginManager().registerCommand( this, new WhoIsCommand() );
-
+        //        proxy.getPluginManager().registerCommand( this, new WhoIsCommand() );
+        proxy.getPluginManager().registerCommand( this, new BSVersionCommand() );
     }
 
     private void initialiseManagers() {
