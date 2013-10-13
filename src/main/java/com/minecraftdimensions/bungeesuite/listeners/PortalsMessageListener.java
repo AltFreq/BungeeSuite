@@ -23,6 +23,8 @@ public class PortalsMessageListener implements Listener {
         if ( event.isCancelled() ) {
             return;
         }
+        if ( !( event.getSender() instanceof Server ) )
+            return;
         if ( !event.getTag().equalsIgnoreCase( "BSPortals" ) ) {
             return;
         }

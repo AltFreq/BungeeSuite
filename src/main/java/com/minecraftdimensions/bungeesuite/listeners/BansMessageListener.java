@@ -2,6 +2,7 @@ package com.minecraftdimensions.bungeesuite.listeners;
 
 import com.minecraftdimensions.bungeesuite.managers.BansManager;
 import com.minecraftdimensions.bungeesuite.managers.LoggingManager;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -18,6 +19,8 @@ public class BansMessageListener implements Listener {
         if ( event.isCancelled() ) {
             return;
         }
+        if ( !( event.getSender() instanceof Server ) )
+            return;
         if ( !event.getTag().equalsIgnoreCase( "BSBans" ) ) {
             return;
         }

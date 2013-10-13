@@ -24,6 +24,8 @@ public class WarpsMessageListener implements Listener {
         if ( !event.getTag().equalsIgnoreCase( "BSWarps" ) ) {
             return;
         }
+        if ( !( event.getSender() instanceof Server ) )
+            return;
         event.setCancelled( true );
 
         DataInputStream in = new DataInputStream( new ByteArrayInputStream( event.getData() ) );
