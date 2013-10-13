@@ -55,7 +55,6 @@ public class BSVersionCommand extends Command {
                 WarpsManager.sendPluginMessageTaskTP( s, b );
             } else {
                 if ( args.length == 0 ) {
-                    sender.sendMessage( ChatColor.RED + "BungeeSuite version - " + ChatColor.GOLD + BungeeSuite.instance.getDescription().getVersion() );
                     return;
                 } else {
                     ServerInfo s = ProxyServer.getInstance().getServerInfo( args[0] );
