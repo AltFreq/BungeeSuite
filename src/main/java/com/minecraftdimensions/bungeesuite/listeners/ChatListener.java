@@ -5,6 +5,7 @@ import com.minecraftdimensions.bungeesuite.managers.ChatManager;
 import com.minecraftdimensions.bungeesuite.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuite.objects.BSPlayer;
 import com.minecraftdimensions.bungeesuite.objects.Messages;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -38,6 +39,18 @@ public class ChatListener implements Listener {
     @EventHandler
     public void playerChat( ChatEvent e ) throws SQLException {
         BSPlayer p = PlayerManager.getPlayer( e.getSender().toString() );
+        if ( p == null ) {
+            if ( e.getSender() instanceof ProxiedPlayer ) {
+                ProxiedPlayer player = ( ProxiedPlayer ) e.getSender();
+                if ( player != null && player.getPendingConnection() != null ) {
+                    PlayerManager.loadPlayer( player );
+                } else {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
         if ( e.isCommand() ) {
             if ( BlockedCommands.contains( e.getMessage().split( " " )[0].toLowerCase() ) ) {
                 if ( ChatManager.MuteAll ) {
