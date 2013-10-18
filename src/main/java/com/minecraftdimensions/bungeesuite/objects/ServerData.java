@@ -1,5 +1,7 @@
 package com.minecraftdimensions.bungeesuite.objects;
 
+import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
+
 public class ServerData {
     String serverName;
     String shortName;
@@ -52,6 +54,6 @@ public class ServerData {
     }
 
     public String serialise() {
-        return serverName + "~" + shortName + "~" + forceChannel + "~" + forcedChannel + "~" + usingFactionChannels + "~" + localDistance + "~" + connectionMessages;
+        return serverName + "~" + shortName + "~" + forceChannel + "~" + forcedChannel + "~" + usingFactionChannels + "~" + localDistance + "~" + connectionMessages+ "~" + ChatConfig.globalChatRegex;
     }
 }
