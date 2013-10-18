@@ -28,7 +28,9 @@ public class ServerAnnouncements implements Runnable {
 			return;
 		}
 		for(ProxiedPlayer player: server.getPlayers()){
-			player.sendMessage(list.get(count));
+            for ( String line : list.get(count).split( "\n" ) ) {
+            	player.sendMessage(line);
+            }
 		}
 		count++;
 		if((count+1)>list.size()){
