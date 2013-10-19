@@ -3,16 +3,12 @@ package com.minecraftdimensions.bungeesuite;
 import com.minecraftdimensions.bungeesuite.commands.BSVersionCommand;
 import com.minecraftdimensions.bungeesuite.commands.MOTDCommand;
 import com.minecraftdimensions.bungeesuite.commands.ReloadCommand;
-import com.minecraftdimensions.bungeesuite.configs.MainConfig;
 import com.minecraftdimensions.bungeesuite.listeners.*;
 import com.minecraftdimensions.bungeesuite.managers.*;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 
 public class BungeeSuite extends Plugin {
@@ -56,7 +52,8 @@ public class BungeeSuite extends Plugin {
             }
             //test
         } else {
-            setupSQL();
+            //            setupSQL();
+            LoggingManager.log( ChatColor.DARK_RED + "Your BungeeSuite is unable to connect to your SQL database specified in the config" );
         }
     }
 
@@ -88,43 +85,43 @@ public class BungeeSuite extends Plugin {
         proxy.getPluginManager().registerListener( this, new SpawnMessageListener() );
     }
 
-    private void setupSQL() {
-        System.out.println( ChatColor.GREEN + "--------" + ChatColor.GOLD + "Welcome to BungeeSuite SQL setup" + ChatColor.GREEN + "--------" );
-        System.out.println( ChatColor.DARK_RED + "Enter your databases URL/IP:" );
-        try {
-            BufferedReader bufferRead = new BufferedReader( new InputStreamReader( System.in ) );
-            String s = bufferRead.readLine();
-            MainConfig.config.setString( "Database.Host", s );
-            MainConfig.host = s;
-            System.out.println( ChatColor.GREEN + "Host set to: " + s );
-            System.out.println( ChatColor.DARK_RED + "Enter your database name:" );
-            s = bufferRead.readLine();
-            MainConfig.config.setString( "Database.Database", s );
-            MainConfig.database = s;
-            System.out.println( ChatColor.GREEN + "Database name set to: " + s );
-            System.out.println( ChatColor.DARK_RED + "Enter your databases port number (default 3306):" );
-            s = bufferRead.readLine();
-            MainConfig.config.setString( "Database.Port", s );
-            MainConfig.port = s;
-            System.out.println( ChatColor.GREEN + "Database port set to: " + s );
-            System.out.println( ChatColor.DARK_RED + "Enter your database username:" );
-            s = bufferRead.readLine();
-            MainConfig.config.setString( "Database.Username", s );
-            MainConfig.username = s;
-            System.out.println( ChatColor.GREEN + "Database username set to: " + s );
-            System.out.println( ChatColor.DARK_RED + "Enter your database password:" );
-            s = bufferRead.readLine();
-            MainConfig.config.setString( "Database.Password", s );
-            MainConfig.password = s;
-            System.out.println( ChatColor.GREEN + "Database password set to: " + s );
-            System.out.println( ChatColor.GREEN + "--------" + ChatColor.GOLD + "SQL setup complete" + ChatColor.GREEN + "--------" );
-            System.out.println( ChatColor.GREEN + "Connecting..." );
-            initialiseManagers();
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
+    //    private void setupSQL() {
+    //        System.out.println( ChatColor.GREEN + "--------" + ChatColor.GOLD + "Welcome to BungeeSuite SQL setup" + ChatColor.GREEN + "--------" );
+    //        System.out.println( ChatColor.DARK_RED + "Enter your databases URL/IP:" );
+    //        try {
+    //            BufferedReader bufferRead = new BufferedReader( new InputStreamReader( System.in ) );
+    //            String s = bufferRead.readLine();
+    //            MainConfig.config.setString( "Database.Host", s );
+    //            MainConfig.host = s;
+    //            System.out.println( ChatColor.GREEN + "Host set to: " + s );
+    //            System.out.println( ChatColor.DARK_RED + "Enter your database name:" );
+    //            s = bufferRead.readLine();
+    //            MainConfig.config.setString( "Database.Database", s );
+    //            MainConfig.database = s;
+    //            System.out.println( ChatColor.GREEN + "Database name set to: " + s );
+    //            System.out.println( ChatColor.DARK_RED + "Enter your databases port number (default 3306):" );
+    //            s = bufferRead.readLine();
+    //            MainConfig.config.setString( "Database.Port", s );
+    //            MainConfig.port = s;
+    //            System.out.println( ChatColor.GREEN + "Database port set to: " + s );
+    //            System.out.println( ChatColor.DARK_RED + "Enter your database username:" );
+    //            s = bufferRead.readLine();
+    //            MainConfig.config.setString( "Database.Username", s );
+    //            MainConfig.username = s;
+    //            System.out.println( ChatColor.GREEN + "Database username set to: " + s );
+    //            System.out.println( ChatColor.DARK_RED + "Enter your database password:" );
+    //            s = bufferRead.readLine();
+    //            MainConfig.config.setString( "Database.Password", s );
+    //            MainConfig.password = s;
+    //            System.out.println( ChatColor.GREEN + "Database password set to: " + s );
+    //            System.out.println( ChatColor.GREEN + "--------" + ChatColor.GOLD + "SQL setup complete" + ChatColor.GREEN + "--------" );
+    //            System.out.println( ChatColor.GREEN + "Connecting..." );
+    //            initialiseManagers();
+    //        } catch ( IOException e ) {
+    //            e.printStackTrace();
+    //        }
 
-    }
+    //    }
 
     public void onDisable() {
         SQLManager.closeConnections();
