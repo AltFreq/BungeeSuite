@@ -24,22 +24,22 @@ public class PlayerListener implements Listener {
             PlayerManager.loadPlayer( e.getPlayer() );
         }
     }
-    
+
     @EventHandler(priority = EventPriority.LOW)
     public void playerLogin( ServerConnectedEvent e ) throws SQLException {
         BSPlayer p = PlayerManager.getPlayer( e.getPlayer() );
         if ( p.firstConnect() ) {
-        	if(MainConfig.broadcastProxyConnectionMessages){
-        		PlayerManager.sendBroadcast( Messages.PLAYER_CONNECT_PROXY.replace( "{player}", p.getDisplayingName() ) );
-        	}
-            if ( MainConfig.motd ) {
-                PlayerManager.sendMessageToPlayer( e.getPlayer().getName(), Messages.MOTD );
+            if ( MainConfig.broadcastProxyConnectionMessages ) {
+                PlayerManager.sendBroadcast( Messages.PLAYER_CONNECT_PROXY.replace( "{player}", p.getDisplayingName() ) );
             }
-    		p.connected();
+            if ( MainConfig.motd ) {
+                PlayerManager.sendMessageToPlayer( e.getPlayer().getName(), Messages.MOTD.replace( "{player}", p.getDisplayingName() ) );
+            }
+            p.connected();
         }
     }
 
-    @EventHandler( priority = EventPriority.LOW )
+    @EventHandler(priority = EventPriority.LOW)
     public void playerLogout( final PlayerDisconnectEvent e ) {
         int dcTime = MainConfig.playerDisconnectDelay;
         final BSPlayer p = PlayerManager.getPlayer( e.getPlayer() );
