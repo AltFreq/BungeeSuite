@@ -145,7 +145,7 @@ public class PlayerManager {
         BSPlayer p = getSimilarPlayer( player );
         String ip = null;
         if ( p == null ) {
-            ResultSet res = SQLManager.sqlQuery( "SELECT ipaddress FROM BungeePlayers WHERE player = '" + player + "'" );
+            ResultSet res = SQLManager.sqlQuery( "SELECT ipaddress FROM BungeePlayers WHERE playername = '" + player + "'" );
             while ( res.next() ) {
                 ip = res.getString( "ipaddress" );
             }
