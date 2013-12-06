@@ -583,6 +583,7 @@ public class ChatManager {
             out.writeUTF( sd.getServerShortName() );
             out.writeInt( sd.getLocalDistance() );
             out.writeBoolean( sd.usingConnectionMessages() );
+            out.writeUTF( ChatConfig.globalChatRegex );
         } catch ( IOException e ) {
             e.printStackTrace();
         }
