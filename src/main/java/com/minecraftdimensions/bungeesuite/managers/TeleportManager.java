@@ -135,7 +135,7 @@ public class TeleportManager {
             target.sendMessage( Messages.TELEPORT_DENIED.replace( "{player}", target.getDisplayingName() ) );
             pendingTeleportsTPA.remove( player );
         } else if ( pendingTeleportsTPAHere.containsKey( player ) ) {
-            BSPlayer target = pendingTeleportsTPA.get( player );
+            BSPlayer target = pendingTeleportsTPAHere.get( player );
             player.sendMessage( Messages.TELEPORT_REQUEST_DENIED.replace( "{player}", target.getDisplayingName() ) );
             target.sendMessage( Messages.TELEPORT_DENIED.replace( "{player}", player.getDisplayingName() ) );
             pendingTeleportsTPAHere.remove( player );
