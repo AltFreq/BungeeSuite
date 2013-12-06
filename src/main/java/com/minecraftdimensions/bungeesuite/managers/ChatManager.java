@@ -411,7 +411,7 @@ public class ChatManager {
             return;
         }
         PlayerManager.tempMutePlayer( t, minutes );
-        p.sendMessage( Messages.PLAYER_MUTED );
+        p.sendMessage( Messages.PLAYER_MUTED.replace( "{player}", t.getDisplayingName() ) );
     }
 
     public static void reloadChat( String readUTF ) throws SQLException, IOException {
