@@ -131,8 +131,8 @@ public class TeleportManager {
     public static void denyTeleportRequest( BSPlayer player ) {
         if ( pendingTeleportsTPA.containsKey( player ) ) {
             BSPlayer target = pendingTeleportsTPA.get( player );
-            player.sendMessage( Messages.TELEPORT_REQUEST_DENIED.replace( "{player}", target.getDisplayingName() ) );
-            target.sendMessage( Messages.TELEPORT_DENIED.replace( "{player}", player.getDisplayingName() ) );
+            player.sendMessage( Messages.TELEPORT_REQUEST_DENIED.replace( "{player}", player.getDisplayingName() ) );
+            target.sendMessage( Messages.TELEPORT_DENIED.replace( "{player}", target.getDisplayingName() ) );
             pendingTeleportsTPA.remove( player );
         } else if ( pendingTeleportsTPAHere.containsKey( player ) ) {
             BSPlayer target = pendingTeleportsTPA.get( player );
