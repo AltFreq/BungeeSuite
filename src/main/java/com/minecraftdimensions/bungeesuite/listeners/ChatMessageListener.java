@@ -48,9 +48,6 @@ public class ChatMessageListener implements Listener {
             //            ChatManager.clearServersChannels( s );
             ChatManager.sendServerData( s.getInfo() );
             ChatManager.sendDefaultChannelsToServer( s.getInfo() );
-            //            for ( ProxiedPlayer p : s.getInfo().getPlayers() ) {
-            //                ChatManager.loadPlayersChannels( p, s );
-            //            }
             PrefixSuffixManager.sendPrefixAndSuffixToServer( s.getInfo() );
             return;
         }

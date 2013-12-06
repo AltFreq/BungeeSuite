@@ -46,15 +46,15 @@ public class ChatManager {
         for ( String servername : ProxyServer.getInstance().getServers().keySet() ) {
             loadChannel( server, servername, chan.getString( "Channels.Servers." + servername + ".Server", Messages.CHANNEL_DEFAULT_SERVER ), true, true );
             loadChannel( server, servername + " Local", chan.getString( "Channels.Servers." + servername + ".Local", Messages.CHANNEL_DEFAULT_LOCAL ), true, true );
-            loadServerData( servername, chan.getString( "Channels.Servers." + servername + ".Shortname", servername.substring( 0, 1 ) ), chan.getBoolean( "Channels.Servers." + servername + ".ForceChannel", false ), chan.getString( "Channels.Servers." + servername + ".ForcedChannel", "Server" ), chan.getBoolean( "Channels.Servers." + servername + ".UsingFactionChannels", false ), chan.getInt( "Channels.Servers." + servername + ".LocalRange", 50 ), chan.getBoolean( "Channels.Servers." + servername + ".DisableConnectionMessages", true ) );
+            loadServerData( servername, chan.getString( "Channels.Servers." + servername + ".Shortname", servername.substring( 0, 1 ) ), chan.getBoolean( "Channels.Servers." + servername + ".ForceChannel", false ), chan.getString( "Channels.Servers." + servername + ".ForcedChannel", "Server" ), chan.getInt( "Channels.Servers." + servername + ".LocalRange", 50 ), chan.getBoolean( "Channels.Servers." + servername + ".DisableConnectionMessages", true ) );
         }
         //Load custom channels from db
 
         LoggingManager.log( ChatColor.GOLD + "Channels loaded - " + ChatColor.DARK_GREEN + channels.size() );
     }
 
-    private static void loadServerData( String name, String shortName, boolean forcingChannel, String forcedChannel, boolean usingFacs, int localDistance, boolean connectionMessages ) {
-        ServerData d = new ServerData( name, shortName, forcingChannel, forcedChannel, usingFacs, localDistance, connectionMessages );
+    private static void loadServerData( String name, String shortName, boolean forcingChannel, String forcedChannel, int localDistance, boolean connectionMessages ) {
+        ServerData d = new ServerData( name, shortName, forcingChannel, forcedChannel, localDistance, connectionMessages );
         if ( serverData.get( d ) == null ) {
             serverData.put( name, d );
         }
@@ -72,43 +72,37 @@ public class ChatManager {
     public static void sendDefaultChannelsToServer( ServerInfo s ) {
         ArrayList<Channel> chans = getDefaultChannels( s.getName() );
         for ( Channel c : chans ) {
-                ByteArrayOutputStream b = new ByteArrayOutputStream();
-                DataOutputStream out = new DataOutputStream( b );
-                try {
-                    out.writeUTF( "SendChannel" );
-                    out.writeUTF( c.serialise() );
-                } catch ( IOException e ) {
-                    e.printStackTrace();
-                }
-                sendPluginMessageTaskChat( s, b );
+            sendChannelToServer( s, c );
         }
     }
 
-//    public static void sendChannelToServer( Server server, Channel channel ) {
-//        if ( !sentChannelToServer( server, channel ) ) {
-//            ByteArrayOutputStream b = new ByteArrayOutputStream();
-//            DataOutputStream out = new DataOutputStream( b );
-//            try {
-//                out.writeUTF( "SendChannel" );
-//                out.writeUTF( channel.serialise() );
-//            } catch ( IOException e ) {
-//                e.printStackTrace();
-//            }
-//            sendPluginMessageTaskChat( server.getInfo(), b );
-//        }
-//    }
+    public static void sendFactionChannelsToServer( ServerInfo s ) {
+        sendChannelToServer( s, getChannel( "Faction" ) );
+        sendChannelToServer( s, getChannel( "FactionAlly" ) );
+    }
+
+    public static void sendChannelToServer( ServerInfo server, Channel channel ) {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream( b );
+        try {
+            out.writeUTF( "SendChannel" );
+            out.writeUTF( channel.serialise() );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        sendPluginMessageTaskChat( server, b );
+    }
 
     public static ArrayList<Channel> getDefaultChannels( String server ) {
-        ArrayList<Channel> chans = new ArrayList<Channel>();
+        ArrayList<Channel> chans = new ArrayList();
         for ( Channel c : channels ) {
             if ( c.getName().equals( "Global" ) || c.getName().equals( "Admin" ) || c.getName().equals( server ) || c.getName().equals( server + " Local" ) ) {
-                chans.add( c );
-            } else if ( serverData.get( server ).usingFactions() && ( c.getName().equals( "Faction" ) || c.getName().equals( "FactionAlly" ) ) ) {
                 chans.add( c );
             }
         }
         return chans;
     }
+
 
     public void createNewCustomChannel( String owner, String name, String format, boolean open ) throws SQLException {
         SQLManager.standardQuery( "INSERT INTO BungeeCustomChannels VALUES('" + name + "','" + owner + "','" + format + "'," + open + ",)" );
@@ -147,14 +141,13 @@ public class ChatManager {
     //        sendPlayersChannels( PlayerManager.getPlayer( player ), server );
     //    }
 
-//    private static void sendPlayersChannels( BSPlayer p, Server server ) {
-//        for ( Channel c : p.getPlayersChannels() ) {
-//            if ( !channelsSentToServers.get( server.getInfo().getName() ).contains( c ) ) {
-//                sendChannelToServer( server, c );
-//            }
-//       }
-//    }
-
+    //    private static void sendPlayersChannels( BSPlayer p, Server server ) {
+    //        for ( Channel c : p.getPlayersChannels() ) {
+    //            if ( !channelsSentToServers.get( server.getInfo().getName() ).contains( c ) ) {
+    //                sendChannelToServer( server, c );
+    //            }
+    //       }
+    //    }
 
 
     public static Channel getChannel( String name ) {
@@ -399,7 +392,7 @@ public class ChatManager {
     }
 
     public static void reloadChat( String readUTF ) throws SQLException, IOException {
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream( b );
         try {
             out.writeUTF( "Reload" );
@@ -407,7 +400,7 @@ public class ChatManager {
             e.printStackTrace();
         }
         for ( ServerInfo s : BungeeSuite.proxy.getServers().values() ) {
-                sendPluginMessageTaskChat( s, b );
+            sendPluginMessageTaskChat( s, b );
         }
         channels.clear();
         serverData.clear();
@@ -422,8 +415,8 @@ public class ChatManager {
             ChatManager.sendDefaultChannelsToServer( s );
             PrefixSuffixManager.sendPrefixAndSuffixToServer( s );
         }
-        for( ProxiedPlayer p: BungeeSuite.proxy.getPlayers()){
-        	sendPlayer(p.getName(), p.getServer(), true);
+        for ( ProxiedPlayer p : BungeeSuite.proxy.getPlayers() ) {
+            sendPlayer( p.getName(), p.getServer(), true );
         }
     }
 
@@ -567,7 +560,11 @@ public class ChatManager {
         DataOutputStream out = new DataOutputStream( b );
         try {
             out.writeUTF( "SendServerData" );
-            out.writeUTF( serverData.get( s.getName() ).serialise() );
+            ServerData sd = serverData.get( s.getName() );
+            out.writeUTF( sd.getServerName() );
+            out.writeUTF( sd.getServerShortName() );
+            out.writeInt( sd.getLocalDistance() );
+            out.writeBoolean( sd.usingConnectionMessages() );
         } catch ( IOException e ) {
             e.printStackTrace();
         }

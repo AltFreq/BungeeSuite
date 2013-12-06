@@ -1,36 +1,23 @@
 package com.minecraftdimensions.bungeesuite.objects;
 
-import com.minecraftdimensions.bungeesuite.configs.ChatConfig;
 
 public class ServerData {
     String serverName;
     String shortName;
-    String forcedChannel;
     boolean forceChannel;
-    boolean usingFactionChannels;
+    String forcedChannel;
     int localDistance;
     boolean connectionMessages;
+    boolean usingFactionChannels;
 
 
-    public ServerData( String name, String shortName, boolean force, String channel, boolean facs, int localDistance, boolean connectionMessages ) {
+    public ServerData( String name, String shortName, boolean force, String channel, int localDistance, boolean connectionMessages ) {
         this.serverName = name;
         this.shortName = shortName;
         this.forceChannel = force;
         this.forcedChannel = channel;
-        this.usingFactionChannels = facs;
         this.localDistance = localDistance;
         this.connectionMessages = connectionMessages;
-    }
-
-    public ServerData( String deserialise ) {
-        String data[] = deserialise.split( "~" );
-        serverName = data[0];
-        shortName = data[1];
-        forceChannel = Boolean.parseBoolean( data[2] );
-        forcedChannel = data[3];
-        usingFactionChannels = Boolean.parseBoolean( data[4] );
-        localDistance = Integer.parseInt( data[5] );
-        connectionMessages = Boolean.parseBoolean( data[6] );
     }
 
     public String getServerName() {
@@ -53,7 +40,15 @@ public class ServerData {
         return usingFactionChannels;
     }
 
-    public String serialise() {
-        return serverName + "~" + shortName + "~" + forceChannel + "~" + forcedChannel + "~" + usingFactionChannels + "~" + localDistance + "~" + connectionMessages+ "~" + ChatConfig.globalChatRegex;
+    public void useFactions() {
+        this.usingFactionChannels = true;
+    }
+
+    public int getLocalDistance() {
+        return localDistance;
+    }
+
+    public boolean usingConnectionMessages() {
+        return connectionMessages;
     }
 }
