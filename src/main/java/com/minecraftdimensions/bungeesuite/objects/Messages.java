@@ -80,8 +80,11 @@ public class Messages {
     public static String CHANNEL_DEFAULT_SERVER = m.getString( "CHANNEL_DEFAULT_SERVER", "&e[{server}]{prefix}&f{player}&f{suffix}&f: &7{message}" );
     public static String CHANNEL_DEFAULT_LOCAL = m.getString( "CHANNEL_DEFAULT_LOCAL", "&9[Local]{prefix}&f{player}&f{suffix}&f: &7{message}" );
     public static String CHANNEL_DEFAULT_ADMIN = m.getString( "CHANNEL_DEFAULT_ADMIN", "&9[Admin]{player}:{message}" );
-    public static String CHANNEL_DEFAULT_FACTION = m.getString( "CHANNEL_DEFAULT_FACTION", "&a{factions_roleprefix}{factions_title}{player}:&r {message}" );
-    public static String CHANNEL_DEFAULT_FACTION_ALLY = m.getString( "CHANNEL_DEFAULT_FACTION_ALLY", "&d{factions_roleprefix}{factions_name}{player}:&r {message}" );
+    public static String CHANNEL_DEFAULT_FACTION = m.getString( "CHANNEL_DEFAULT_FACTION", "&a{factions_roleprefix}{factions_title} {player}:&r {message}" );
+    public static String CHANNEL_DEFAULT_FACTION_ALLY = m.getString( "CHANNEL_DEFAULT_FACTION_ALLY", "&d{factions_roleprefix}{factions_name} {player}:&r {message}" );
+    public static String CHANNEL_DEFAULT_TOWN = m.getString( "CHANNEL_DEFAULT_TOWN", "&f[&3TC&f]{townytitle}{player} &f{townysurname}{permsuffix}&f: {message}" );
+    public static String CHANNEL_DEFAULT_NATION = m.getString( "CHANNEL_DEFAULT_NATION", "&f[&6NC&f]{townytown}{townytitle}{player}&f{townysurname}{permsuffix}&f: {message}" );
+
     public static String PRIVATE_MESSAGE_OTHER_PLAYER = colorize( m.getString( "PRIVATE_MESSAGE_OTHER_PLAYER", "&7" + "[" + "&3" + "me" + "&7" + "->" + "&6" + "{player}" + "&7" + "] {message}" ) );
     public static String PRIVATE_MESSAGE_RECEIVE = colorize( m.getString( "PRIVATE_MESSAGE_RECEIVE", "&7" + "[" + "&b" + "{player}" + "&7" + "->" + "&6" + "me" + "&7" + "] {message}" ) );
     public static String PRIVATE_MESSAGE_SPY = colorize( m.getString( "PRIVATE_MESSAGE_SPY", "&7" + "[" + "&b" + "{sender}" + "&7" + "->" + "&6" + "{player}" + "&7" + "] {message}" ) );
@@ -101,6 +104,11 @@ public class Messages {
     public static String FACTION_ALLY_TOGGLE = colorize( m.getString( "FACTION_ALLY_TOGGLE", "&e" + "Ally only chat mode" ) );
     public static String FACTION_OFF_TOGGLE = colorize( m.getString( "FACTION_OFF_TOGGLE", "&e" + "Public chat mode" ) );
     public static String FACTION_NONE = colorize( m.getString( "FACTION_NONE", "&c" + "You do not have a faction" ) );
+    public static String TOWNY_TOGGLE = colorize( m.getString( "TOWNY_TOGGLE", "&e" + "Town chat mode" ) );
+    public static String TOWNY_NATION_TOGGLE = colorize( m.getString( "TOWNY_NATION_TOGGLE", "&e" + "Nation chat mode" ) );
+    public static String TOWNY_OFF_TOGGLE = colorize( m.getString( "TOWNY_OFF_TOGGLE", "&e" + "Public chat mode" ) );
+    public static String TOWNY_NONE = colorize( m.getString( "TOWNY_NONE", "&c" + "You do not have a town" ) );
+    public static String TOWNY_NATION_NONE = colorize( m.getString( "TOWNY_NATION_NONE", "&c" + "Your town is not part of a nation" ) );
     public static String NICKNAMED_PLAYER = colorize( m.getString( "NICKNAMED_PLAYER", "&2" + "You have set {player}'s name to {name}" ) );
     public static String NICKNAME_CHANGED = colorize( m.getString( "NICKNAME_CHANGED", "&2" + "Your nickname has been change to {name}" ) );
     public static String NICKNAME_TOO_LONG = colorize( m.getString( "NICKNAME_TOO_LONG", "&c" + "That nickname is too long!" ) );
@@ -206,8 +214,10 @@ public class Messages {
         CHANNEL_DEFAULT_SERVER = m.getString( "CHANNEL_DEFAULT_SERVER", "&e[{server}]{prefix}&f{player}&f{suffix}&f: &7{message}" );
         CHANNEL_DEFAULT_LOCAL = m.getString( "CHANNEL_DEFAULT_LOCAL", "&9[Local]{prefix}&f{player}&f{suffix}&f: &7{message}" );
         CHANNEL_DEFAULT_ADMIN = m.getString( "CHANNEL_DEFAULT_ADMIN", "&9[Admin]{player}:{message}" );
-        CHANNEL_DEFAULT_FACTION = m.getString( "CHANNEL_DEFAULT_FACTION", "&a{factions_roleprefix}{factions_title}{player}:&r {message}" );
-        CHANNEL_DEFAULT_FACTION_ALLY = m.getString( "CHANNEL_DEFAULT_FACTION_ALLY", "&d{factions_roleprefix}{factions_name}{player}:&r {message}" );
+        CHANNEL_DEFAULT_FACTION = m.getString( "CHANNEL_DEFAULT_FACTION", "&a{factions_roleprefix}{factions_title} {player}:&r {message}" );
+        CHANNEL_DEFAULT_FACTION_ALLY = m.getString( "CHANNEL_DEFAULT_FACTION_ALLY", "&d{factions_roleprefix}{factions_name} {player}:&r {message}" );
+        CHANNEL_DEFAULT_TOWN = m.getString( "CHANNEL_DEFAULT_TOWN", "&f[&3TC&f]*{townytitle}*{player} &f{townypostfix}{permsuffix}&f: {message}" );
+        CHANNEL_DEFAULT_NATION = m.getString( "CHANNEL_DEFAULT_NATION", "&f[&6NC&f]{townytown}*{townytitle}*{player}&f{townysurname}{permsuffix}&f: {message}" );
         PRIVATE_MESSAGE_OTHER_PLAYER = colorize( m.getString( "PRIVATE_MESSAGE_OTHER_PLAYER", "&7" + "[" + "&3" + "me" + "&7" + "->" + "&6" + "{player}" + "&7" + "] {message}" ) );
         PRIVATE_MESSAGE_RECEIVE = colorize( m.getString( "PRIVATE_MESSAGE_RECEIVE", "&7" + "[" + "&b" + "{player}" + "&7" + "->" + "&6" + "me" + "&7" + "] {message}" ) );
         PRIVATE_MESSAGE_SPY = colorize( m.getString( "PRIVATE_MESSAGE_SPY", "&7" + "[" + "&b" + "{sender}" + "&7" + "->" + "&6" + "{player}" + "&7" + "] {message}" ) );
@@ -227,6 +237,11 @@ public class Messages {
         FACTION_ALLY_TOGGLE = colorize( m.getString( "FACTION_ALLY_TOGGLE", "&e" + "Ally only chat mode" ) );
         FACTION_OFF_TOGGLE = colorize( m.getString( "FACTION_OFF_TOGGLE", "&e" + "Public chat mode" ) );
         FACTION_NONE = colorize( m.getString( "FACTION_NONE", "&c" + "You do not have a faction" ) );
+        TOWNY_TOGGLE = colorize( m.getString( "TOWNY_TOGGLE", "&e" + "Town chat mode" ) );
+        TOWNY_NATION_TOGGLE = colorize( m.getString( "TOWNY_NATION_TOGGLE", "&e" + "Nation chat mode" ) );
+        TOWNY_OFF_TOGGLE = colorize( m.getString( "TOWNY_OFF_TOGGLE", "&e" + "Public chat mode" ) );
+        TOWNY_NONE = colorize( m.getString( "TOWNY_NONE", "&c" + "You do not have a town" ) );
+        TOWNY_NATION_NONE = colorize( m.getString( "TOWNY_NATION_NONE", "&c" + "Your town is not part of a nation" ) );
         NICKNAMED_PLAYER = colorize( m.getString( "NICKNAMED_PLAYER", "&2" + "You have set {player}'s name to {name}" ) );
         NICKNAME_CHANGED = colorize( m.getString( "NICKNAME_CHANGED", "&2" + "Your nickname has been change to {name}" ) );
         NICKNAME_TOO_LONG = colorize( m.getString( "NICKNAME_TOO_LONG", "&c" + "That nickname is too long!" ) );

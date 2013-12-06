@@ -8,14 +8,24 @@ public class ServerData {
     String forcedChannel;
     int localDistance;
     boolean connectionMessages;
+
     boolean usingFactionChannels;
+    boolean usingTowny;
 
 
     public ServerData( String name, String shortName, boolean force, String channel, int localDistance, boolean connectionMessages ) {
         this.serverName = name;
         this.shortName = shortName;
         this.forceChannel = force;
-        this.forcedChannel = channel;
+        if ( channel.equalsIgnoreCase( "server" ) ) {
+            this.forcedChannel = serverName;
+        } else if ( channel.equalsIgnoreCase( "global" ) ) {
+            this.forcedChannel = "Global";
+        } else if ( channel.equalsIgnoreCase( "local" ) ) {
+            this.forcedChannel = serverName + " Local";
+        } else {
+            this.forcedChannel = channel;
+        }
         this.localDistance = localDistance;
         this.connectionMessages = connectionMessages;
     }
@@ -50,5 +60,13 @@ public class ServerData {
 
     public boolean usingConnectionMessages() {
         return connectionMessages;
+    }
+
+    public boolean usingTowny() {
+        return usingTowny;
+    }
+
+    public void useTowny() {
+        this.usingTowny = true;
     }
 }

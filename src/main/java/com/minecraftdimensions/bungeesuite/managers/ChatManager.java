@@ -22,12 +22,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class ChatManager {
 
-    public static ArrayList<Channel> channels = new ArrayList<Channel>();
-    public static HashMap<String, ServerData> serverData = new HashMap<String, ServerData>();
+    public static ArrayList<Channel> channels = new ArrayList();
+    public static HashMap<String, ServerData> serverData = new HashMap();
     public static boolean MuteAll;
 
     public static void loadChannels() {
@@ -42,6 +41,9 @@ public class ChatManager {
         loadChannel( server, "Faction", chan.getString( "Channels.Faction", Messages.CHANNEL_DEFAULT_FACTION ), true, true );
         //Load Faction Ally Channel
         loadChannel( server, "FactionAlly", chan.getString( "Channels.FactionAlly", Messages.CHANNEL_DEFAULT_FACTION_ALLY ), true, true );
+        //Load Towny Channels
+        loadChannel( server, "Town", chan.getString( "Channels.TownyTown", Messages.CHANNEL_DEFAULT_TOWN ), true, true );
+        loadChannel( server, "Nation", chan.getString( "Channels.TownyNation", Messages.CHANNEL_DEFAULT_NATION ), true, true );
         //Load Server Channels
         for ( String servername : ProxyServer.getInstance().getServers().keySet() ) {
             loadChannel( server, servername, chan.getString( "Channels.Servers." + servername + ".Server", Messages.CHANNEL_DEFAULT_SERVER ), true, true );
@@ -65,9 +67,13 @@ public class ChatManager {
         channels.add( c );
     }
 
-    public static boolean usingFactions( Server server ) {
-        return serverData.get( server.getInfo().getName() ).usingFactions();
-    }
+    //    public static boolean usingFactions( Server server ) {
+    //        return serverData.get( server.getInfo().getName() ).usingFactions();
+    //    }
+    //
+    //    public static boolean usingTowny( Server server ) {
+    //        return serverData.get( server.getInfo().getName() ).usingTowny();
+    //    }
 
     public static void sendDefaultChannelsToServer( ServerInfo s ) {
         ArrayList<Channel> chans = getDefaultChannels( s.getName() );
@@ -77,8 +83,26 @@ public class ChatManager {
     }
 
     public static void sendFactionChannelsToServer( ServerInfo s ) {
+        serverData.get( s.getName() ).useFactions();
         sendChannelToServer( s, getChannel( "Faction" ) );
         sendChannelToServer( s, getChannel( "FactionAlly" ) );
+    }
+
+    public static void sendTownyChannelsToServer( ServerInfo s ) {
+        serverData.get( s.getName() ).useTowny();
+        sendChannelToServer( s, getChannel( "Town" ) );
+        sendChannelToServer( s, getChannel( "Nation" ) );
+    }
+
+    public static void checkForPlugins( ServerInfo server ) {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream( b );
+        try {
+            out.writeUTF( "PluginCheck" );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        sendPluginMessageTaskChat( server, b );
     }
 
     public static void sendChannelToServer( ServerInfo server, Channel channel ) {
@@ -203,15 +227,7 @@ public class ChatManager {
 
         ServerData sd = ChatManager.serverData.get( server.getInfo().getName() );
         if ( sd.forcingChannel() ) {
-            String channel = sd.getForcedChannel();
-            if ( channel.equalsIgnoreCase( "server" ) ) {
-                channel = sd.getServerName();
-            } else if ( channel.equalsIgnoreCase( "local" ) ) {
-                channel = sd.getServerName() + " Local";
-            } else if ( channel.equalsIgnoreCase( "global" ) ) {
-                channel = "Global";
-            }
-            c = getChannel( channel );
+            c = getChannel( sd.getForcedChannel() );
             setPlayersChannel( p, c, false );
             return;
         }
@@ -226,6 +242,10 @@ public class ChatManager {
         if ( isFactionChannel( c ) && sd.usingFactions() ) {
             return;
         }
+        if ( isTownyChannel( c ) && sd.usingTowny() ) {
+            return;
+        }
+
         if ( isServerChannel( c ) ) {
             c = getChannel( sd.getServerName() );
             setPlayersChannel( p, c, false );
@@ -261,6 +281,9 @@ public class ChatManager {
         return c.getName().equals( "Faction" ) || c.getName().equals( "FactionAlly" );
     }
 
+    public static boolean isTownyChannel( Channel c ) {
+        return c.getName().equals( "Town" ) || c.getName().equals( "Nation" );
+    }
 
     public static void setPlayerAFK( String player, boolean sendGlobal, boolean hasDisplayPerm ) {
         PlayerManager.setPlayerAFK( player, sendGlobal, hasDisplayPerm );
@@ -424,52 +447,52 @@ public class ChatManager {
         return getChannel( p.getChannel() );
     }
 
-    public static Channel getPlayersNextChannel( BSPlayer p, boolean bypass ) {
+    public static Channel getPlayersNextChannel( BSPlayer p, boolean factionAccess, boolean townyAccess, boolean inNation, boolean bypass ) {
         Channel current = p.getPlayersChannel();
-        if ( !p.getServerData().forcingChannel() || bypass ) {
-            if ( current.getName().equals( "Global" ) ) {
-                return getChannel( p.getServer().getInfo().getName() );
-            } else if ( current.getName().equals( p.getServer().getInfo().getName() ) ) {
-                return getChannel( p.getServer().getInfo().getName() + " Local" );
-            } else if ( current.getName().equals( p.getServer().getInfo().getName() + " Local" ) ) {
-                if ( usingFactions( p.getServer() ) ) {
+        String c = current.getName();
+        ServerData sd = p.getServerData();
+        if ( !bypass && sd.forcingChannel() ) {
+            if ( sd.usingFactions() && factionAccess ) {
+                if ( c.equals( sd.getForcedChannel() ) ) {
                     return getChannel( "Faction" );
                 }
+                if ( c.equals( "Faction" ) ) {
+                    return getChannel( "FactionAlly" );
+                }
             }
-        } else if ( current.getName().equals( p.getServerData().getForcedChannel() ) ) {
-            if ( usingFactions( p.getServer() ) ) {
+            if ( sd.usingTowny() && townyAccess ) {
+                if ( c.equals( sd.getForcedChannel() ) || c.equals( "FactionAlly" ) ) {
+                    return getChannel( "Town" );
+                }
+                if ( c.equals( "Town" ) && inNation ) {
+                    return getChannel( "Nation" );
+                }
+            }
+            return getChannel( sd.getForcedChannel() );
+        }
+        if ( sd.usingFactions() && factionAccess ) {
+            if ( c.equals( p.getServerData().getServerName() + " Local" ) ) {
                 return getChannel( "Faction" );
             }
-        }
-        if ( current.getName().equals( "Faction" ) ) {
-            return getChannel( "FactionAlly" );
-        }
-        boolean found = false;
-        Channel chan = null;
-        Iterator<Channel> it = p.getPlayersChannels().iterator();
-        while ( it.hasNext() ) {
-            Channel next = it.next();
-            if ( next.equals( current ) ) {
-                found = true;
-            }
-            if ( found ) {
-                chan = next;
+            if ( c.equals( "Faction" ) ) {
+                return getChannel( "FactionAlly" );
             }
         }
-        if ( chan == null ) {
-            if ( p.getServerData().forcingChannel() && !bypass ) {
-                String forcedChannel = p.getServerData().getForcedChannel();
-                if ( forcedChannel.equalsIgnoreCase( "server" ) ) {
-                    forcedChannel = p.getServerData().getServerName();
-                } else if ( forcedChannel.equalsIgnoreCase( "local" ) ) {
-                    forcedChannel = p.getServerData().getServerName() + " Local";
-                }
-                chan = getChannel( forcedChannel );
-            } else {
-                chan = getChannel( "Global" );
+        if ( sd.usingTowny() && townyAccess ) {
+            if ( c.equals( p.getServerData().getServerName() + " Local" ) || c.equals( "FactionAlly" ) ) {
+                return getChannel( "Town" );
+            }
+            if ( c.equals( "Town" ) && inNation ) {
+                return getChannel( "Nation" );
             }
         }
-        return chan;
+        if ( c.equals( "Global" ) ) {
+            return getChannel( p.getServerData().getServerName() );
+        }
+        if ( c.equals( p.getServer().getInfo().getName() ) ) {
+            return getChannel( p.getServerData().getServerName() + " Local" );
+        }
+        return getChannel( "Global" );
     }
 
     public static void setPlayersChannel( BSPlayer p, Channel channel, boolean message ) throws SQLException {
@@ -493,19 +516,7 @@ public class ChatManager {
         if ( channel.isDefault() ) {
             if ( p.getServerData().forcingChannel() ) {
                 String forcedChannel = p.getServerData().getForcedChannel();
-                if ( forcedChannel.equalsIgnoreCase( "local" ) ) {
-                    if ( channel.getName().equals( p.getServer().getInfo().getName() + "Local" ) ) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else if ( forcedChannel.equalsIgnoreCase( "server" ) ) {
-                    if ( channel.getName().equals( p.getServer().getInfo().getName() ) ) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else if ( forcedChannel.equalsIgnoreCase( channel.getName() ) ) {
+                if ( channel.getName().equals( forcedChannel ) ) {
                     return true;
                 } else {
                     return false;
@@ -516,12 +527,12 @@ public class ChatManager {
         return true;
     }
 
-    public static void togglePlayersChannel( String player, boolean bypass ) throws SQLException {
+    public static void togglePlayersChannel( String player, boolean factionAccess, boolean townyAccess, boolean inNation, boolean bypass ) throws SQLException {
         BSPlayer p = PlayerManager.getPlayer( player );
-        setPlayersChannel( p, getPlayersNextChannel( p, bypass ), true );
+        setPlayersChannel( p, getPlayersNextChannel( p, factionAccess, townyAccess, inNation, bypass ), true );
     }
 
-    public static void togglePlayerToChannel( String sender, String channel, boolean bypass ) throws SQLException {
+    public static void togglePlayerToChannel( String sender, String channel, boolean factionAccess, boolean townyAccess, boolean inNation, boolean bypass ) throws SQLException {
         BSPlayer p = PlayerManager.getPlayer( sender );
         if ( channel.equalsIgnoreCase( "Local" ) ) {
             channel = p.getServer().getInfo().getName() + " Local";
@@ -535,9 +546,16 @@ public class ChatManager {
             p.sendMessage( Messages.CHANNEL_DOES_NOT_EXIST );
             return;
         }
+        if ( isFactionChannel( c ) && !factionAccess ) {
+            p.sendMessage( Messages.CHANNEL_UNTOGGLABLE.replace( "{channel}", c.getName() ) );
+            return;
+        }
+        if ( isTownyChannel( c ) && !townyAccess || ( c.getName().equals( "Nation" ) && !inNation ) ) {
+            p.sendMessage( Messages.CHANNEL_UNTOGGLABLE.replace( "{channel}", c.getName() ) );
+            return;
+        }
         if ( !bypass ) {
             if ( c.isDefault() || isPlayerChannelMember( p, c ) ) {
-
                 if ( canPlayerToggleToChannel( p, c ) ) {
                     setPlayersChannel( p, c, true );
                     return;
@@ -611,25 +629,17 @@ public class ChatManager {
     }
 
     public static String getServersDefaultChannel( ServerData server ) {
-        String channel = null;
-        if ( server.forcingChannel() ) {
-            channel = server.getForcedChannel();
-        } else {
-            channel = ChatConfig.defaultChannel;
-        }
-        if ( channel.equalsIgnoreCase( "Server" ) ) {
-            return server.getServerName();
-        } else if ( channel.equalsIgnoreCase( "Local" ) ) {
-            return server.getServerName() + " Local";
-        } else {
-            return channel;
-        }
+        return server.getForcedChannel();
     }
 
-    public static void togglePlayersFactionsChannel( String player ) throws SQLException {
+    public static void togglePlayersFactionsChannel( String player, Boolean inFaction ) throws SQLException {
         BSPlayer p = PlayerManager.getPlayer( player );
         String channel = p.getChannel();
         String newchannel;
+        if ( !inFaction ) {
+            p.sendMessage( Messages.FACTION_NONE );
+            return;
+        }
         if ( channel.equals( "Faction" ) ) {
             newchannel = "FactionAlly";
             p.sendMessage( Messages.FACTION_ALLY_TOGGLE );
@@ -639,6 +649,28 @@ public class ChatManager {
         } else {
             newchannel = "Faction";
             p.sendMessage( Messages.FACTION_TOGGLE );
+        }
+        Channel c = getChannel( newchannel );
+        setPlayersChannel( p, c, false );
+    }
+
+    public static void togglePlayersTownyChannel( String player, Boolean inTown, Boolean inNation ) throws SQLException {
+        BSPlayer p = PlayerManager.getPlayer( player );
+        String channel = p.getChannel();
+        String newchannel;
+        if ( !inTown ) {
+            p.sendMessage( Messages.TOWNY_NONE );
+            return;
+        }
+        if ( channel.equals( "Town" ) && inNation ) {
+            newchannel = "Nation";
+            p.sendMessage( Messages.TOWNY_NATION_TOGGLE );
+        } else if ( channel.equals( "Nation" ) || channel.equals( "Town" ) ) {
+            newchannel = getServersDefaultChannel( p.getServerData() );
+            p.sendMessage( Messages.CHANNEL_TOGGLE.replace( "{channel}", newchannel ) );
+        } else {
+            newchannel = "Town";
+            p.sendMessage( Messages.TOWNY_TOGGLE );
         }
         Channel c = getChannel( newchannel );
         setPlayersChannel( p, c, false );
@@ -657,6 +689,29 @@ public class ChatManager {
             p.sendMessage( Messages.FACTION_TOGGLE );
         } else {
             p.sendMessage( Messages.FACTION_ALLY_TOGGLE );
+        }
+        Channel c = getChannel( channel );
+        setPlayersChannel( p, c, false );
+    }
+
+    public static void toggleToPlayersTownyChannel( String sender, String channel, boolean hasTown, Boolean hasNation ) throws SQLException {
+        BSPlayer p = PlayerManager.getPlayer( sender );
+        if ( !hasTown ) {
+            p.sendMessage( Messages.TOWNY_NONE );
+            return;
+        }
+        if ( p.getChannel().equals( channel ) ) {
+            channel = getServersDefaultChannel( p.getServerData() );
+            p.sendMessage( Messages.TOWNY_OFF_TOGGLE );
+        } else if ( channel.equals( "Town" ) ) {
+            p.sendMessage( Messages.TOWNY_TOGGLE );
+        } else if ( channel.equals( "Nation" ) ) {
+            if ( hasNation ) {
+                p.sendMessage( Messages.TOWNY_NATION_TOGGLE );
+            } else {
+                p.sendMessage( Messages.TOWNY_NATION_NONE );
+                return;
+            }
         }
         Channel c = getChannel( channel );
         setPlayersChannel( p, c, false );

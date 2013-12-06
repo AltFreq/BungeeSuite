@@ -45,10 +45,17 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "GetServerChannels" ) ) {
-            //            ChatManager.clearServersChannels( s );
             ChatManager.sendServerData( s.getInfo() );
             ChatManager.sendDefaultChannelsToServer( s.getInfo() );
             PrefixSuffixManager.sendPrefixAndSuffixToServer( s.getInfo() );
+            return;
+        }
+        if ( task.equals( "GetFactionChannels" ) ) {
+            ChatManager.sendFactionChannelsToServer( s.getInfo() );
+            return;
+        }
+        if ( task.equals( "GetTownyChannels" ) ) {
+            ChatManager.sendTownyChannelsToServer( s.getInfo() );
             return;
         }
         if ( task.equals( "AdminChat" ) ) {
@@ -110,19 +117,27 @@ public class ChatMessageListener implements Listener {
             return;
         }
         if ( task.equals( "TogglePlayersChannel" ) ) {
-            ChatManager.togglePlayersChannel( in.readUTF(), in.readBoolean() );
+            ChatManager.togglePlayersChannel( in.readUTF(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean() );
             return;
         }
         if ( task.equals( "TogglePlayersFactionsChannel" ) ) {
-            ChatManager.togglePlayersFactionsChannel( in.readUTF() );
+            ChatManager.togglePlayersFactionsChannel( in.readUTF(), in.readBoolean() );
             return;
         }
         if ( task.equals( "ToggleToPlayersFactionChannel" ) ) {
             ChatManager.toggleToPlayersFactionChannel( in.readUTF(), in.readUTF(), in.readBoolean() );
             return;
         }
+        if ( task.equals( "TogglePlayersTownyChannel" ) ) {
+            ChatManager.togglePlayersTownyChannel( in.readUTF(), in.readBoolean(), in.readBoolean() );
+            return;
+        }
+        if ( task.equals( "ToggleToPlayersTownyChannel" ) ) {
+            ChatManager.toggleToPlayersTownyChannel( in.readUTF(), in.readUTF(), in.readBoolean(), in.readBoolean() );
+            return;
+        }
         if ( task.equals( "TogglePlayerToChannel" ) ) {
-            ChatManager.togglePlayerToChannel( in.readUTF(), in.readUTF(), in.readBoolean() );
+            ChatManager.togglePlayerToChannel( in.readUTF(), in.readUTF(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean() );
             return;
         }
         if ( task.equals( "GetChannelInfo" ) ) {
