@@ -156,10 +156,10 @@ public class Messages {
         PLAYER_TELEPORT_PENDING_OTHER = colorize( m.getString( "PLAYER_TELEPORT_PENDING_OTHER", "&c" + "That player already has a teleport pending" ) );
         PLAYER_TELEPORTED_TO_YOU = colorize( m.getString( "PLAYER_TELEPORTED_TO_YOU", "&2" + "{player} has teleported to you" ) );
         PLAYER_TELEPORTED = colorize( m.getString( "PLAYER_TELEPORTED", "&2" + "{player} has teleported to {target}" ) );
-        PLAYER_REQUESTS_TO_TELEPORT_TO_YOU = colorize( m.getString( "PLAYER_REQUESTS_TO_TELEPORT_TO_YOU", "&2" + "{player} has requested to teleport to you. Type /tpaccept to allow" ) );
-        PLAYER_REQUESTS_YOU_TELEPORT_TO_THEM = colorize( m.getString( "PLAYER_REQUESTS_YOU_TELEPORT_TO_THEM", "&2" + "{player} has requested you teleport to them. Type /tpaccept to allow" ) );
-        TELEPORT_DENIED = colorize( m.getString( "TELEPORT_DENIED", "&c" + "You denied {player}'s teleport request" ) );
-        TELEPORT_REQUEST_DENIED = colorize( m.getString( "TELEPORT_REQUEST_DENIED", "&c" + "{player} denied your teleport request" ) );
+        PLAYER_REQUESTS_TO_TELEPORT_TO_YOU = colorize( m.getString( "PLAYER_REQUESTS_TO_TELEPORT_TO_YOU", "&2" + "{player}&f has requested to teleport to you. Type /tpaccept to allow" ) );
+        PLAYER_REQUESTS_YOU_TELEPORT_TO_THEM = colorize( m.getString( "PLAYER_REQUESTS_YOU_TELEPORT_TO_THEM", "&2" + "{player}&f has requested you teleport to them. Type /tpaccept to allow" ) );
+        TELEPORT_DENIED = colorize( m.getString( "TELEPORT_DENIED", "&c" + "You denied {player}&f's teleport request" ) );
+        TELEPORT_REQUEST_DENIED = colorize( m.getString( "TELEPORT_REQUEST_DENIED", "&c" + "{player}&f denied your teleport request" ) );
         NO_TELEPORTS = colorize( m.getString( "NO_TELEPORTS", "&c" + "You do not have any pending teleports" ) );
         TELEPORT_REQUEST_SENT = colorize( m.getString( "TELEPORT_REQUEST_SENT", "&2" + "Your request has been sent" ) );
         TPA_REQUEST_TIMED_OUT = colorize( m.getString( "TPA_REQUEST_TIMED_OUT", "&c" + "Your request to teleport to {player} has timed out" ) );
