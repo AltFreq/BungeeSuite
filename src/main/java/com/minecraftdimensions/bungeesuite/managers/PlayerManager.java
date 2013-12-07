@@ -152,8 +152,9 @@ public class PlayerManager {
             res.close();
         } else {
             ip = p.getProxiedPlayer().getAddress().getAddress().toString();
+            ip = ip.substring( 1, ip.length() );
         }
-        return ip.substring( 1, ip.length() );
+        return ip;
     }
 
     public static void sendBroadcast( String message ) {
