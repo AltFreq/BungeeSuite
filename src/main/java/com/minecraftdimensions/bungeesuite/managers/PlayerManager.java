@@ -117,10 +117,15 @@ public class PlayerManager {
 
     public static void sendPrivateMessageToPlayer( BSPlayer from, String receiver, String message ) {
         BSPlayer rec = getSimilarPlayer( receiver );
+        if ( from.isMuted() && ChatConfig.mutePrivateMessages ) {
+            from.sendMessage( Messages.MUTED );
+            return;
+        }
         if ( rec == null ) {
             from.sendMessage( Messages.PLAYER_NOT_ONLINE );
             return;
         }
+
         if ( rec.isIgnoring( from.getName() ) ) {
             from.sendMessage( Messages.PLAYER_IGNORING.replace( "{player}", rec.getName() ) );
             return;
