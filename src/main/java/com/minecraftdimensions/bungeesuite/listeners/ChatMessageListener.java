@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import net.md_5.bungee.api.ChatColor;
 
 public class ChatMessageListener implements Listener {
 
@@ -42,6 +43,16 @@ public class ChatMessageListener implements Listener {
             String sender = in.readUTF();
             String message = in.readUTF();
             ChatManager.sendGlobalChat( sender, message, s );
+            return;
+        }
+        if ( task.equals("RealName") ) {
+            String name = in.readUTF();
+            String nick = in.readUTF();
+            BSPlayer p = PlayerManager.getSimilarNickPlayer(nick);
+            if(p == null)
+                PlayerManager.sendMessageToPlayer(name, ChatColor.GRAY + nick + ChatColor.RESET + ChatColor.GRAY + " was not found!");
+            else
+                PlayerManager.sendMessageToPlayer(name, ChatColor.GRAY + p.getNickname() + ChatColor.RESET + ChatColor.GRAY + " is " + p.getName());
             return;
         }
         if ( task.equals( "GetServerChannels" ) ) {

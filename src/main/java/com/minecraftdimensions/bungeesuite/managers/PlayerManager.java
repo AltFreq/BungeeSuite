@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import net.md_5.bungee.api.ChatColor;
 
 public class PlayerManager {
 
@@ -347,5 +348,14 @@ public class PlayerManager {
 
     public static Collection<BSPlayer> getPlayers() {
         return onlinePlayers.values();
+    }
+
+    public static BSPlayer getSimilarNickPlayer(String nick) {
+        for ( BSPlayer p : onlinePlayers.values() ) {
+            if ( ChatColor.stripColor(p.getNickname()).toLowerCase().contains( nick.toLowerCase() ) ) {
+                return p;
+            }
+        }
+        return getSimilarPlayer(nick);
     }
 }
