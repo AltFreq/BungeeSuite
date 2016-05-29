@@ -183,7 +183,7 @@ public class TeleportManager {
         } else if ( death ) {
             teleportPlayerToLocation( player, player.getDeathBackLocation() );
         } else if ( teleport ) {
-            teleportPlayerToLocation( player, player.getDeathBackLocation() );
+            teleportPlayerToLocation( player, player.getTeleportBackLocation() );
         }
     }
 
